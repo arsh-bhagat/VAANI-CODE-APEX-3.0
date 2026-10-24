@@ -7,6 +7,8 @@ import android.widget.VideoView
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import com.bithead.shelter.ui.walkthrough.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -57,8 +59,8 @@ internal fun VaultScreen(emergency: Boolean, isSealing: Boolean, label: String, 
             delay(250L)
         }
     }
-    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { Panel { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.Lock, null, tint = ShelterSafe); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Heading("Stealth Evidence Vault"); Caption("On-device • AES-256-GCM") }; Badge(if (unlocked) "Unlocked" else "Locked") } } }
+    LazyColumn(state = LocalWalkthrough.current?.lists?.get(1) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item(key = "vault") { Panel(Modifier.featureTarget(FeatureHelp.VAULT)) { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.Lock, null, tint = ShelterSafe); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Heading("Stealth Evidence Vault"); Caption("On-device • AES-256-GCM") }; Badge(if (unlocked) "Unlocked" else "Locked") } } }
         item { BrutalPanel(color = SurfaceElevated, header = "01 / Capture sanctuary") {
             StatusPill(if (isSealing) "Sealing" else if (emergency) "Recording active" else "Standby",
                 tone = if (emergency) StatusTone.Critical else StatusTone.Armed)
@@ -87,14 +89,14 @@ internal fun VaultScreen(emergency: Boolean, isSealing: Boolean, label: String, 
             }
         } }
         item { Action("Blackout display", Icons.Outlined.VisibilityOff, blackout, primary = false) }
-        item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        item(key = "media") { Row(Modifier.fillMaxWidth().featureTarget(FeatureHelp.CAMERA), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Action("Capture", Icons.Outlined.PhotoCamera, openCamera, Modifier.weight(1f))
             Action("Import", Icons.Outlined.FileOpen, importMedia, Modifier.weight(1f), primary = false)
         } }
         if (unlocked) item { Action("Lock vault", Icons.Outlined.Lock, lock, primary = false) }
         if (emergency) item { Action("Stop & seal vault", Icons.Outlined.Lock, trigger) }
         if (isSealing) item { Action("Sealing evidence…", Icons.Outlined.Lock, {}, enabled = false) }
-        item { Panel { Heading("Offline first storage"); Caption("Sealed recordings stay on this device. Unlock to play or export a chain-of-custody record. No cloud or peer sync is connected.") } }
+        item { Panel { Heading("Offline first storage"); FeatureHelpLink(FeatureHelp.VAULT); Caption("Sealed recordings stay on this device. Unlock to play or export a chain-of-custody record. No cloud or peer sync is connected.") } }
         item { Heading("ENCRYPTED EVIDENCE LOG") }
         if (!unlocked) item { Panel(color = ShelterSurfaceRaised) {
             Icon(Icons.Outlined.Fingerprint, null, Modifier.size(36.dp), ShelterSafe)

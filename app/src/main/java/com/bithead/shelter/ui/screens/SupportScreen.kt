@@ -3,6 +3,8 @@ package com.bithead.shelter.ui.screens
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import com.bithead.shelter.ui.walkthrough.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -18,10 +20,11 @@ import com.bithead.shelter.ui.theme.*
 internal fun SupportScreen(disguise: () -> Unit) {
     val context = LocalContext.current
     var expanded by rememberSaveable { mutableStateOf("") }
-    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { BrutalPanel(header = "01 / Crisis & legal support") {
+    LazyColumn(state = LocalWalkthrough.current?.lists?.get(3) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item(key = "support") { BrutalPanel(Modifier.featureTarget(FeatureHelp.SUPPORT), header = "01 / Crisis & legal support") {
             Icon(Icons.Outlined.HealthAndSafety, null, Modifier.size(40.dp), GoldPrimary)
             Heading("Support when you need it")
+            FeatureHelpLink(FeatureHelp.SUPPORT)
             Caption("Public crisis and legal resources. Calls open your dialer so you remain in control.")
             StatusPill("Direct dial / India", tone = StatusTone.Mesh)
         } }

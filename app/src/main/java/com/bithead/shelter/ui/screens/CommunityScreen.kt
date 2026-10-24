@@ -15,6 +15,8 @@ import android.webkit.WebViewClient
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import com.bithead.shelter.ui.walkthrough.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -285,11 +287,12 @@ internal fun CommunityScreen(
     val context = LocalContext.current
     val zones = remember(latitude, longitude) { adaptiveDangerZones(latitude, longitude) }
     val nearbyZone = remember(latitude, longitude, zones) { nearbyDangerZone(latitude, longitude, zones) }
-    LaunchedEffect(Unit) { refreshLocation() }
-    LaunchedEffect(nearbyZone?.title) {
-        nearbyZone?.let { info("Caution: you are inside the sample ${it.title.lowercase()} zone. Check local conditions and choose a well-lit route.") }
+    val tour = LocalWalkthrough.current
+    LaunchedEffect(tour?.active) { if (tour?.active != true) refreshLocation() }
+    LaunchedEffect(nearbyZone?.title, tour?.active) {
+        if (tour?.active != true) nearbyZone?.let { info("Caution: you are inside the sample ${it.title.lowercase()} zone. Check local conditions and choose a well-lit route.") }
     }
-    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    LazyColumn(state = LocalWalkthrough.current?.lists?.get(2) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { BrutalPanel(header = "01 / Community safe routes") {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(10.dp).background(SlateMesh))
@@ -300,7 +303,7 @@ internal fun CommunityScreen(
             Caption("Current GPS with illustrative community signals. Sample routes do not establish that a street is safe.")
         } }
         if (nearbyZone != null) item { Panel(color = ShelterDanger.copy(alpha = 0.18f)) { Heading("Caution near ${nearbyZone.title.lowercase()}"); Caption("Your current location overlaps this sample risk area. Use the map to check a well-lit alternative.") } }
-        item {
+        item(key = "map") {
             LeafletMap(
                 filter,
                 latitude,
@@ -309,7 +312,7 @@ internal fun CommunityScreen(
                 locationTimestamp,
                 zones,
                 recenterRequest,
-                Modifier.fillMaxWidth().height(360.dp).neoShadow().brutalBorder().clip(RoundedCornerShape(4.dp))
+                Modifier.fillMaxWidth().height(360.dp).featureTarget(FeatureHelp.MAP).neoShadow().brutalBorder().clip(RoundedCornerShape(4.dp))
             )
         }
         item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {

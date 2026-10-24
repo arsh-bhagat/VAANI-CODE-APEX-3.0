@@ -4,6 +4,8 @@ import android.location.Location
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import com.bithead.shelter.ui.walkthrough.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,8 +26,8 @@ internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: Strin
     disguise: () -> Unit, info: (String) -> Unit, decoyDelay: Int, scheduleDecoy: (Int) -> Unit,
     trustedContactCount: Int, openCamera: () -> Unit, blackout: () -> Unit) {
     val context = LocalContext.current
-    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { BrutalPanel(header = "01 / Emergency activation") {
+    LazyColumn(state = LocalWalkthrough.current?.lists?.get(0) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item(key = "alert") { BrutalPanel(header = "01 / Emergency activation") {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Box(Modifier.size(56.dp).background(GoldPrimaryDim, RoundedCornerShape(4.dp)), contentAlignment = Alignment.Center) {
                     Icon(Icons.Outlined.CrisisAlert, null, Modifier.size(30.dp), GoldOnPrimary)
@@ -38,11 +40,11 @@ internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: Strin
             when {
                 isSealing -> Action("Sealing evidence…", Icons.Outlined.Lock, {}, enabled = false)
                 emergency -> BrutalButton(onTrigger, Modifier.fillMaxWidth(), tone = BrutalButtonTone.Emergency) { Text("STOP & SEAL EVIDENCE") }
-                else -> TactileHoldButton(onTrigger)
+                else -> TactileHoldButton(onTrigger, Modifier.featureTarget(FeatureHelp.ALERT))
             }
             Caption(if (trustedContactCount == 0) "No trusted contacts configured. Add them in Settings for emergency SMS." else "$trustedContactCount trusted contacts configured. SMS requires permission and cellular service.")
         } }
-        item { BrutalPanel(header = "02 / Acoustic trigger") {
+        item(key = "safeword") { BrutalPanel(Modifier.featureTarget(FeatureHelp.SAFEWORD), header = "02 / Acoustic trigger") {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Outlined.Mic, null, tint = GoldPrimary)
                 Spacer(Modifier.width(10.dp))
@@ -79,8 +81,11 @@ internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: Strin
             BrutalButton(openCamera, Modifier.fillMaxWidth(), tone = BrutalButtonTone.Emergency) {
                 Icon(Icons.Outlined.PhotoCamera, null); Spacer(Modifier.width(8.dp)); Text("CAPTURE MEDIA")
             }
-            HorizontalDivider(color = BorderSubtle)
+            FeatureHelpLink(FeatureHelp.CAMERA)
+        } }
+        item(key = "decoy") { BrutalPanel(Modifier.featureTarget(FeatureHelp.DECOY), header = "05 / Decoy & nearby care") {
             Heading("Fake incoming call")
+            FeatureHelpLink(FeatureHelp.DECOY)
             Caption(if (decoyDelay > 0) "Scheduled in ${decoyDelay}s" else "Local incoming-call simulation")
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(0, 15, 30).forEach { seconds ->
@@ -94,7 +99,7 @@ internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: Strin
             Caption("Search nearby public hospitals and pharmacies in device maps.")
             Action("Find nearby care", Icons.Outlined.NearMe, { openLink(context, "geo:0,0?q=nearby+hospital") }, primary = false)
         } }
-        item { BrutalPanel(header = "05 / Local evidence") {
+        item { BrutalPanel(header = "06 / Local evidence") {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) { Heading("Stealth vault"); Caption("$count sealed items / on this device") }
                 StatusPill("AES-256")

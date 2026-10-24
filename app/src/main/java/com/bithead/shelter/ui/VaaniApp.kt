@@ -5,6 +5,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import com.bithead.shelter.ui.walkthrough.*
+import kotlinx.coroutines.flow.first
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,6 +52,9 @@ private val tabs = listOf("Spaces", "Vault", "Community", "Support", "Settings")
 private val tabIcons = listOf(Icons.Outlined.Dashboard, Icons.Outlined.FolderSpecial, Icons.Outlined.NearMe, Icons.AutoMirrored.Outlined.HelpOutline, Icons.Outlined.Tune)
 @Composable
 fun VaaniApp(
+    walkthroughSessionId: String = "preview",
+    walkthroughPending: Boolean, walkthroughEligible: Boolean,
+    onWalkthroughActive: (Boolean) -> Unit, onWalkthroughHandled: (Boolean) -> Unit,
     isEmergency: Boolean, isSealing: Boolean, safeword: String, threatLabel: String, threatScore: Int,
     lat: Double?, lng: Double?, evidence: List<Evidence>, vaultUnlocked: Boolean,
     mapLat: Double?, mapLng: Double?, mapAccuracyMeters: Float?, mapLocationTimestamp: Long?,
@@ -76,6 +85,78 @@ fun VaaniApp(
     var decoyDelay by rememberSaveable { mutableIntStateOf(0) }
     var decoyCall by rememberSaveable { mutableStateOf(false) }
     var showCamera by rememberSaveable { mutableStateOf(false) }
+    val listStates = listOf(rememberLazyListState(), rememberLazyListState(), rememberLazyListState(), rememberLazyListState(), rememberLazyListState())
+    val tour = remember { WalkthroughScope(listStates) }
+    var tourIndex by rememberSaveable(key = "tour_index_$walkthroughSessionId") { mutableIntStateOf(-2) }
+    var replay by rememberSaveable(key = "tour_replay_$walkthroughSessionId") { mutableStateOf(false) }
+    var originIndex by rememberSaveable(key = "tour_origin_index_$walkthroughSessionId") { mutableIntStateOf(0) }
+    var originOffset by rememberSaveable(key = "tour_origin_offset_$walkthroughSessionId") { mutableIntStateOf(0) }
+    var showFeatureHelp by rememberSaveable { mutableStateOf(false) }
+    var targetReady by remember { mutableStateOf(false) }
+    val available = walkthroughEligible && !isEmergency && !isSealing && !disguised && !blackout &&
+        !showCamera && message == null && !decoyCall && decoyDelay == 0 && mediaPreviewState.evidenceId == null
+    val visibleTour = tourIndex >= -1 && available
+    SideEffect { tour.active = tourIndex >= -1 }
+    val configuration = LocalConfiguration.current
+    val finishTour: (Boolean) -> Unit = { completed ->
+        tourIndex = -2
+        tab = if (replay) 4 else 0
+        onWalkthroughActive(false)
+        onWalkthroughHandled(completed)
+    }
+    val startReplay = {
+        if (available) {
+            originIndex = listStates[4].firstVisibleItemIndex
+            originOffset = listStates[4].firstVisibleItemScrollOffset
+            replay = true
+            onLockVault()
+            onWalkthroughActive(true)
+            tourIndex = -1
+        }
+    }
+    LaunchedEffect(walkthroughPending, available) {
+        if (walkthroughPending && available && tourIndex == -2) {
+            replay = false
+            onLockVault()
+            onWalkthroughActive(true)
+            tourIndex = -1
+        }
+    }
+    LaunchedEffect(tourIndex, visibleTour, configuration) {
+        targetReady = false
+        if (visibleTour && tourIndex >= 0) {
+            val step = walkthroughSteps[tourIndex]
+            tab = step.tab
+            withTimeoutOrNull(2_000L) {
+                val state = listStates[step.tab]
+                snapshotFlow { state.layoutInfo.totalItemsCount }.first { it > 0 }
+                // Search stable item keys rather than coupling the tour to screen item counts.
+                var index = 0
+                while (index < state.layoutInfo.totalItemsCount) {
+                    state.scrollToItem(index)
+                    val visible = snapshotFlow { state.layoutInfo.visibleItemsInfo }.first { it.isNotEmpty() }
+                    val found = visible.firstOrNull { it.key == step.itemKey }
+                    if (found != null) {
+                        state.scrollToItem(found.index)
+                        snapshotFlow { tour.targets[step.feature] }.first { it != null }
+                        targetReady = true
+                        break
+                    }
+                    index = maxOf(index + 1, visible.maxOf { it.index } + 1)
+                }
+            }
+        } else if (tourIndex == -2 && replay) {
+            listStates[4].scrollToItem(originIndex, originOffset)
+            replay = false
+        }
+    }
+    LaunchedEffect(isEmergency, isSealing, disguised, blackout, showCamera) {
+        if (tourIndex >= -1 && (isEmergency || isSealing || disguised || blackout || showCamera)) {
+            tourIndex = -2
+            onWalkthroughActive(false)
+        }
+    }
+    DisposableEffect(Unit) { onDispose { onWalkthroughActive(false) } }
     LaunchedEffect(disguiseEnabled) { disguised = disguiseEnabled }
     LaunchedEffect(tab, disguised, blackout, vaultUnlocked) {
         if (tab != 1 || disguised || blackout || !vaultUnlocked) onVaultHidden()
@@ -114,7 +195,9 @@ fun VaaniApp(
         )
         return
     }
+    CompositionLocalProvider(LocalWalkthrough provides tour) {
     Scaffold(
+        modifier = if (visibleTour) Modifier.clearAndSetSemantics { } else Modifier,
         containerColor = ShelterInk,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -146,7 +229,7 @@ fun VaaniApp(
             }
         },
         bottomBar = {
-            if (!disguised) Column(Modifier.background(SurfaceLowest).navigationBarsPadding()) {
+            if (!disguised) Column(Modifier.featureTarget(FeatureHelp.NAVIGATION).background(SurfaceLowest).navigationBarsPadding()) {
                 HorizontalDivider(color = BorderSubtle)
                 Row(Modifier.fillMaxWidth().selectableGroup()) {
                     tabs.forEachIndexed { i, title ->
@@ -180,9 +263,17 @@ fun VaaniApp(
                     onLockVault, locationTracking, cachedLocation, smsStatuses, activeIncidentId)
                 2 -> CommunityScreen(mapLat, mapLng, mapAccuracyMeters, mapLocationTimestamp, onRefreshMapLocation) { message = it }
                 3 -> SupportScreen(disguise)
-                4 -> SettingsScreen(safeword, listening, onListeningChange, gestureWakeMode, onGestureWakeModeChange, onEditSafeword, disguiseEnabled, onDisguiseEnabledChange, disguise, { message = it }, trustedContacts, smsStatuses, locationTracking, cachedLocation, onAddContact, onRemoveContact, onPickContact, onLocationTrackingChange, onRequestSmsPermission, onImportMedia, { showCamera = true })
+                4 -> SettingsScreen(safeword, listening, onListeningChange, gestureWakeMode, onGestureWakeModeChange, onEditSafeword, disguiseEnabled, onDisguiseEnabledChange, disguise, { message = it }, trustedContacts, smsStatuses, locationTracking, cachedLocation, onAddContact, onRemoveContact, onPickContact, onLocationTrackingChange, onRequestSmsPermission, onImportMedia, { showCamera = true }, startReplay, { showFeatureHelp = true }, available)
             }
         }
+    }
+    } // CompositionLocalProvider
+    if (showFeatureHelp && available) FeatureHelpDialog { showFeatureHelp = false }
+    if (visibleTour) {
+        WalkthroughOverlay(tourIndex, if (tourIndex >= 0) tour.targets[walkthroughSteps[tourIndex].feature] else null,
+            targetReady && (tourIndex < 0 || tour.targets[walkthroughSteps[tourIndex].feature] != null), onStart = { targetReady = false; tourIndex = 0 }, onBack = { targetReady = false; tourIndex-- },
+            onNext = { targetReady = false; if (tourIndex == walkthroughSteps.lastIndex) finishTour(true) else tourIndex++ },
+            onSkip = { finishTour(false) })
     }
     message?.let { text ->
         AlertDialog(onDismissRequest = { message = null }, title = { Text("VAANI") }, text = { Text(text) },

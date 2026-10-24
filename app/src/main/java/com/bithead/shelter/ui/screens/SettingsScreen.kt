@@ -5,6 +5,10 @@ import android.location.Location
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.res.stringResource
+import com.bithead.shelter.R
+import com.bithead.shelter.ui.walkthrough.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -30,11 +34,18 @@ internal fun SettingsScreen(safeword: String, listening: Boolean, onListen: (Boo
     trustedContacts: List<TrustedContact>, smsStatuses: List<ContactAlertStatus>, locationTracking: Boolean,
     cachedLocation: CachedLocation?, onAddContact: (String, String) -> Unit, onRemoveContact: (String) -> Unit,
     onPickContact: () -> Unit, onLocationTrackingChange: (Boolean) -> Unit,
-    onRequestSmsPermission: () -> Unit, onImportMedia: () -> Unit, onCaptureMedia: () -> Unit) {
+    onRequestSmsPermission: () -> Unit, onImportMedia: () -> Unit, onCaptureMedia: () -> Unit,
+    replay: () -> Unit, featureHelp: () -> Unit, tourEnabled: Boolean) {
     val context = LocalContext.current
     var contactName by rememberSaveable { mutableStateOf("") }
     var contactNumber by rememberSaveable { mutableStateOf("") }
-    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    LazyColumn(state = LocalWalkthrough.current?.lists?.get(4) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item(key = "help") { Panel(Modifier.featureTarget(FeatureHelp.REPLAY)) {
+            Heading(stringResource(R.string.tour_help))
+            Button(onClick = replay, enabled = tourEnabled) { Text(stringResource(R.string.tour_replay)) }
+            TextButton(onClick = featureHelp) { Text(stringResource(R.string.tour_feature_help)) }
+            if (!tourEnabled) Caption(stringResource(R.string.tour_wait))
+        } }
         item { Panel { Heading("Protection preferences"); Caption("Local capture • notes disguise"); Badge(if (listening) "Listening" else "Paused") } }
         item { Heading("ACOUSTIC TRIGGER") }
         item { Panel(color = ShelterSurfaceRaised) {
@@ -49,23 +60,26 @@ internal fun SettingsScreen(safeword: String, listening: Boolean, onListen: (Boo
             }
             Caption("Stealth mode keeps the mic off until a physical jerk is detected. Gesture detection works while VAANI or Notes is open in the foreground.")
             Caption("Offline recognition depends on your device.")
+            FeatureHelpLink(FeatureHelp.GESTURE)
+            FeatureHelpLink(FeatureHelp.SAFEWORD)
         } }
         item { Heading("DEVICE & VAULT SECURITY") }
-        item { Panel { Heading("Biometric vault lock"); Caption("Uses your device fingerprint, face, or screen lock. The vault locks when the app leaves the foreground."); Action("Device security settings", Icons.Outlined.Fingerprint, { context.startActivity(Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS)) }, primary = false) } }
-        item { Panel { Heading("Location protection"); Caption("Keeps a timestamped last known location ready for emergency SMS. Android shows an ongoing notification while active."); Row(verticalAlignment = Alignment.CenterVertically) { Text("Track while armed", Modifier.weight(1f)); BrutalSwitch(locationTracking, onLocationTrackingChange, label = "Location tracking") }; Caption(if (cachedLocation == null) "No location fix cached yet" else "Last fix: ${Date(cachedLocation.timestampMillis)}") } }
-        item { Panel { Heading("Trusted contacts"); Caption("Emergency SMS sends only to contacts you add here."); trustedContacts.forEach { contact -> Row(verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text(contact.name); Caption(contact.number) }; TextButton(onClick = { onRemoveContact(contact.number) }) { Text("Remove") } } }; OutlinedTextField(contactName, { contactName = it }, Modifier.fillMaxWidth(), label = { Text("Name") }, singleLine = true); OutlinedTextField(contactNumber, { contactNumber = it }, Modifier.fillMaxWidth(), label = { Text("Phone number") }, singleLine = true); Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { Button(onClick = { onAddContact(contactName, contactNumber); contactName = ""; contactNumber = "" }) { Text("Add") }; OutlinedButton(onClick = onPickContact) { Text("Pick contact") } }; OutlinedButton(onClick = onRequestSmsPermission, modifier = Modifier.fillMaxWidth()) { Text("Allow emergency SMS") }; smsStatuses.forEach { status -> Caption("${status.name}: ${status.status}") } } }
-        item { Panel { Heading("Camera evidence"); Caption("Capture private photos or silent videos up to 60 seconds, then seal them in the encrypted vault."); Action("Open private camera", Icons.Outlined.PhotoCamera, onCaptureMedia); Action("Import image or video", Icons.Outlined.FileOpen, onImportMedia, primary = false) } }
+        item { Panel { Heading("Biometric vault lock"); FeatureHelpLink(FeatureHelp.SECURITY); Caption("Uses your device fingerprint, face, or screen lock. The vault locks when the app leaves the foreground."); Action("Device security settings", Icons.Outlined.Fingerprint, { context.startActivity(Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS)) }, primary = false) } }
+        item { Panel { Heading("Location protection"); FeatureHelpLink(FeatureHelp.LOCATION); Caption("Keeps a timestamped last known location ready for emergency SMS. Android shows an ongoing notification while active."); Row(verticalAlignment = Alignment.CenterVertically) { Text("Track while armed", Modifier.weight(1f)); BrutalSwitch(locationTracking, onLocationTrackingChange, label = "Location tracking") }; Caption(if (cachedLocation == null) "No location fix cached yet" else "Last fix: ${Date(cachedLocation.timestampMillis)}") } }
+        item(key = "contacts") { Panel(Modifier.featureTarget(FeatureHelp.CONTACTS)) { Heading("Trusted contacts"); FeatureHelpLink(FeatureHelp.CONTACTS); Caption("Emergency SMS sends only to contacts you add here."); trustedContacts.forEach { contact -> Row(verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text(contact.name); Caption(contact.number) }; TextButton(onClick = { onRemoveContact(contact.number) }) { Text("Remove") } } }; OutlinedTextField(contactName, { contactName = it }, Modifier.fillMaxWidth(), label = { Text("Name") }, singleLine = true); OutlinedTextField(contactNumber, { contactNumber = it }, Modifier.fillMaxWidth(), label = { Text("Phone number") }, singleLine = true); Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { Button(onClick = { onAddContact(contactName, contactNumber); contactName = ""; contactNumber = "" }) { Text("Add") }; OutlinedButton(onClick = onPickContact) { Text("Pick contact") } }; OutlinedButton(onClick = onRequestSmsPermission, modifier = Modifier.fillMaxWidth()) { Text("Allow emergency SMS") }; smsStatuses.forEach { status -> Caption("${status.name}: ${status.status}") } } }
+        item { Panel { Heading("Camera evidence"); FeatureHelpLink(FeatureHelp.CAMERA); Caption("Capture private photos or silent videos up to 60 seconds, then seal them in the encrypted vault."); Action("Open private camera", Icons.Outlined.PhotoCamera, onCaptureMedia); Action("Import image or video", Icons.Outlined.FileOpen, onImportMedia, primary = false) } }
         item { Heading("DECOY APP PERSONA") }
-        item { Panel(color = ShelterSurfaceRaised) {
+        item(key = "disguise") { Panel(Modifier.featureTarget(FeatureHelp.DISGUISE), color = ShelterSurfaceRaised) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Disguise as Notes App", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
                 BrutalSwitch(disguiseEnabled, onDisguiseEnabledChange, label = "Notes launcher disguise")
             }
             Caption(if (disguiseEnabled) "The launcher appears as Notes and future launches open All Notes." else "The launcher appears as VAANI and opens the safety dashboard.")
+            FeatureHelpLink(FeatureHelp.DISGUISE)
             Action("Lock to Notes now", Icons.Outlined.VisibilityOff, disguise, primary = false)
         } }
         item { Heading("LANGUAGE & DISPATCH") }
-        item { Panel { Heading("Emergency dispatch"); Caption("Trusted-contact SMS is active when configured. Police, NGO, peer, and shelter panels are preview actions until an approved integration is connected."); Row(verticalAlignment = Alignment.CenterVertically) { Box(Modifier.size(8.dp).clip(CircleShape).background(ShelterAmber)); Spacer(Modifier.width(8.dp)); Text("Preview action") }; TextButton(onClick = { info("Preview: no police or NGO alert was sent.") }) { Text("About preview actions") } } }
+        item { Panel { Heading("Emergency dispatch"); FeatureHelpLink(FeatureHelp.DISPATCH); Caption("Trusted-contact SMS is active when configured. Police, NGO, peer, and shelter panels are preview actions until an approved integration is connected."); Row(verticalAlignment = Alignment.CenterVertically) { Box(Modifier.size(8.dp).clip(CircleShape).background(ShelterAmber)); Spacer(Modifier.width(8.dp)); Text("Preview action") }; TextButton(onClick = { info("Preview: no police or NGO alert was sent.") }) { Text("About preview actions") } } }
         item { Action("Test interface quietly", Icons.Outlined.CheckCircleOutline, { info("Interface check complete. No recording was started and no contacts were notified. To test real recording, use the activation hold on Spaces.") }) }
     }
 }
