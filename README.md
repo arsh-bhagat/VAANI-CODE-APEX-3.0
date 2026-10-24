@@ -55,3 +55,7 @@ evidence keys are Keystore-backed. The safeword *trigger path*, however, is
 still built on Android's general-purpose SpeechRecognizer rather than a
 dedicated offline wake-word model — do not describe safeword detection as
 fully offline until that replacement is made.
+
+## Guided walkthrough
+
+First-use onboarding and Settings → Help & onboarding → Replay walkthrough are implemented on the feature branch. Shared localized explanations also power contextual feature help. See [walkthrough documentation](docs/walkthrough.md) for behavior, localization, shake detection and validation.

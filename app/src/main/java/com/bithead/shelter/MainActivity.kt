@@ -41,7 +41,9 @@ import com.bithead.shelter.emergency.EmergencySms
 import com.bithead.shelter.emergency.LocationCache
 import com.bithead.shelter.emergency.LocationTrackingService
 import com.bithead.shelter.security.Crypto
+import com.bithead.shelter.data.WalkthroughPreferences
 import com.bithead.shelter.security.AppDisguiseManager
+import com.bithead.shelter.sensors.ListeningWindow
 import com.bithead.shelter.sensors.GestureDetector
 import com.bithead.shelter.ui.VaaniApp
 import com.bithead.shelter.ui.components.EvidencePlaybackState
@@ -98,9 +100,9 @@ class MainActivity : FragmentActivity() {
         @Volatile
         private var activeSealCompletion: CompletableDeferred<Unit>? = null
 
+        private val walkthroughSessionId = java.util.UUID.randomUUID().toString()
         private const val GESTURE_WINDOW_SECONDS = 12
         private const val GESTURE_READY_TIMEOUT_MS = 3_000L
-        private const val GESTURE_FINAL_RESULT_TIMEOUT_MS = 2_000L
     }
 
     private lateinit var db: AppDatabase
@@ -145,7 +147,7 @@ class MainActivity : FragmentActivity() {
     private var safewordListeningActive by mutableStateOf(false)
     private var gestureWindowOpening by mutableStateOf(false)
     private var gestureWindowPending = false
-    private var gestureWindowDeadlineMs = 0L
+    private val gestureWindow = ListeningWindow(GESTURE_WINDOW_SECONDS * 1_000L)
     private var gestureWindowSecondsRemaining by mutableIntStateOf(0)
     private var speechRequestInFlight = false
     private var safewordActivationPending = false
@@ -153,7 +155,13 @@ class MainActivity : FragmentActivity() {
     private var disguiseEnabled by mutableStateOf(false)
     private var playbackState by mutableStateOf(EvidencePlaybackState())
     private var mediaPreviewState by mutableStateOf(EvidenceMediaPreviewState())
-    private var foreground = false
+    private var foreground by mutableStateOf(false)
+    private lateinit var walkthroughPreferences: WalkthroughPreferences
+    private var walkthroughPending by mutableStateOf(true)
+    private var walkthroughActive = false
+    private var permissionsPending by mutableStateOf(false)
+    private val recognitionSuppressed: Boolean get() = walkthroughPending || walkthroughActive
+
     private var restartListeningJob: Job? = null
     private var safewordWindowJob: Job? = null
     private var gestureRecognitionRestartJob: Job? = null
@@ -180,6 +188,10 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        walkthroughPreferences = WalkthroughPreferences(this)
+        walkthroughPending = walkthroughPreferences.shouldOffer
+        walkthroughActive = savedInstanceState?.getString("walkthrough_session") == walkthroughSessionId &&
+            savedInstanceState?.getBoolean("walkthrough_active") == true
         enableEdgeToEdge()
         db = AppDatabase.get(this)
         key = loadOrCreateMasterKey()
@@ -202,10 +214,10 @@ class MainActivity : FragmentActivity() {
         }
         disguiseEnabled = AppDisguiseManager.isEnabled(this)
         AppDisguiseManager.applyLauncherState(this, disguiseEnabled)
-        requestPermissionsIfNeeded()
+        if (!walkthroughPending && !walkthroughActive) requestPermissionsIfNeeded()
         initSpeechRecognizer()
         gestureDetector = GestureDetector(this) {
-            if (gestureWakeMode && listeningEnabled && foreground) startSafewordWindow()
+            if (!recognitionSuppressed && gestureWakeMode && listeningEnabled && foreground) startSafewordWindow()
         }
         checkBiometricAvailability()
 
@@ -216,6 +228,17 @@ class MainActivity : FragmentActivity() {
                 val cachedLocation by LocationCache.latest.collectAsStateWithLifecycle()
                 val locationTracking by LocationCache.trackingEnabled.collectAsStateWithLifecycle()
                 VaaniApp(
+                    walkthroughSessionId = walkthroughSessionId,
+                    walkthroughPending = walkthroughPending,
+                    walkthroughEligible = foreground && !permissionsPending && !showSafewordDialog,
+                    onWalkthroughActive = { setWalkthroughActive(it) },
+                    onWalkthroughHandled = { completed ->
+                        val wasPending = walkthroughPending
+                        walkthroughPreferences.handle(completed)
+                        walkthroughPending = false
+                        setWalkthroughActive(false)
+                        if (wasPending) requestPermissionsIfNeeded()
+                    },
                     isEmergency = captureState == CaptureState.RECORDING,
                     isSealing = captureState == CaptureState.SEALING,
                     safeword = safewordState,
@@ -329,7 +352,10 @@ class MainActivity : FragmentActivity() {
             needed += Manifest.permission.ACCESS_FINE_LOCATION
             needed += Manifest.permission.ACCESS_COARSE_LOCATION
         }
-        if (needed.isNotEmpty()) ActivityCompat.requestPermissions(this, needed.toTypedArray(), 10)
+        if (needed.isNotEmpty()) {
+            permissionsPending = true
+            ActivityCompat.requestPermissions(this, needed.toTypedArray(), 10)
+        }
     }
 
     private fun hasLocationPermission(): Boolean {
@@ -550,12 +576,15 @@ class MainActivity : FragmentActivity() {
             setRecognitionListener(object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {
                     speechRequestInFlight = false
-                    if (captureState != CaptureState.IDLE) return
+                    if (recognitionSuppressed || !foreground || !listeningEnabled ||
+                        captureState != CaptureState.IDLE || (gestureWakeMode && !gestureWindowPending)) {
+                        speechRecognizer?.cancel()
+                        return
+                    }
                     safewordListeningActive = true
                     if (gestureWakeMode && gestureWindowPending) {
                         gestureWindowOpening = false
-                        if (gestureWindowDeadlineMs == 0L) {
-                            gestureWindowDeadlineMs = SystemClock.elapsedRealtime() + GESTURE_WINDOW_SECONDS * 1_000L
+                        if (gestureWindow.start(SystemClock.elapsedRealtime())) {
                             getSystemService(Vibrator::class.java)?.takeIf { it.hasVibrator() }?.vibrate(
                                 VibrationEffect.createOneShot(30L, VibrationEffect.DEFAULT_AMPLITUDE)
                             )
@@ -605,7 +634,7 @@ class MainActivity : FragmentActivity() {
         SpeechRecognizer.ERROR_NO_MATCH, SpeechRecognizer.ERROR_SPEECH_TIMEOUT ->
             "Safeword not heard — gesture remains armed"
         SpeechRecognizer.ERROR_RECOGNIZER_BUSY ->
-            "Speech recognizer was busy — wait a moment and jerk again"
+            getString(com.bithead.shelter.R.string.gesture_wait)
         SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS ->
             "Microphone permission is required for the safeword window"
         SpeechRecognizer.ERROR_NETWORK, SpeechRecognizer.ERROR_NETWORK_TIMEOUT ->
@@ -614,15 +643,20 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun checkSafewordMatches(matches: ArrayList<String>?): Boolean {
-        if (captureState != CaptureState.IDLE || !listeningEnabled || !foreground || safewordActivationPending ||
+        if (recognitionSuppressed || captureState != CaptureState.IDLE || !listeningEnabled || !foreground || safewordActivationPending ||
             (gestureWakeMode && !gestureWindowPending)) return false
+        if (gestureWakeMode && gestureWindow.started &&
+            gestureWindow.remaining(SystemClock.elapsedRealtime()) == 0L) {
+            finishGestureWindow(cancelRecognizer = true)
+            return false
+        }
         val matched = matches?.any { it.contains(safewordState, ignoreCase = true) } == true
         if (matched) queueEmergencyFromSafeword()
         return matched
     }
 
     private fun queueEmergencyFromSafeword() {
-        if (safewordActivationPending) return
+        if (recognitionSuppressed || safewordActivationPending) return
         safewordActivationPending = true
         restartListeningJob?.cancel()
         if (gestureWakeMode) finishGestureWindow(cancelRecognizer = true)
@@ -635,12 +669,13 @@ class MainActivity : FragmentActivity() {
         safewordActivationJob = lifecycleScope.launch {
             delay(200L)
             safewordActivationPending = false
-            if (foreground && listeningEnabled && captureState == CaptureState.IDLE) activateEmergency()
+            if (!recognitionSuppressed && foreground && listeningEnabled && captureState == CaptureState.IDLE) activateEmergency()
         }
     }
 
     private fun startSafewordListening(): Boolean {
-        if (captureState != CaptureState.IDLE || !foreground || !listeningEnabled || speechRecognizer == null ||
+        if (recognitionSuppressed || (gestureWakeMode && !gestureWindowPending) ||
+            captureState != CaptureState.IDLE || !foreground || !listeningEnabled || speechRecognizer == null ||
             speechRequestInFlight || safewordListeningActive ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) return false
         try {
@@ -665,11 +700,11 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun startSafewordWindow() {
-        if (!gestureWakeMode || gestureWindowPending || safewordActivationPending || captureState != CaptureState.IDLE ||
+        if (recognitionSuppressed || !gestureWakeMode || gestureWindowPending || safewordActivationPending || captureState != CaptureState.IDLE ||
             !foreground || !listeningEnabled) return
         gestureWindowPending = true
         gestureWindowOpening = true
-        gestureWindowDeadlineMs = 0L
+        gestureWindow.clear()
         gestureWindowSecondsRemaining = 0
         if (!startSafewordListening()) {
             finishGestureWindow(cancelRecognizer = true)
@@ -693,7 +728,7 @@ class MainActivity : FragmentActivity() {
         gestureWindowSecondsRemaining = GESTURE_WINDOW_SECONDS
         safewordWindowJob = lifecycleScope.launch {
             while (gestureWindowPending) {
-                val remainingMs = gestureWindowDeadlineMs - SystemClock.elapsedRealtime()
+                val remainingMs = gestureWindow.remaining(SystemClock.elapsedRealtime())
                 if (remainingMs <= 0L) break
                 gestureWindowSecondsRemaining = ((remainingMs + 999L) / 1_000L).toInt()
                 delay(remainingMs.coerceAtMost(1_000L))
@@ -701,14 +736,13 @@ class MainActivity : FragmentActivity() {
             if (!gestureWindowPending) return@launch
             gestureWindowSecondsRemaining = 0
             safewordListeningActive = false
-            speechRecognizer?.stopListening()
-            delay(GESTURE_FINAL_RESULT_TIMEOUT_MS)
-            if (gestureWindowPending) finishGestureWindow(cancelRecognizer = true)
+            // A hard deadline: do not accept late results or restart the recognizer after expiry.
+            finishGestureWindow(cancelRecognizer = true)
         }
     }
 
     private fun restartGestureRecognitionIfTimeRemains(): Boolean {
-        if (!gestureWindowPending || gestureWindowDeadlineMs <= SystemClock.elapsedRealtime()) return false
+        if (!gestureWindowPending || gestureWindow.remaining(SystemClock.elapsedRealtime()) == 0L) return false
         gestureWindowOpening = true
         gestureRecognitionRestartJob?.cancel()
         gestureRecognitionRestartJob = lifecycleScope.launch {
@@ -724,7 +758,7 @@ class MainActivity : FragmentActivity() {
     private fun finishGestureWindow(cancelRecognizer: Boolean) {
         gestureWindowPending = false
         gestureWindowOpening = false
-        gestureWindowDeadlineMs = 0L
+        gestureWindow.clear()
         gestureWindowSecondsRemaining = 0
         speechRequestInFlight = false
         safewordListeningActive = false
@@ -744,7 +778,7 @@ class MainActivity : FragmentActivity() {
 
     private fun restartSafewordListening() {
         restartListeningJob?.cancel()
-        if (listeningEnabled && foreground && captureState == CaptureState.IDLE && !gestureWakeMode) {
+        if (!recognitionSuppressed && listeningEnabled && foreground && captureState == CaptureState.IDLE && !gestureWakeMode) {
             restartListeningJob = lifecycleScope.launch { delay(1000); startSafewordListening() }
         }
     }
@@ -800,6 +834,7 @@ class MainActivity : FragmentActivity() {
         foreground = true
         if (LocationCache.trackingEnabled.value && hasLocationPermission()) startLocationProtection()
         checkBiometricAvailability()
+        if (recognitionSuppressed) return
         val sensorStarted = gestureDetector.start()
         if (gestureWakeMode && !sensorStarted) {
             gestureWakeMode = false
@@ -816,6 +851,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionsPending = false
         if (requestCode == 10) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 listeningEnabled = false
@@ -849,7 +885,7 @@ class MainActivity : FragmentActivity() {
     // ---- Emergency capture -----------------------------------------------------
 
     private fun activateEmergency() {
-        if (captureState != CaptureState.IDLE || sealingInProgress || mediaSealsPending > 0) return
+        if (recognitionSuppressed || captureState != CaptureState.IDLE || sealingInProgress || mediaSealsPending > 0) return
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             lifecycleScope.launch { snackbarHostState.showSnackbar("Microphone permission denied — cannot record evidence") }
             requestPermissionsIfNeeded()
@@ -1178,6 +1214,30 @@ class MainActivity : FragmentActivity() {
             }
         )
         prompt.authenticate(promptInfo)
+    }
+
+    private fun setWalkthroughActive(active: Boolean) {
+        walkthroughActive = active
+        if (recognitionSuppressed) {
+            gestureDetector.stop()
+            cancelSafewordSession()
+        } else if (foreground) {
+            if (gestureWakeMode && listeningEnabled) gestureDetector.start()
+            else restartSafewordListening()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("walkthrough_session", walkthroughSessionId)
+        outState.putBoolean("walkthrough_active", walkthroughActive)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onPause() {
+        foreground = false
+        gestureDetector.stop()
+        cancelSafewordSession()
+        super.onPause()
     }
 
     override fun onStop() {
