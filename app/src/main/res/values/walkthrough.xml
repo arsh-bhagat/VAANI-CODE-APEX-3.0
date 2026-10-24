@@ -36,7 +36,7 @@
     <string name="feature_decoy_title">Decoy call</string>
     <string name="feature_decoy_body">Show a simulated incoming-call screen now or after a delay. It rings locally but does not place a real call or play a voice conversation.</string>
     <string name="feature_disguise_title">Notes disguise</string>
-    <string name="feature_disguise_body">Disguise changes the launcher and opens All Notes on future launches. To return to VAANI, hold the %1$s header for two seconds, or enter ##, vaani, or 911 in the Notes search field. Lock to Notes hides the safety interface immediately.</string>
+    <string name="feature_disguise_body">Disguise changes the launcher and opens All Notes on future launches. To return to VAANI, hold the %1$s header for two seconds, or type your configured safeword in the Notes search field. The fallback codes ##, vaani, and 911 also work. Lock to Notes hides the safety interface immediately.</string>
     <string name="feature_replay_title">Replay the walkthrough</string>
     <string name="feature_replay_body">Return to Help &amp; onboarding in Settings to replay this tour anytime. Feature help also lets you review individual explanations.</string>
     <string name="feature_gesture_title">Gesture wake</string>

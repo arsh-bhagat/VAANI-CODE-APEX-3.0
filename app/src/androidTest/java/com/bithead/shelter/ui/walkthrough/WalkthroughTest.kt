@@ -114,4 +114,18 @@ class WalkthroughTest {
         compose.onNodeWithText("Start walkthrough").assertIsDisplayed()
         compose.runOnIdle { assertTrue(suppressed); assertEquals(0, actions) }
     }
+    @Test fun typedConfiguredSafewordLeavesNotesWithoutActivatingFeatures() {
+        offered = false
+        disguised = true
+        launchApp()
+        compose.onNode(hasSetTextAction()).performTextInput("  test phrase  ")
+        compose.onNodeWithText("All Notes").assertDoesNotExist()
+        compose.onNodeWithText("ARMED OPERATIONS").assertIsDisplayed()
+        compose.onNodeWithText("Spaces").assertIsDisplayed()
+        compose.runOnIdle {
+            assertEquals(0, actions)
+            assertTrue(disguised) // Opening the UI must not disable the stored launcher disguise.
+        }
+    }
+
 }

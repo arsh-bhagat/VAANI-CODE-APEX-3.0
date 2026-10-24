@@ -6,7 +6,7 @@ The ready-to-transfer test build is `VAANI-debug.apk` in the project root. Gradl
 2. Open it in the phone's Files app and allow installation from that app when Android asks.
 3. Launch VAANI and grant the permissions needed for the features you want to test.
 4. Start with Settings → **Test interface quietly**. This checks the interface without starting recording or sending messages.
-5. Check all five tabs, Notes disguise, memo persistence, map filters, and blackout. Double-tap the black screen to return. Search for `vaani` or `##` in Notes to leave the disguise.
+5. Check all five tabs, Notes disguise, memo persistence, map filters, and blackout. Double-tap the black screen to return. Type your configured safeword in Notes search to return to the main dashboard; case and outer whitespace are ignored. The fallback codes `vaani`, `##`, and `911` still work. Check that the keyboard closes and no recording or SMS is triggered.
 6. For a recording test, hold the activation control for two seconds, record briefly, and stop and seal. **Activation can send real SMS to configured trusted contacts.** Arrange the test with those contacts beforehand.
 7. Unlock the vault using the phone's authentication, play the sealed recording, and verify the hash chain. Also check private photo/video capture and import.
 

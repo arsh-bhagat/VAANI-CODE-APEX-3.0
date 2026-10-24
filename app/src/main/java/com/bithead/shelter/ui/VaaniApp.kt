@@ -169,7 +169,7 @@ fun VaaniApp(
         }
     }
     val disguise = { onLockVault(); disguised = true }
-    val unlockDisguise = { disguised = false }
+    val unlockDisguise = { tab = 0; disguised = false }
     BackHandler(blackout || disguised || tab != 0) {
         when { blackout -> blackout = false; disguised -> Unit; else -> tab = 0 }
     }
@@ -250,7 +250,7 @@ fun VaaniApp(
         }
     ) { padding ->
         Box(Modifier.padding(padding)) {
-            if (disguised) NotesScreen(unlockDisguise)
+            if (disguised) NotesScreen(safeword, unlockDisguise)
             else when (tab) {
                 0 -> ArmedScreen(isEmergency, isSealing, safeword, evidence.size, listening, listeningActive, gestureWakeMode,
                     gestureWindowOpening, gestureWindowSecondsRemaining, onListeningChange, onEditSafeword, onTrigger,
