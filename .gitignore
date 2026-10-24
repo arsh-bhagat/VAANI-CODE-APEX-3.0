@@ -43,3 +43,7 @@ captures/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Claude to Codex export bundle
+/claude-to-codex-export/
+/claude-to-codex-export.zip

@@ -220,17 +220,19 @@ fun EvidenceCard(
     LaunchedEffect(isActive, playback.positionMs) {
         if (isActive && !isDragging) draggedPosition = playback.positionMs.toFloat()
     }
-    ElevatedCard(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.elevatedCardColors(containerColor = ShelterSurface),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
+    Card(
+        modifier = modifier.fillMaxWidth().neoShadow(),
+        shape = RoundedCornerShape(4.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+        colors = CardDefaults.cardColors(containerColor = SurfacePanel),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .clip(CircleShape)
+                        .clip(RoundedCornerShape(4.dp))
                         .background(severity.copy(alpha = 0.18f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -310,6 +312,7 @@ fun EvidenceCard(
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilledTonalButton(
                     onClick = if (isAudio) onPlayPause else onOpenMedia,
+                    shape = RoundedCornerShape(4.dp),
                     enabled = !playback.isPreparing && !deletionPending,
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.filledTonalButtonColors(containerColor = ShelterSurfaceRaised, contentColor = MaterialTheme.colorScheme.onSurface)
@@ -346,6 +349,7 @@ fun EvidenceCard(
                 }
                 OutlinedButton(
                     onClick = onExport,
+                    shape = RoundedCornerShape(4.dp),
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Export chain of custody")

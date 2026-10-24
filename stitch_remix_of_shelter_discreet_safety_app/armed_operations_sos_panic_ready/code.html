@@ -1,0 +1,371 @@
+<!DOCTYPE html><html class="dark" lang="en" style="width: 390px; height: 1087px; overflow: hidden; position: relative;"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          primary: "#ecc246",
+          "primary-hover": "#f59e0b",
+          "primary-container": "#c9a227",
+          "on-primary": "#131315",
+          surface: "#101012",
+          "surface-card": "#18181c",
+          "surface-card-subtle": "#131316",
+          "surface-active": "#222228",
+          border: "#2d2d35",
+          "border-light": "#3d3d46"
+        },
+        fontFamily: {
+          headline: ["Space Grotesk", "sans-serif"],
+          body: ["Space Grotesk", "sans-serif"],
+          mono: ["JetBrains Mono", "monospace"]
+        },
+        boxShadow: {
+          brutal: "3px 3px 0px #060608",
+          "brutal-sm": "2px 2px 0px #060608",
+          "brutal-lg": "4px 4px 0px #060608",
+          "sos-glow": "0 0 24px rgba(236, 194, 70, 0.25)"
+        }
+      }
+    }
+  };
+</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+      background-color: #0e0e10;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    #blackoutScreen.active {
+      display: flex !important;
+    }
+    .tap-press:active {
+      transform: translate(2px, 2px);
+      box-shadow: none !important;
+    }
+  </style>
+</head><body class="bg-[#0e0e10] font-body text-[#f3f4f6] flex flex-col antialiased selection:bg-[#ecc246] selection:text-[#131315]">
+<!-- HEADER -->
+<header class="fixed top-0 w-full z-50 pt-safe bg-[#121215] border-b border-[#2d2d35] shadow-sm"><div class="h-16 px-4 flex items-center justify-between gap-2"><div class="flex items-center gap-2.5"><button aria-label="Quick Disguise Protocol" class="min-w-[40px] min-h-[40px] flex items-center justify-center text-[#f3f4f6] bg-[#1a1a1f] border border-[#353540] shadow-brutal-sm tap-press transition-all rounded-sm" title="Calculator Decoy" type="button"><span class="material-symbols-outlined text-[20px]">calculate</span></button><div class="flex flex-col">
+<span class="font-mono text-[10px] text-[#ecc246] tracking-widest uppercase font-bold">VAANI</span>
+
+</div></div><div class="flex items-center gap-2"><button aria-label="Blackout Display" class="min-h-[36px] px-2.5 flex items-center justify-center gap-1.5 rounded-sm bg-[#1a1a1f] text-[#f3f4f6] border border-[#353540] hover:bg-[#25252d] tap-press transition-all shadow-brutal-sm" id="blackoutToggleBtn" title="Instant Stealth Screen" type="button"><span class="material-symbols-outlined text-[16px] text-[#ecc246]">brightness_empty</span><span class="font-mono text-[11px] font-bold tracking-wider">BLACKOUT</span></button><button aria-label="Change Language" class="min-w-[36px] min-h-[36px] px-2 flex items-center justify-center rounded-sm text-[#f3f4f6] bg-[#1a1a1f] border border-[#353540] shadow-brutal-sm font-bold font-mono text-[11px]" type="button">EN</button><img alt="Profile" class="w-8 h-8 rounded-sm object-cover border border-[#353540] shadow-brutal-sm brightness-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJF9OZ0Si8ABY_2vEYdlq45Xo-YaTAYDdJWg7sREIdshaKn5riFkGFTg_NSNzVBVdfynzqlC0yrs_6iXCJawxjwyEf6o8DFWHApSA9ZkyBR7wnsiHv7B7-NR9o-G5Y-cY3u554Dl7jCusj0BvGt4FmDIHOCx1tPY1luhL6wAKaK_K5vdv3R_uDXi309QDOll-soNaFic8xqqZzBxMvinzr9z2cx5GB2Wrg-KERRKN"></div></div></header>
+<!-- MAIN CONTENT -->
+<main class="flex flex-col relative w-full pt-16 pb-24 bg-[#0e0e10] min-h-screen"><div class="flex flex-col w-full px-4 py-3 space-y-3">
+<!-- 1. TOP PRIORITY HERO: 2-SECOND HOLD EMERGENCY BROADCAST BUTTON -->
+<section class="w-full">
+<div class="relative bg-gradient-to-b from-[#1c1a12] to-[#16161a] border-2 border-[#ecc246] rounded-sm p-4 shadow-brutal-lg shadow-sos-glow overflow-hidden select-none">
+<!-- Progress Bar fill on hold -->
+<div class="absolute inset-0 bg-[#ecc246]/25 origin-left scale-x-0 transition-transform duration-75 border-r-4 border-[#ecc246]" id="holdProgressOverlay" style="transform: scaleX(0);"></div>
+<div class="relative z-10 flex flex-col items-center text-center space-y-2">
+<!-- Icon & Status Pill -->
+<div class="flex items-center justify-between w-full">
+
+
+</div>
+<div class="w-14 h-14 rounded-sm bg-[#ecc246] text-[#131315] shadow-brutal flex items-center justify-center my-0.5">
+<span class="material-symbols-outlined text-[32px] font-bold" style="font-variation-settings: 'FILL' 1;">crisis_alert</span>
+</div>
+<h1 class="font-headline text-[22px] font-bold text-[#ffffff] tracking-tight uppercase leading-tight">Manually Activate Vaani&nbsp;</h1>
+
+<!-- Big tactile trigger button -->
+<button aria-label="Hold 2s for Secret Emergency Broadcast" class="w-full mt-1 min-h-[52px] bg-[#ecc246] hover:bg-[#f59e0b] text-[#131315] rounded-sm font-headline text-[15px] font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-brutal border-2 border-[#ecc246] tap-press transition-all cursor-pointer select-none" id="sosHoldTrigger" type="button">
+<span class="material-symbols-outlined text-[22px] font-bold">cell_tower</span>
+<span id="triggerBtnLabel" class="">PRESS &amp; HOLD 2 seconds</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 2. SAFEWORD DISPLAY & EDIT (BELOW HERO) -->
+<section class="w-full bg-[#18181c] rounded-sm p-3 border border-[#2d2d35] shadow-brutal">
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="w-8 h-8 rounded-sm bg-[#131316] border border-[#2d2d35] flex items-center justify-center text-[#ecc246] shrink-0">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-[10px] text-[#ecc246] uppercase font-bold tracking-wider">SAFEWORD</span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+
+</div>
+<span class="font-headline text-[15px] text-[#ffffff] font-bold truncate">"Weather looks clear today"</span>
+</div>
+</div>
+<button aria-label="Edit safeword phrase" class="min-w-[36px] min-h-[36px] flex items-center justify-center text-[#f3f4f6] bg-[#1f1f24] hover:bg-[#282830] border border-[#353540] rounded-sm shadow-brutal-sm tap-press transition-all shrink-0" id="safewordEditBtn" type="button">
+<span class="material-symbols-outlined text-[18px] text-[#ecc246]">edit</span>
+</button>
+</div>
+</section>
+<!-- 3. POLICE & NGO STATUS (CONCISE STATUS BANNER) -->
+<section class="w-full bg-[#18181c] border border-[#2d2d35] rounded-sm p-3 shadow-brutal space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[#ecc246] text-[18px]">verified_user</span>
+<span class="font-headline text-[12px] font-bold text-[#ffffff] tracking-wide uppercase">POLICE &amp; NGO ALERT: READY</span>
+</div>
+
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="bg-[#131316] p-2 rounded-sm border border-[#2d2d35] flex items-center justify-between">
+<div class="flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-none bg-red-500 shrink-0"></span>
+<span class="font-headline text-[11px] font-bold text-[#e5e5ea] truncate">Sector 14 Police</span>
+</div>
+<span class="font-mono text-[10px] text-[#a0a0ab] shrink-0 font-medium">4 min</span>
+</div>
+<div class="bg-[#131316] p-2 rounded-sm border border-[#2d2d35] flex items-center justify-between">
+<div class="flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-none bg-sky-400 shrink-0"></span>
+<span class="font-headline text-[11px] font-bold text-[#e5e5ea] truncate">Saahas Shelter</span>
+</div>
+<span class="font-mono text-[10px] text-[#a0a0ab] shrink-0 font-medium">600m</span>
+</div>
+</div>
+</section>
+<!-- 4. 4 QUICK ACTION MODULES AS STREAMLINED HORIZONTAL LIST (STACKED ROWS) -->
+<section class="flex flex-col gap-2 w-full">
+<!-- Row 1: SMS Location -->
+<div class="bg-[#18181c] border border-[#2d2d35] p-3 rounded-sm shadow-brutal flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-10 h-10 rounded-sm bg-[#131316] border border-[#2d2d35] flex items-center justify-center text-[#ecc246] shrink-0">
+<span class="material-symbols-outlined text-[20px]">sms</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-[14px] font-bold text-[#ffffff] truncate uppercase tracking-tight">Share Live Location</span>
+<span class="font-mono text-[11px] text-[#a0a0ab] truncate">Mom, Kabir (+91..02)</span>
+</div>
+</div>
+<button class="min-h-[38px] px-3.5 bg-[#222228] hover:bg-[#2b2b33] border border-[#3d3d46] text-[#ecc246] rounded-sm font-headline text-[12px] font-bold uppercase tracking-wider shrink-0 tap-press shadow-brutal-sm transition-all" id="pingRelayBtn" type="button">
+      Send Link
+    </button>
+</div>
+<!-- Row 2: Camera Vault -->
+<div class="bg-[#18181c] border border-[#2d2d35] p-3 rounded-sm shadow-brutal flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-10 h-10 rounded-sm bg-[#131316] border border-[#2d2d35] flex items-center justify-center text-[#ff6b6b] shrink-0">
+<span class="material-symbols-outlined text-[20px]">videocam</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-[14px] font-bold text-[#ffffff] truncate uppercase tracking-tight">Secret Camera</span>
+<span class="font-mono text-[11px] text-[#a0a0ab] truncate">video &amp; photos</span>
+</div>
+</div>
+<button class="min-h-[38px] px-3.5 bg-[#8f2d2d] hover:bg-[#aa3b3b] text-white border border-[#b84242] rounded-sm font-headline text-[12px] font-bold uppercase tracking-wider shrink-0 tap-press shadow-brutal-sm flex items-center gap-1.5 transition-all" id="recordBurstBtn" type="button">
+<span class="material-symbols-outlined text-[14px]">fiber_manual_record</span>
+<span class="">Record</span>
+</button>
+</div>
+<!-- Row 3: Trigger Call -->
+<div class="bg-[#18181c] border border-[#2d2d35] p-3 rounded-sm shadow-brutal flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-10 h-10 rounded-sm bg-[#131316] border border-[#2d2d35] flex items-center justify-center text-[#9fcde2] shrink-0">
+<span class="material-symbols-outlined text-[20px]">ring_volume</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-[14px] font-bold text-[#ffffff] truncate uppercase tracking-tight">Fake Incoming Call</span>
+<span class="font-mono text-[11px] text-[#a0a0ab] truncate">Urgent call excuse</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 shrink-0">
+<button class="min-h-[38px] px-3 bg-[#222228] hover:bg-[#2b2b33] border border-[#3d3d46] text-[#ffffff] rounded-sm font-headline text-[12px] font-bold uppercase tracking-wider tap-press shadow-brutal-sm transition-all" id="fakeCall15" type="button">
+        Now
+      </button>
+<button class="min-h-[38px] px-2.5 bg-[#222228] hover:bg-[#2b2b33] border border-[#3d3d46] text-[#ecc246] rounded-sm font-mono text-[11px] font-bold uppercase tracking-wider tap-press shadow-brutal-sm transition-all" id="fakeCall30" type="button">
+        +30s
+      </button>
+</div>
+</div>
+<!-- Row 4: Safe Haven -->
+<div class="bg-[#18181c] border border-[#2d2d35] p-3 rounded-sm shadow-brutal flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-10 h-10 rounded-sm bg-[#131316] border border-[#2d2d35] flex items-center justify-center text-emerald-400 shrink-0">
+<span class="material-symbols-outlined text-[20px]">health_and_safety</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-[14px] font-bold text-[#ffffff] truncate uppercase tracking-tight">Nearest Safe Spot</span>
+<span class="font-mono text-[11px] text-[#a0a0ab] truncate">Apollo 24/7 (320m)</span>
+</div>
+</div>
+<button class="min-h-[38px] px-3.5 bg-[#222228] hover:bg-[#2b2b33] border border-[#3d3d46] text-[#ffffff] rounded-sm font-headline text-[12px] font-bold uppercase tracking-wider shrink-0 tap-press shadow-brutal-sm flex items-center gap-1 transition-all" id="guideRouteBtn" type="button">
+<span class="material-symbols-outlined text-[15px] text-[#ecc246]">near_me</span>
+<span class="">Navigate</span>
+</button>
+</div>
+</section>
+<!-- 5. NEAREST OUTPOST & FLIP GESTURE -->
+<section class="w-full bg-[#18181c] border border-[#2d2d35] rounded-sm p-3 shadow-brutal space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-headline text-[12px] font-bold text-[#ffffff] uppercase tracking-wide">Nearest Safe Place</span>
+<span class="font-mono text-[10px] font-bold text-[#131315] bg-[#ecc246] px-1.5 py-0.5 rounded-sm">OPEN 24H</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 rounded-sm bg-[#131316] shrink-0 overflow-hidden relative border border-[#2d2d35]">
+<img alt="Apollo 24/7 exterior" class="w-full h-full object-cover grayscale contrast-125 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqz3UxWSX8fbSWPXScbVbAWnaSGZVkBLT7Wbqj8Z2cUQqmitM_XzD3_aWkXTs0qHp98TSZOEfbvqsKiNiXjIMP8SBFoR11pnwoV8GAY8udznTe5MACdrOxJUd1eSmIUKYH8yO-R8ORDno03VEun6UECA-p19tAYsWxunGM8xj9fubY4hJ3P60BRMOgOBIsU6iGWa4Gy0QS9EdoiAtDLxAwyZPPSiC_vovhVa8si7it">
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-headline text-[14px] font-bold text-[#ffffff] truncate uppercase">Apollo 24/7 &amp; Metro</span>
+<span class="font-mono text-[11px] text-[#a0a0ab] truncate">Sector 14 Central Plaza</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="font-mono text-[10px] font-bold text-[#131315] bg-[#ecc246] px-1.5 py-0.5 rounded-sm">HIGH VISIBILITY</span>
+<span class="font-mono text-[11px] text-[#e5e5ea] font-bold">3 min walk</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Gesture bar -->
+<section class="w-full bg-[#18181c] border border-[#2d2d35] rounded-sm p-1.5 shadow-brutal">
+<button class="w-full min-h-[38px] flex items-center justify-center gap-2 text-[#a0a0ab] hover:text-[#ffffff] font-headline font-bold text-[11px] uppercase tracking-wider text-center transition-colors active:bg-[#222228]" id="quickDecoySwap" type="button">
+<span class="material-symbols-outlined text-[17px] text-[#ecc246]">visibility_off</span>
+<span class="">Double tap to BLACKOUT SCREEN</span>
+</button>
+</section>
+</div>
+<!-- Instant Blackout Overlay (Duress Mode) -->
+<div class="fixed inset-0 bg-[#000000] z-[100] hidden flex-col items-center justify-center select-none cursor-pointer" id="blackoutScreen">
+<div class="opacity-30 text-center flex flex-col items-center gap-2">
+<span class="material-symbols-outlined text-5xl text-white">lock</span>
+<p class="font-mono text-xs text-white tracking-widest uppercase font-bold">Tap 3 times anywhere to unlock display</p>
+</div>
+</div>
+<script>
+  (() => {
+    // 2-Second Hold Emergency Broadcast Interaction
+    const trigger = document.getElementById('sosHoldTrigger');
+    const overlay = document.getElementById('holdProgressOverlay');
+    const timerText = document.getElementById('holdTimerText');
+    const btnLabel = document.getElementById('triggerBtnLabel');
+    let holdStartTime = 0;
+    let animFrame = null;
+    let isDispatched = false;
+
+    const startHold = (e) => {
+      if (isDispatched) return;
+      if (e.type === 'touchstart') e.preventDefault();
+      holdStartTime = Date.now();
+      timerText.textContent = "SENDING SOS...";
+      timerText.classList.add('text-red-400');
+      btnLabel.textContent = "HOLD FIRM...";
+
+      const update = () => {
+        const elapsed = Date.now() - holdStartTime;
+        const progress = Math.min(elapsed / 2000, 1);
+        overlay.style.transform = `scaleX(${progress})`;
+
+        if (progress < 1) {
+          animFrame = requestAnimationFrame(update);
+        } else {
+          completeDispatch();
+        }
+      };
+      animFrame = requestAnimationFrame(update);
+    };
+
+    const cancelHold = () => {
+      if (isDispatched) return;
+      if (animFrame) cancelAnimationFrame(animFrame);
+      overlay.style.transform = 'scaleX(0)';
+      timerText.textContent = "HOLD 2.0S";
+      timerText.classList.remove('text-red-400');
+      btnLabel.textContent = "PRESS & HOLD TO BROADCAST";
+    };
+
+    const completeDispatch = () => {
+      if (animFrame) cancelAnimationFrame(animFrame);
+      isDispatched = true;
+      timerText.textContent = "✓ SOS SENT";
+      timerText.classList.remove('text-red-400');
+      timerText.classList.add('text-emerald-400');
+      btnLabel.textContent = "BROADCAST SENT • POLICE & CONTACTS ALERTED";
+      trigger.disabled = true;
+      trigger.classList.remove('bg-[#ecc246]', 'text-[#131315]');
+      trigger.classList.add('bg-emerald-600', 'text-white', 'border-emerald-500');
+      if (navigator.vibrate) {
+        navigator.vibrate([60, 60, 60, 60, 150]);
+      }
+    };
+
+    trigger.addEventListener('mousedown', startHold);
+    trigger.addEventListener('mouseup', cancelHold);
+    trigger.addEventListener('mouseleave', cancelHold);
+    trigger.addEventListener('touchstart', startHold, { passive: false });
+    trigger.addEventListener('touchend', cancelHold);
+
+    // Blackout Display micro-interaction
+    const blackoutBtn = document.getElementById('blackoutToggleBtn');
+    const blackoutScreen = document.getElementById('blackoutScreen');
+    let tapCount = 0;
+    let tapResetTimeout = null;
+
+    blackoutBtn.addEventListener('click', () => {
+      blackoutScreen.classList.add('active');
+    });
+
+    blackoutScreen.addEventListener('click', () => {
+      tapCount++;
+      clearTimeout(tapResetTimeout);
+      if (tapCount >= 3) {
+        blackoutScreen.classList.remove('active');
+        tapCount = 0;
+      } else {
+        tapResetTimeout = setTimeout(() => { tapCount = 0; }, 900);
+      }
+    });
+
+    // Quick decoy switcher micro-interaction
+    const decoyBtn = document.getElementById('quickDecoySwap');
+    decoyBtn.addEventListener('click', () => {
+      const calcIcon = document.querySelector('button[aria-label="Quick Disguise Protocol"]');
+      if (calcIcon) calcIcon.click();
+    });
+
+    // Fake call delay triggers
+    const triggerDecoyNotice = (sec) => {
+      const originalText = decoyBtn.innerHTML;
+      decoyBtn.innerHTML = `<span class="font-headline text-[#ecc246] font-bold uppercase text-[11px]">Simulating call in ${sec}s...</span>`;
+      setTimeout(() => {
+        decoyBtn.innerHTML = originalText;
+      }, 3500);
+    };
+
+    document.getElementById('fakeCall15')?.addEventListener('click', () => triggerDecoyNotice(15));
+    document.getElementById('fakeCall30')?.addEventListener('click', () => triggerDecoyNotice(30));
+
+    // Covert Burst capture trigger
+    document.getElementById('recordBurstBtn')?.addEventListener('click', function() {
+      const orig = this.innerHTML;
+      this.innerHTML = `<span class="material-symbols-outlined text-[14px] text-white animate-ping">radio_button_checked</span><span class="text-xs font-mono font-bold">RECORDING</span>`;
+      setTimeout(() => {
+        this.innerHTML = `<span class="material-symbols-outlined text-[14px] text-white">check_circle</span><span class="text-xs font-mono font-bold">SAVED</span>`;
+        setTimeout(() => { this.innerHTML = orig; }, 2000);
+      }, 1600);
+    });
+
+    // Ping Relay feedback
+    document.getElementById('pingRelayBtn')?.addEventListener('click', function() {
+      const orig = this.innerHTML;
+      this.innerHTML = `<span class="font-mono text-[11px] text-emerald-400 font-bold">LINK SENT</span>`;
+      setTimeout(() => { this.innerHTML = orig; }, 2200);
+    });
+
+    // Wayfinder navigation
+    document.getElementById('guideRouteBtn')?.addEventListener('click', function() {
+      const orig = this.innerHTML;
+      this.innerHTML = `<span class="font-mono text-[11px] text-[#ecc246] font-bold">ROUTING...</span>`;
+      setTimeout(() => { this.innerHTML = orig; }, 1800);
+    });
+
+    // Safeword edit prompt
+    document.getElementById('safewordEditBtn')?.addEventListener('click', () => {
+      const phraseEl = document.querySelector('#safewordEditBtn').parentElement.querySelector('.truncate');
+      const newWord = prompt("Set new covert safeword:", phraseEl.textContent.replace(/["']/g, ''));
+      if (newWord) {
+        phraseEl.textContent = `"${newWord}"`;
+      }
+    });
+  })();
+</script>
+</main>
+<!-- BOTTOM NAVIGATION BAR -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-[#121215] border-t border-[#2d2d35]" data-active-classes="text-[#131315] font-bold bg-[#ecc246]"><div class="flex items-center justify-around h-16 px-1"><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#131315] font-bold transition-colors flex-1 bg-[#ecc246] border-r border-[#2d2d35] h-full" data-path="spaces-home" href="#"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">shield</span><span class="font-mono text-[10px] leading-tight font-bold uppercase">Armed</span></a><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#a0a0ab] hover:text-[#ffffff] hover:bg-[#18181c] transition-colors flex-1 border-r border-[#2d2d35] h-full" data-path="evidence-vault" href="#"><span class="material-symbols-outlined text-[20px]">folder_special</span><span class="font-mono text-[10px] leading-tight font-bold uppercase">Vault</span></a><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#a0a0ab] hover:text-[#ffffff] hover:bg-[#18181c] transition-colors flex-1 border-r border-[#2d2d35] h-full" data-path="community-routes" href="#"><span class="material-symbols-outlined text-[20px]">near_me</span><span class="font-mono text-[10px] leading-tight font-bold uppercase">Relay</span></a><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#a0a0ab] hover:text-[#ffffff] hover:bg-[#18181c] transition-colors flex-1 border-r border-[#2d2d35] h-full" data-path="support-network" href="#"><span class="material-symbols-outlined text-[20px]">contact_support</span><span class="font-mono text-[10px] leading-tight font-bold uppercase">NGOs</span></a><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#a0a0ab] hover:text-[#ffffff] hover:bg-[#18181c] transition-colors flex-1 h-full" data-path="discreet-settings" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-mono text-[10px] leading-tight font-bold uppercase">Config</span></a></div></nav>
+</body></html>

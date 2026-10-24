@@ -24,6 +24,8 @@ import java.util.Set;
 import javax.annotation.processing.Generated;
 
 @Generated("androidx.room.RoomProcessor")
+// This checked-in Room-generated implementation intentionally uses Room's internal APIs.
+@android.annotation.SuppressLint("RestrictedApi")
 @SuppressWarnings({"unchecked", "deprecation"})
 public final class AppDatabase_Impl extends AppDatabase {
   private volatile EvidenceDao _evidenceDao;

@@ -1,0 +1,408 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary": "#c9a227",
+          "primary-container": "#c9a227",
+          "secondary": "#8f2d2d",
+          "tertiary": "#4a6fa5",
+          "surface": "#121214",
+          "surface-container": "#1a1a1d",
+          "surface-container-high": "#212124",
+          "surface-container-highest": "#2a2a2e",
+          "surface-container-low": "#151518",
+          "surface-container-lowest": "#0d0d0f",
+          "outline": "#3a3a40",
+          "outline-variant": "#2a2a2e",
+          "on-surface": "#e8e6e0",
+          "on-surface-variant": "#9a9a9e",
+          "background": "#0d0d0f"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "sm": "0.125rem",
+          "md": "0.25rem",
+          "lg": "0.25rem",
+          "xl": "0.375rem",
+          "2xl": "0.5rem",
+          "full": "0.25rem"
+        },
+        "fontFamily": {
+          "headline": ["Space Grotesk", "sans-serif"],
+          "display": ["Space Grotesk", "sans-serif"],
+          "body": ["Inter", "sans-serif"],
+          "label": ["Space Grotesk", "sans-serif"],
+          "mono": ["Space Mono", "monospace"]
+        }
+      }
+    }
+  };
+</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+      background-color: #0d0d0f;
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4, .font-headline, .font-label {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .neo-shadow {
+      box-shadow: 2px 2px 0px #000000;
+    }
+    .neo-shadow-sm {
+      box-shadow: 1.5px 1.5px 0px #000000;
+    }
+    .neo-shadow-active:active {
+      transform: translate(1px, 1px);
+      box-shadow: 0px 0px 0px #000000;
+    }
+    @keyframes barPulse {
+      0%, 100% { transform: scaleY(0.25); }
+      50% { transform: scaleY(1); }
+    }
+    .wave-active span {
+      animation: barPulse 1s ease-in-out infinite alternate;
+      transform-origin: bottom;
+    }
+    .wave-paused span {
+      animation: none !important;
+      transform: scaleY(0.25) !important;
+      opacity: 0.3 !important;
+    }
+  </style>
+</head><body class="bg-[#0d0d0f] text-[#e8e6e0] flex flex-col antialiased selection:bg-[#c9a227] selection:text-black"><header class="fixed top-0 w-full z-40 pt-safe bg-[#121214] border-b border-[#2a2a2e]"><div class="h-16 px-4 flex items-center justify-between gap-2"><div class="flex items-center gap-2.5"><button aria-label="Quick Disguise Protocol" class="w-10 h-10 flex items-center justify-center text-black bg-[#c9a227] border border-[#3a3a40] neo-shadow-sm neo-shadow-active transition-all" title="Calculator Cloak" type="button"><span class="material-symbols-outlined text-[20px] font-bold">calculate</span></button><div class="flex flex-col"><span class="font-mono text-[9px] font-bold tracking-[0.2em] text-[#4a6fa5] uppercase">VAANI</span><span class="font-headline text-[17px] text-[#e8e6e0] leading-none font-bold uppercase tracking-tight">Vault&nbsp;</span></div></div><div class="flex items-center gap-2"><button aria-label="Blackout Display Immediately" class="px-3 py-1.5 bg-[#0d0d0f] border border-[#3a3a40] neo-shadow-sm neo-shadow-active flex items-center space-x-1.5 text-[#c9a227] transition-all" id="header-blackout-btn" type="button"><span class="material-symbols-outlined text-[16px] text-[#c9a227]">visibility_off</span><span class="font-headline text-[11px] font-bold tracking-wider uppercase">Blackout</span></button><div class="flex items-center gap-1.5"><span class="font-mono text-[11px] font-bold text-[#e8e6e0] px-2 py-1 bg-[#1a1a1d] border border-[#3a3a40] neo-shadow-sm">EN/हिं</span><img alt="Vault Keyholder" class="w-8 h-8 rounded-none object-cover border border-[#3a3a40]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJF9OZ0Si8ABY_2vEYdlq45Xo-YaTAYDdJWg7sREIdshaKn5riFkGFTg_NSNzVBVdfynzqlC0yrs_6iXCJawxjwyEf6o8DFWHApSA9ZkyBR7wnsiHv7B7-NR9o-G5Y-cY3u554Dl7jCusj0BvGt4FmDIHOCx1tPY1luhL6wAKaK_K5vdv3R_uDXi309QDOll-soNaFic8xqqZzBxMvinzr9z2cx5GB2Wrg-KERRKN"></div></div></div></header><main class="flex flex-col relative w-full pt-20 pb-24 bg-[#0d0d0f] min-h-screen"><div class="flex flex-col w-full px-4 pb-12 space-y-4 select-none">
+<!-- Camouflage Gesture Banner -->
+
+<!-- Active Recording Sanctuary Card with Functional Pause/Resume Waveform -->
+<div class="w-full bg-[#1a1a1d] border border-[#2a2a2e] neo-shadow p-4 relative flex flex-col space-y-3.5">
+<div class="flex items-center justify-between border-b border-[#2a2a2e] pb-2.5">
+<div class="flex items-center space-x-2">
+<span class="w-2.5 h-2.5 rounded-none bg-[#8f2d2d] animate-ping" id="rec-dot"></span>
+<span class="font-mono text-[11px] text-[#e8e6e0] font-bold tracking-wider uppercase" id="rec-status-badge">RECORDING ACTIVE</span>
+</div>
+<div class="flex items-center space-x-2">
+<button class="px-2.5 py-1 bg-[#212124] border border-[#3a3a40] neo-shadow-sm neo-shadow-active text-[#e8e6e0] text-[11px] font-mono font-bold flex items-center space-x-1 uppercase transition-all" id="toggle-record-btn" type="button">
+<span class="material-symbols-outlined text-[15px]" id="toggle-record-icon">pause</span>
+<span id="toggle-record-label" class="">Pause Mic</span>
+</button>
+<div class="flex items-center space-x-1 text-[#9a9a9e] font-mono text-[11px] pl-1 font-bold">
+
+<span class="hidden sm:inline">SECURE</span>
+</div>
+</div>
+</div>
+<!-- Audio Wave Canvas Simulator -->
+<div class="flex flex-col items-center justify-center py-2 space-y-2 bg-[#121214] border border-[#2a2a2e] p-3">
+<div class="flex items-end justify-center space-x-1.5 h-12 w-full px-2 wave-active" id="audio-wave-container"><span class="w-1.5 bg-[#e8e6e0] h-4" style="animation-delay: 0.1s;"></span><span class="w-1.5 bg-[#e8e6e0] h-8" style="animation-delay: 0.35s;"></span><span class="w-1.5 bg-[#e8e6e0] h-5" style="animation-delay: 0.2s;"></span><span class="w-1.5 bg-[#e8e6e0] h-11" style="animation-delay: 0.5s;"></span><span class="w-1.5 bg-[#e8e6e0] h-7" style="animation-delay: 0.15s;"></span><span class="w-1.5 bg-[#e8e6e0] h-12" style="animation-delay: 0.6s;"></span><span class="w-1.5 bg-[#e8e6e0] h-6" style="animation-delay: 0.25s;"></span><span class="w-1.5 bg-[#e8e6e0] h-12" style="animation-delay: 0.45s;"></span><span class="w-1.5 bg-[#e8e6e0] h-8" style="animation-delay: 0.3s;"></span><span class="w-1.5 bg-[#e8e6e0] h-10" style="animation-delay: 0.55s;"></span><span class="w-1.5 bg-[#e8e6e0] h-4" style="animation-delay: 0.2s;"></span><span class="w-1.5 bg-[#e8e6e0] h-9" style="animation-delay: 0.4s;"></span><span class="w-1.5 bg-[#e8e6e0] h-5" style="animation-delay: 0.15s;"></span></div>
+<div class="font-mono text-[32px] text-[#e8e6e0] tracking-tighter font-bold leading-none" id="rec-timer">17:06</div>
+
+</div>
+<!-- Covert Recording Modes Selector -->
+<div class="grid grid-cols-3 gap-2 pt-0.5">
+<button class="flex flex-col items-center justify-center py-2 px-1 bg-[#c9a227] text-black font-bold border border-[#3a3a40] neo-shadow-sm neo-shadow-active transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+<span class="font-headline text-[11px] mt-0.5 font-bold uppercase tracking-wider leading-none">Audio Loop</span>
+</button>
+<button class="flex flex-col items-center justify-center py-2 px-1 bg-[#212124] text-[#e8e6e0] font-medium border border-[#3a3a40] neo-shadow-sm neo-shadow-active transition-all hover:bg-[#2a2a2e]" type="button">
+<span class="material-symbols-outlined text-[18px] text-[#9a9a9e]">photo_camera</span>
+<span class="font-headline text-[11px] mt-0.5 font-bold uppercase tracking-wider leading-none">Start camera</span>
+</button>
+<button class="flex flex-col items-center justify-center py-2 px-1 bg-[#212124] text-[#e8e6e0] font-medium border border-[#3a3a40] neo-shadow-sm neo-shadow-active transition-all hover:bg-[#2a2a2e]" type="button">
+<span class="material-symbols-outlined text-[18px] text-[#9a9a9e]">speed</span>
+<span class="font-headline text-[11px] mt-0.5 font-bold uppercase tracking-wider leading-none">Telemetry</span>
+</button>
+</div>
+</div>
+<!-- Primary Distress Trigger: Tap & Hold for Discreet Dispatch -->
+<div class="flex flex-col space-y-2">
+
+</div>
+<!-- Quick Actions 4-Pack Row -->
+<div class="flex flex-col space-y-2">
+
+
+</div>
+<!-- SMS Live Location Broadcast to Trusted Contacts -->
+<div class="w-full bg-[#1a1a1d] border border-[#2a2a2e] neo-shadow p-3.5 flex flex-col space-y-3">
+<div class="flex items-center justify-between border-b border-[#2a2a2e] pb-2">
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 bg-[#0d0d0f] text-[#c9a227] flex items-center justify-center border border-[#3a3a40]">
+<span class="material-symbols-outlined text-[18px]">share_location</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline text-[13px] text-[#e8e6e0] font-bold uppercase tracking-tight">SMS Live Location Broadcast</span>
+<span class="font-mono text-[10px] text-[#9a9a9e] uppercase font-medium">Trusted Contacts • Lat: 28.6139° N, 77.2090° E</span>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-black bg-[#c9a227] px-2 py-0.5 text-[10px] font-mono font-bold border border-[#3a3a40] uppercase">
+<span class="w-1.5 h-1.5 bg-black animate-pulse"></span>
+<span class="">Broadcasting</span>
+</div>
+</div>
+<!-- Real-time GPS Tracking Link & SMS Status -->
+<div class="bg-[#121214] p-2.5 border border-[#2a2a2e] flex items-center justify-between text-[12px]">
+<div class="flex items-center space-x-2 min-w-0">
+<span class="material-symbols-outlined text-[16px] text-[#9a9a9e]">link</span>
+<span class="font-mono text-[11px] text-[#e8e6e0] truncate font-bold">vaani.safe/v/e8f9024c...</span>
+</div>
+<div class="flex items-center space-x-1.5 text-[#e8e6e0] shrink-0 font-mono text-[11px] font-bold bg-[#1a1a1d] px-2 py-0.5 border border-[#3a3a40]">
+<span class="material-symbols-outlined text-[14px] text-[#4a6fa5]">done_all</span>
+<span class="">Delivered (3/3)</span>
+</div>
+</div>
+</div>
+<!-- Secondary Tactile Vault Controls -->
+<div class="grid grid-cols-2 gap-2.5">
+
+<button class="min-h-[52px] w-full bg-[#0d0d0f] hover:bg-[#151518] neo-shadow-sm neo-shadow-active transition-all p-3 flex items-center justify-between border border-[#3a3a40] text-left text-white" id="seal-vault-btn" type="button">
+<div class="flex items-center space-x-2 min-w-0">
+<div class="w-8 h-8 bg-[#c9a227] text-black flex items-center justify-center shrink-0 border border-[#3a3a40]">
+<span class="material-symbols-outlined text-[18px] font-bold">lock</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-[13px] text-[#e8e6e0] leading-tight font-bold uppercase tracking-tight">Seal Vault</span>
+<span class="font-mono text-[10px] text-[#9a9a9e] leading-tight uppercase truncate">Biometric lock</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-[18px] text-[#c9a227]">chevron_right</span>
+</button>
+</div>
+<!-- Recent Encrypted Evidence Records -->
+<div class="flex flex-col space-y-2 pt-1">
+<div class="flex items-center justify-between px-1">
+<span class="font-headline text-[12px] text-[#e8e6e0] font-bold uppercase tracking-widest border-b border-[#3a3a40] inline-block">Encrypted Evidence Log</span>
+
+</div>
+<!-- Evidence Item 1 -->
+<div class="w-full bg-[#1a1a1d] p-3.5 border border-[#2a2a2e] neo-shadow-sm flex items-center justify-between space-x-3">
+<div class="flex items-center space-x-3 min-w-0">
+<div class="w-10 h-10 bg-[#121214] border border-[#3a3a40] flex items-center justify-center text-[#9a9a9e] shrink-0">
+<span class="material-symbols-outlined text-[20px] font-bold">audio_file</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-[13px] text-[#e8e6e0] font-bold uppercase tracking-tight truncate">Covert Acoustic Log #104</span>
+<span class="font-mono text-[10px] text-[#9a9a9e] truncate uppercase">Today, 21:40 • Audio + GPS coordinates</span>
+<span class="font-mono text-[10px] text-[#4a6fa5] font-bold mt-0.5 uppercase tracking-wide">4.2 MB • AES-256 Vaulted</span>
+</div>
+</div>
+<div class="shrink-0 flex items-center space-x-1 text-[#9a9a9e]">
+<span class="material-symbols-outlined text-[18px] font-bold">lock</span>
+</div>
+</div>
+<!-- Evidence Item 2 -->
+<div class="w-full bg-[#1a1a1d] p-3.5 border border-[#2a2a2e] neo-shadow-sm flex items-center justify-between space-x-3">
+<div class="flex items-center space-x-3 min-w-0">
+<div class="w-10 h-10 bg-[#121214] border border-[#3a3a40] flex items-center justify-center text-[#9a9a9e] shrink-0">
+<span class="material-symbols-outlined text-[20px] font-bold">burst_mode</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-[13px] text-[#e8e6e0] font-bold uppercase tracking-tight truncate">Departure Burst Sequence</span>
+<span class="font-mono text-[10px] text-[#9a9a9e] truncate uppercase">Today, 19:15 • 8 Photos + Gyro</span>
+<span class="font-mono text-[10px] text-[#4a6fa5] font-bold mt-0.5 uppercase tracking-wide">18.6 MB • Zero-Metadata Stripped</span>
+</div>
+</div>
+<div class="shrink-0 flex items-center space-x-1 text-[#9a9a9e]">
+<span class="material-symbols-outlined text-[18px] font-bold">lock</span>
+</div>
+</div>
+</div>
+<!-- Subtle Toast Notification (Hidden by default) -->
+<div class="transition-opacity duration-300 pointer-events-none fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#121214] border border-[#3a3a40] text-[#c9a227] px-4 py-2 shadow-2xl flex items-center space-x-2 z-40 max-w-[90vw] opacity-0" id="covert-toast">
+<span class="material-symbols-outlined text-[16px] text-[#c9a227]">check_circle</span>
+<span class="font-mono text-[11px] uppercase font-bold tracking-wider truncate" id="toast-text">Timestamp marked with GPS hash</span>
+</div>
+<!-- Blackout Screen Overlay Simulation (Hidden until activated) -->
+<div class="fixed inset-0 bg-black z-50 flex flex-col items-center justify-between p-8 text-neutral-800 select-none cursor-pointer hidden" id="blackout-curtain">
+<div class="font-mono text-[10px] tracking-widest uppercase opacity-30 text-neutral-500">Cloaked Background Recording Active</div>
+<div class="font-mono text-[12px] opacity-40 text-center text-neutral-400">Double tap screen to exit blackout mode</div>
+<div class="w-2 h-2 rounded-none bg-neutral-800 animate-ping"></div>
+</div>
+</div>
+<script>
+  (function() {
+    const timerElem = document.getElementById('rec-timer');
+    const waveContainer = document.getElementById('audio-wave-container');
+    const recDot = document.getElementById('rec-dot');
+    const recStatusBadge = document.getElementById('rec-status-badge');
+    const toggleRecordBtn = document.getElementById('toggle-record-btn');
+    const toggleRecordIcon = document.getElementById('toggle-record-icon');
+    const toggleRecordLabel = document.getElementById('toggle-record-label');
+
+    let isRecording = true;
+    let totalSeconds = 872; // 00:14:32
+    let timerInterval;
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        if (!isRecording) return;
+        totalSeconds++;
+        const hrs = Math.floor(totalSeconds / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+        const secs = totalSeconds % 60;
+        const formatted =
+          (hrs > 0 ? String(hrs).padStart(2, '0') + ':' : '') +
+          String(mins).padStart(2, '0') + ':' +
+          String(secs).padStart(2, '0');
+        if (timerElem) timerElem.textContent = formatted;
+      }, 1000);
+    }
+    startTimer();
+
+    if (toggleRecordBtn) {
+      toggleRecordBtn.addEventListener('click', () => {
+        isRecording = !isRecording;
+        if (isRecording) {
+          waveContainer.classList.remove('wave-paused');
+          waveContainer.classList.add('wave-active');
+          recDot.classList.remove('hidden');
+          recStatusBadge.textContent = 'RECORDING ACTIVE';
+          recStatusBadge.classList.replace('text-neutral-500', 'text-[#e8e6e0]');
+          toggleRecordIcon.textContent = 'pause';
+          toggleRecordLabel.textContent = 'Pause Mic';
+          showNotice('Covert microphone recording resumed');
+        } else {
+          waveContainer.classList.remove('wave-active');
+          waveContainer.classList.add('wave-paused');
+          recDot.classList.add('hidden');
+          recStatusBadge.textContent = 'RECORDING PAUSED';
+          recStatusBadge.classList.replace('text-[#e8e6e0]', 'text-neutral-500');
+          toggleRecordIcon.textContent = 'fiber_manual_record';
+          toggleRecordLabel.textContent = 'Resume Mic';
+          showNotice('Acoustic recording paused - waveform frozen');
+        }
+      });
+    }
+
+    const toast = document.getElementById('covert-toast');
+    const toastText = document.getElementById('toast-text');
+    let toastTimeout;
+
+    function showNotice(msg) {
+      if (!toast) return;
+      toastText.textContent = msg;
+      toast.classList.remove('opacity-0');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0');
+      }, 2500);
+    }
+
+    // Blackout triggers
+    const blackoutCurtain = document.getElementById('blackout-curtain');
+    function activateBlackout() {
+      if (blackoutCurtain) {
+        blackoutCurtain.classList.remove('hidden');
+        if ('vibrate' in navigator) navigator.vibrate(30);
+      }
+    }
+
+    const headerBlackoutBtn = document.getElementById('header-blackout-btn');
+    if (headerBlackoutBtn) headerBlackoutBtn.addEventListener('click', activateBlackout);
+
+    const actionBlackoutBtn = document.getElementById('action-blackout-btn');
+    if (actionBlackoutBtn) actionBlackoutBtn.addEventListener('click', activateBlackout);
+
+    if (blackoutCurtain) {
+      let lastTap = 0;
+      blackoutCurtain.addEventListener('touchend', (e) => {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        if (tapLength < 450 && tapLength > 0) {
+          blackoutCurtain.classList.add('hidden');
+          e.preventDefault();
+        }
+        lastTap = currentTime;
+      });
+
+      blackoutCurtain.addEventListener('dblclick', () => {
+        blackoutCurtain.classList.add('hidden');
+      });
+    }
+
+    // Discreet SOS Hold Button
+    const sosBtn = document.getElementById('sos-dispatch-btn');
+    let sosHoldTimer;
+    if (sosBtn) {
+      const handlePressStart = (e) => {
+        sosHoldTimer = setTimeout(() => {
+          if ('vibrate' in navigator) navigator.vibrate([100, 50, 100]);
+          showNotice('🚨 Discreet Emergency Dispatched to Mesh & Police');
+        }, 2000);
+      };
+      const handlePressEnd = () => {
+        clearTimeout(sosHoldTimer);
+      };
+
+      sosBtn.addEventListener('mousedown', handlePressStart);
+      sosBtn.addEventListener('mouseup', handlePressEnd);
+      sosBtn.addEventListener('mouseleave', handlePressEnd);
+      sosBtn.addEventListener('touchstart', handlePressStart, {passive: true});
+      sosBtn.addEventListener('touchend', handlePressEnd);
+      sosBtn.addEventListener('touchcancel', handlePressEnd);
+    }
+
+    // Police & NGO broadcast
+    const policeNgoBtn = document.getElementById('police-ngo-btn');
+    if (policeNgoBtn) {
+      policeNgoBtn.addEventListener('click', () => {
+        if ('vibrate' in navigator) navigator.vibrate(50);
+        showNotice('Broadcasting to nearest verified NGOs & responders');
+      });
+    }
+
+    const actionNgoAlertBtn = document.getElementById('action-ngo-alert-btn');
+    if (actionNgoAlertBtn) {
+      actionNgoAlertBtn.addEventListener('click', () => {
+        if ('vibrate' in navigator) navigator.vibrate(50);
+        showNotice('Emergency Geo-packet sent to Police & Verified NGOs');
+      });
+    }
+
+    // Decoy Call
+    const actionDecoyBtn = document.getElementById('action-decoy-btn');
+    if (actionDecoyBtn) {
+      actionDecoyBtn.addEventListener('click', () => {
+        if ('vibrate' in navigator) navigator.vibrate([40, 200, 60, 200]);
+        showNotice('Incoming decoy call queued in 3 seconds');
+      });
+    }
+
+    // Evidence Burst
+    const actionBurstBtn = document.getElementById('action-burst-btn');
+    if (actionBurstBtn) {
+      actionBurstBtn.addEventListener('click', () => {
+        if ('vibrate' in navigator) navigator.vibrate(30);
+        showNotice('Silent burst captured: 5 frames + sensor metadata');
+      });
+    }
+
+    // Flag & Seal
+    const flagBtn = document.getElementById('flag-btn');
+    if (flagBtn) {
+      flagBtn.addEventListener('click', () => {
+        if ('vibrate' in navigator) navigator.vibrate(40);
+        showNotice('Timestamp marked with GPS hash');
+      });
+    }
+
+    const sealBtn = document.getElementById('seal-vault-btn');
+    if (sealBtn) {
+      sealBtn.addEventListener('click', () => {
+        if ('vibrate' in navigator) navigator.vibrate([30, 50, 30]);
+        showNotice('Biometric authentication requested to seal vault');
+      });
+    }
+  })();
+</script></main>
+<!-- Bauhaus Neo-Brutalist Navigation -->
+<nav class="fixed bottom-0 w-full z-40 pb-safe bg-[#131315] border-t border-[#2a2a2e]" data-active-classes="text-[#c9a227] font-bold"><div class="flex items-center justify-around h-16 px-1"><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#9a9a9e] hover:text-[#e8e6e0] transition-colors flex-1" data-path="spaces-home" href="#"><span class="material-symbols-outlined text-[22px]">space_dashboard</span><span class="font-headline text-[10px] font-bold uppercase tracking-wider">Spaces</span></a><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#c9a227] font-bold flex-1 relative bg-[#1a1a1d] border-t-2 border-[#c9a227] sm:border-x border-[#2a2a2e] h-full" data-path="evidence-vault" href="#"><div class="absolute top-0 inset-x-0 h-0.5 bg-[#c9a227]"></div><span class="material-symbols-outlined text-[22px] text-[#c9a227]" style="font-variation-settings: 'FILL' 1;">folder_special</span><span class="font-headline text-[10px] font-bold uppercase tracking-wider text-[#c9a227]">Vault</span></a><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#9a9a9e] hover:text-[#e8e6e0] transition-colors flex-1" data-path="community-routes" href="#"><span class="material-symbols-outlined text-[22px]">near_me</span><span class="font-headline text-[10px] font-bold uppercase tracking-wider">Community</span></a><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#9a9a9e] hover:text-[#e8e6e0] transition-colors flex-1" data-path="support-network" href="#"><span class="material-symbols-outlined text-[22px]">contact_support</span><span class="font-headline text-[10px] font-bold uppercase tracking-wider">Support</span></a><a class="min-w-[48px] min-h-[48px] flex flex-col items-center justify-center gap-0.5 text-[#9a9a9e] hover:text-[#e8e6e0] transition-colors flex-1" data-path="discreet-settings" href="#"><span class="material-symbols-outlined text-[22px]">tune</span><span class="font-headline text-[10px] font-bold uppercase tracking-wider">Settings</span></a></div></nav>
+
+
+
+
+
+
+</body></html>

@@ -6,50 +6,59 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
     <link rel="stylesheet" href="leaflet/leaflet.css">
     <style>
-        html, body { width: 100%; height: 100%; margin: 0; background: #0b0f0e; }
+        html, body { width: 100%; height: 100%; margin: 0; background: #0d0d0f; }
         body { font-family: system-ui, sans-serif; position: relative; }
         #map { position: absolute; inset: 0; width: 100%; height: 100%; }
         .legend {
-            background: rgba(21, 29, 26, .96);
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(28, 28, 24, .18);
-            color: #eef5f1;
+            background: #1a1a1d;
+            border: 1px solid #2a2a2e;
+            border-radius: 4px;
+            box-shadow: 2px 2px 0 #000;
+            color: #e8e6e0;
             font-size: 12px;
             line-height: 20px;
             padding: 8px 10px;
         }
-        .legend i { border-radius: 50%; display: inline-block; height: 10px; margin-right: 7px; width: 10px; }
-        .leaflet-tile-pane { filter: brightness(.68) saturate(.72) contrast(1.18); }
-        .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #151d1a; color: #eef5f1; }
-        .leaflet-control-attribution { background: rgba(11,15,14,.82) !important; color: #b8c8c0; font-size: 9px; }
-        .leaflet-control-attribution a { color: #82d9b1; }
+        .legend i { display: inline-block; height: 10px; margin-right: 7px; width: 10px; }
+        .leaflet-tile-pane { filter: brightness(.65) contrast(1.35) invert(.9) hue-rotate(180deg) grayscale(20%); }
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #1a1a1d; color: #e8e6e0; border-radius: 4px; box-shadow: 2px 2px 0 #000; }
+        .leaflet-control-attribution { background: #121214 !important; color: #9a9a9e; font-size: 9px; }
+        .leaflet-control-attribution a { color: #ecc246; }
+        .leaflet-bar { border: 1px solid #3a3a40 !important; border-radius: 4px; box-shadow: 2px 2px 0 #000; overflow: hidden; }
+        .leaflet-bar a, .leaflet-bar a:hover { background: #212124; color: #ecc246; border-color: #3a3a40; }
+        .square-marker { box-sizing: border-box; border: 2px solid #0d0d0f; outline: 1px solid #3a3a40; border-radius: 2px; box-shadow: 2px 2px 0 #000; }
+        .marker-user { background: #ecc246; }
+        .marker-patrol { background: #4a6fa5; }
+        .marker-haven { background: #3d6b7d; }
+        .marker-hazard { background: #8f2d2d; }
         .user-tooltip {
-            background: #204637;
-            border: 0;
-            border-radius: 7px;
-            box-shadow: 0 2px 7px rgba(28, 28, 24, .25);
-            color: #fff;
+            background: #282210;
+            border: 1px solid #c9a227;
+            border-radius: 4px;
+            box-shadow: 2px 2px 0 #000;
+            color: #ecc246;
             font-weight: 700;
             padding: 5px 8px;
         }
-        .user-tooltip::before { border-top-color: #204637 !important; }
+        .user-tooltip::before { border-top-color: #c9a227 !important; }
         .recenter-control button {
             align-items: center;
-            background: #151d1a;
-            border: 0;
-            color: #204637;
+            background: #212124;
+            border: 1px solid #3a3a40;
+            color: #ecc246;
             cursor: pointer;
             display: flex;
             font-size: 22px;
-            height: 34px;
+            height: 44px;
             justify-content: center;
-            width: 34px;
+            width: 44px;
         }
         #tile-status {
             align-items: center;
-            background: rgba(49, 49, 45, .94);
-            border-radius: 10px;
-            color: #fff;
+            background: #212124;
+            border: 1px solid #3a3a40;
+            border-radius: 4px;
+            color: #e8e6e0;
             display: flex;
             font-size: 12px;
             gap: 10px;
@@ -63,10 +72,10 @@
         }
         #tile-status.hidden { display: none; }
         #retry-tiles {
-            background: #d9f3e5;
+            background: #c9a227;
             border: 0;
-            border-radius: 7px;
-            color: #204637;
+            border-radius: 4px;
+            color: #131315;
             cursor: pointer;
             font-weight: 700;
             padding: 6px 9px;
@@ -132,6 +141,11 @@
     const riskLayer = L.layerGroup().addTo(map);
     const corridorLayer = L.layerGroup().addTo(map);
     const patrolLayer = L.layerGroup().addTo(map);
+    const havenLayer = L.layerGroup().addTo(map);
+    function squareMarker(point, kind) {
+        return L.marker(point, { icon: L.divIcon({ className: `square-marker marker-${kind}`,
+            iconSize: [16, 16], iconAnchor: [8, 8] }) });
+    }
     let userMarker = null;
     let userAccuracyCircle = null;
     let userLatLng = null;
@@ -161,6 +175,7 @@
             distanceKm(DEFAULT_CENTER, requested) > 50 ? requested : DEFAULT_CENTER;
         corridorLayer.clearLayers();
         patrolLayer.clearLayers();
+        havenLayer.clearLayers();
 
         const corridor = [
             offsetPoint(center, -900, -520),
@@ -169,7 +184,7 @@
             offsetPoint(center, 430, 300),
             offsetPoint(center, 860, 560)
         ];
-        L.polyline(corridor, { color: '#204637', weight: 7, opacity: .9 })
+        L.polyline(corridor, { color: '#c9a227', weight: 4, opacity: .9 })
             .bindPopup('<strong>Well-lit corridor</strong><br>Adaptive sample community route')
             .addTo(corridorLayer);
 
@@ -178,10 +193,10 @@
             [offsetPoint(center, 380, 360), 'Patrolled point · Transit stop'],
             [offsetPoint(center, -580, 260), 'Verified haven · 24-hour pharmacy']
         ].forEach(item => {
-            L.circleMarker(item[0], {
-                radius: 8, color: '#52606a', fillColor: '#d3e2ed', fillOpacity: 1, weight: 3
-            }).bindPopup(`<strong>${item[1]}</strong><br><small>Adaptive sample support location</small>`)
-                .addTo(patrolLayer);
+            const isHaven = item[1].startsWith('Verified haven');
+            squareMarker(item[0], isHaven ? 'haven' : 'patrol')
+                .bindPopup(`<strong>${item[1]}</strong><br><small>Illustrative location — not a verified service</small>`)
+                .addTo(isHaven ? havenLayer : patrolLayer);
         });
     }
 
@@ -190,9 +205,9 @@
     const legend = L.control({ position: 'bottomleft' });
     legend.onAdd = function () {
         const box = L.DomUtil.create('div', 'legend');
-        box.innerHTML = '<div><i style="background:#b3261e"></i>Higher reported risk</div>' +
-            '<div><i style="background:#d97706"></i>Moderate reported risk</div>' +
-            '<div><i style="background:#204637"></i>Well-lit corridor</div>';
+        box.innerHTML = '<div>ILLUSTRATIVE SIGNALS</div><div><i style="background:#8f2d2d"></i>Risk corridor</div>' +
+            '<div><i style="background:#c9a227"></i>Well-lit route</div>' +
+            '<div><i style="background:#4a6fa5"></i>Patrol / support</div>';
         return box;
     };
     legend.addTo(map);
@@ -259,7 +274,7 @@
         zones.filter(zone => Number.isFinite(zone.lat) && zone.lat >= -90 && zone.lat <= 90 &&
             Number.isFinite(zone.lng) && zone.lng >= -180 && zone.lng <= 180 &&
             Number.isFinite(zone.radius) && zone.radius > 0).forEach(zone => {
-            const color = zone.level === 'high' ? '#b3261e' : '#d97706';
+            const color = zone.level === 'high' ? '#8f2d2d' : '#c9a227';
             const popup = document.createElement('div');
             const title = document.createElement('strong');
             const detail = document.createElement('div');
@@ -269,18 +284,24 @@
             source.textContent = 'Adaptive sample incident history';
             popup.append(title, detail, source);
             L.circle([zone.lat, zone.lng], {
-                color, fillColor: color, fillOpacity: .22, opacity: .85, radius: zone.radius, weight: 2
+                color, fillColor: color, fillOpacity: .12, opacity: .85, radius: zone.radius, weight: 2, dashArray: '6 6'
             }).bindPopup(popup).addTo(riskLayer);
+            squareMarker([zone.lat, zone.lng], 'hazard').bindPopup(popup.cloneNode(true)).addTo(riskLayer);
+            L.polyline([offsetPoint([zone.lat, zone.lng], -zone.radius / 2, -zone.radius / 3),
+                [zone.lat, zone.lng], offsetPoint([zone.lat, zone.lng], zone.radius / 2, zone.radius / 3)],
+                { color: '#8f2d2d', weight: 4, dashArray: '8 6' }).addTo(riskLayer);
         });
     };
 
     window.setSignalFilter = function (filter) {
-        const showRisk = filter === 'All Signals';
+        const showRisk = filter === 'All Signals' || filter === 'Risk Corridor';
         const showCorridors = filter === 'All Signals' || filter === 'Well-Lit Streets';
         const showPatrol = filter === 'All Signals' || filter === 'Patrol Points';
+        const showHaven = filter === 'All Signals' || filter === 'Safe Haven';
         if (showRisk) map.addLayer(riskLayer); else map.removeLayer(riskLayer);
         if (showCorridors) map.addLayer(corridorLayer); else map.removeLayer(corridorLayer);
         if (showPatrol) map.addLayer(patrolLayer); else map.removeLayer(patrolLayer);
+        if (showHaven) map.addLayer(havenLayer); else map.removeLayer(havenLayer);
     };
 
     window.setUserLocation = function (latitude, longitude, accuracyMeters, timestampMillis) {
@@ -293,15 +314,13 @@
 
         userAccuracyCircle = L.circle(userLatLng, {
             radius: accuracy,
-            color: '#204637',
-            fillColor: '#74b99c',
+            color: '#c9a227',
+            fillColor: '#ecc246',
             fillOpacity: .14,
             opacity: .65,
             weight: 2
         }).addTo(map);
-        userMarker = L.circleMarker(userLatLng, {
-            radius: 9, color: '#ffffff', fillColor: '#204637', fillOpacity: 1, weight: 4
-        }).bindTooltip('You are here', {
+        userMarker = squareMarker(userLatLng, 'user').bindTooltip('You are here', {
             permanent: true, direction: 'top', offset: [0, -8], className: 'user-tooltip'
         }).bindPopup(`<strong>Your current location</strong><br><small>Accuracy: about ${Math.round(accuracy)} m<br>Updated ${updated.toLocaleTimeString()}</small>`)
             .addTo(map);
@@ -324,7 +343,7 @@
         window.setSignalFilter(filter);
         if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
             window.setUserLocation(latitude, longitude, accuracyMeters, timestampMillis);
-        }
+        } else window.clearUserLocation();
         window.invalidateMapSize();
     };
 

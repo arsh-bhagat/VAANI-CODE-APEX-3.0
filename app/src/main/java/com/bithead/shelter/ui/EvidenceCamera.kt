@@ -26,6 +26,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.bithead.shelter.ui.theme.CanvasDark
+import com.bithead.shelter.ui.theme.TextBone
 import kotlinx.coroutines.delay
 import java.io.File
 
@@ -92,13 +94,13 @@ fun EvidenceCamera(
     }
     BackHandler { if (recording != null) recording?.stop() else onClose() }
 
-    Column(Modifier.fillMaxSize().background(Color(0xFF121214))) {
+    Column(Modifier.fillMaxSize().background(CanvasDark).statusBarsPadding().navigationBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("PRIVATE EVIDENCE CAMERA", color = Color.White, style = MaterialTheme.typography.titleMedium)
+            Text("PRIVATE EVIDENCE CAMERA", color = TextBone, style = MaterialTheme.typography.titleMedium)
             TextButton(onClick = { if (recording != null) recording?.stop() else onClose() }) { Text("Close") }
         }
         if (!permission) {
-            Text("Camera access is required for private capture.", Modifier.padding(20.dp), color = Color.White)
+            Text("Camera access is required for private capture.", Modifier.padding(20.dp), color = TextBone)
             Button(onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }, Modifier.padding(20.dp)) { Text("Allow camera") }
         } else {
             AndroidView({ previewView }, Modifier.fillMaxWidth().weight(1f))

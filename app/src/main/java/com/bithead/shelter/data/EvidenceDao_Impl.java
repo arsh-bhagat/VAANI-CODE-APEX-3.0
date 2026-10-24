@@ -32,6 +32,8 @@ import kotlin.coroutines.Continuation;
 import kotlinx.coroutines.flow.Flow;
 
 @Generated("androidx.room.RoomProcessor")
+// This checked-in Room-generated implementation intentionally uses Room's internal APIs.
+@android.annotation.SuppressLint("RestrictedApi")
 @SuppressWarnings({"unchecked", "deprecation"})
 public final class EvidenceDao_Impl implements EvidenceDao {
   private final RoomDatabase __db;
