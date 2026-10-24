@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import com.bithead.shelter.ui.walkthrough.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -298,9 +300,26 @@ internal fun CommunityScreen(
     }
     LaunchedEffect(tour?.active) { if (tour?.active == true) meshOpen = false }
     Column(Modifier.fillMaxSize()) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            TextButton(onClick = { meshOpen = false }) { Text(stringResource(R.string.mesh_map_tab)) }
-            TextButton(onClick = { meshOpen = true }) { Text(stringResource(R.string.mesh_nearby_tab)) }
+        Column(Modifier.fillMaxWidth().background(SurfaceLowest).padding(16.dp)) {
+            if (meshOpen) {
+                OutlinedButton(onClick = { meshOpen = false }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
+                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, null)
+                    Spacer(Modifier.width(10.dp))
+                    Text(stringResource(R.string.mesh_back_to_map))
+                }
+            } else {
+                BrutalButton(onClick = { meshOpen = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 76.dp)) {
+                    Icon(Icons.Outlined.BluetoothSearching, null, Modifier.size(28.dp))
+                    Spacer(Modifier.width(14.dp))
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(stringResource(R.string.mesh_entry_title), style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.mesh_entry_subtitle), style = MaterialTheme.typography.bodySmall)
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Icon(Icons.Outlined.ChevronRight, null, Modifier.size(24.dp))
+                }
+            }
         }
         if (meshOpen) {
             val point = if (latitude != null && longitude != null && locationTimestamp != null && accuracyMeters != null)

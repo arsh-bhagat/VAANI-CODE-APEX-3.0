@@ -36,4 +36,7 @@
     <string name="mesh_email">Email contact (optional)</string>
     <string name="mesh_share_email">Share my email contact</string>
     <string name="mesh_email_action">Open email app</string>
+    <string name="mesh_entry_title">Real-time mesh</string>
+    <string name="mesh_entry_subtitle">Find nearby VAANI users over Bluetooth</string>
+    <string name="mesh_back_to_map">Back to community map</string>
 </resources>

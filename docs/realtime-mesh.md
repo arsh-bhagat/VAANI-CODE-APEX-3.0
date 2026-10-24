@@ -4,7 +4,7 @@ This feature lives on feat/realtime-bluetooth-mesh. It provides direct Bluetooth
 
 ## Use
 
-Open Community → Nearby users / mesh on both phones. Choose the public name, optionally enter phone/email contact details, select contact/location sharing if wanted, and press Start nearby mesh. Accept the relevant Android permissions and Bluetooth-enable prompt.
+Open Community and tap the large gold **Real-time mesh** button pinned above the map on both phones. Use **Back to community map** to return. Choose the public name, optionally enter phone/email contact details, select contact/location sharing if wanted, and press Start nearby mesh. Accept the relevant Android permissions and Bluetooth-enable prompt.
 
 Both devices must participate and support simultaneous BLE scanning, connectable advertising and GATT serving. Unstarted, non-consenting or out-of-range app installations cannot be discovered. Sessions stop when leaving the mesh pane or when the app is no longer visible; rotation/recreation also ends the old transport. This is not a background/locked-screen mesh service.
 
