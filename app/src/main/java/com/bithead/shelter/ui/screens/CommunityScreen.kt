@@ -28,10 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.bithead.shelter.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.bithead.shelter.ui.components.*
+import com.bithead.shelter.mesh.MeshLocation
 import com.bithead.shelter.ui.theme.*
 import kotlinx.coroutines.delay
 import org.json.JSONArray
@@ -280,6 +283,7 @@ internal fun CommunityScreen(
     refreshLocation: () -> Unit,
     info: (String) -> Unit
 ) {
+    var meshOpen by rememberSaveable { mutableStateOf(false) }
     var filter by rememberSaveable { mutableStateOf("All Signals") }
     var factor by rememberSaveable { mutableStateOf("Dark stretch") }
     var reports by rememberSaveable { mutableIntStateOf(0) }
@@ -292,14 +296,27 @@ internal fun CommunityScreen(
     LaunchedEffect(nearbyZone?.title, tour?.active) {
         if (tour?.active != true) nearbyZone?.let { info("Caution: you are inside the sample ${it.title.lowercase()} zone. Check local conditions and choose a well-lit route.") }
     }
-    LazyColumn(state = LocalWalkthrough.current?.lists?.get(2) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    LaunchedEffect(tour?.active) { if (tour?.active == true) meshOpen = false }
+    Column(Modifier.fillMaxSize()) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+            TextButton(onClick = { meshOpen = false }) { Text(stringResource(R.string.mesh_map_tab)) }
+            TextButton(onClick = { meshOpen = true }) { Text(stringResource(R.string.mesh_nearby_tab)) }
+        }
+        if (meshOpen) {
+            val point = if (latitude != null && longitude != null && locationTimestamp != null && accuracyMeters != null)
+                MeshLocation(latitude, longitude, locationTimestamp, accuracyMeters) else null
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp)) {
+                RealtimeMeshPanel(point, refreshLocation)
+            }
+        } else {
+    LazyColumn(modifier = Modifier.weight(1f), state = LocalWalkthrough.current?.lists?.get(2) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { BrutalPanel(header = "01 / Community safe routes") {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(10.dp).background(SlateMesh))
                 Spacer(Modifier.width(10.dp))
                 Heading("Route intelligence")
             }
-            StatusPill("Sample overlays / no live mesh", tone = StatusTone.Mesh)
+            StatusPill("Sample map overlays / nearby mesh available", tone = StatusTone.Mesh)
             Caption("Current GPS with illustrative community signals. Sample routes do not establish that a street is safe.")
         } }
         if (nearbyZone != null) item { Panel(color = ShelterDanger.copy(alpha = 0.18f)) { Heading("Caution near ${nearbyZone.title.lowercase()}"); Caption("Your current location overlaps this sample risk area. Use the map to check a well-lit alternative.") } }
@@ -335,5 +352,7 @@ internal fun CommunityScreen(
         item { PreviewActionPanel("Nearby NGOs", "Preview local support organizations. No organization is contacted from this panel.", Icons.Outlined.VolunteerActivism) { info("Preview: no alert was sent. Connect an approved recipient integration before using this for dispatch.") } }
         item { PreviewActionPanel("Peer support", "Preview consenting peer-support options. No peer is contacted from this panel.", Icons.Outlined.Groups) { info("Preview: no alert was sent. Peer support requires an approved, consent-based integration.") } }
         item { PreviewActionPanel("Nearby shelters", "Preview local shelters and public resources. No shelter is contacted from this panel.", Icons.Outlined.HomeWork) { info("Preview: no alert was sent. Opening this preview does not reserve a place or notify a shelter.") } }
+    }
+        }
     }
 }

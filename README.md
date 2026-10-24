@@ -55,3 +55,7 @@ evidence keys are Keystore-backed. The safeword *trigger path*, however, is
 still built on Android's general-purpose SpeechRecognizer rather than a
 dedicated offline wake-word model — do not describe safeword detection as
 fully offline until that replacement is made.
+
+## Real-time Bluetooth nearby users
+
+Community → Nearby users / mesh provides opt-in BLE discovery and shared public profiles. It includes optional contact/location sharing and a profile interface for the later Google-login branch. See [mesh implementation and two-phone test plan](docs/realtime-mesh.md). This is direct discovery, not multi-hop relay or verified Google identity exchange.
