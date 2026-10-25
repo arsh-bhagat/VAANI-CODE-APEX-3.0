@@ -4,11 +4,7 @@ import com.bithead.shelter.data.Evidence
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-/**
- * Turns a threat label + score into a short, plain-language sentence a
- * non-technical reader (survivor, advocate, officer) can understand at a
- * glance, instead of a bare number.
- */
+
 object IncidentSummary {
 
     private fun confidenceWord(score: Int): String = when {
@@ -33,6 +29,24 @@ object IncidentSummary {
         }
         return "On $time, audio consistent with \"$label\" was detected$loudNote " +
             "(${evidence.threatScore}/100, $confidence).$locationNote"
+    }
+
+    /** Display copy only; exported records keep their canonical original summary. */
+    fun describeForUi(evidence: Evidence, language: String): String {
+        if (language == "en") return describe(evidence)
+        val time = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM,
+            java.text.DateFormat.SHORT, Locale.forLanguageTag(language)).format(evidence.createdAt)
+        val label = com.bithead.shelter.ui.localization.translateUi(cleanLabel(evidence.threatLabel), language)
+        val confidence = com.bithead.shelter.ui.localization.translateUi(confidenceWord(evidence.threatScore), language)
+        val loud = evidence.threatLabel.contains("Loud Peak")
+        val located = evidence.latitude != null && evidence.longitude != null
+        return if (language == "hi") {
+            "$time पर \"$label\" जैसी आवाज़ पहचानी गई${if (loud) ", आवाज़ काफ़ी तेज़ थी" else ""} (${evidence.threatScore}/100, $confidence)। " +
+                if (located) "रिकॉर्डिंग के समय स्थान दर्ज किया गया था।" else "इस प्रविष्टि के लिए स्थान उपलब्ध नहीं था।"
+        } else {
+            "$time वाजता \"$label\" सारखा आवाज ओळखला गेला${if (loud) ", आवाज बराच मोठा होता" else ""} (${evidence.threatScore}/100, $confidence). " +
+                if (located) "रेकॉर्डिंगच्या वेळी स्थान नोंदवले होते." else "या नोंदीसाठी स्थान उपलब्ध नव्हते."
+        }
     }
 
     /**

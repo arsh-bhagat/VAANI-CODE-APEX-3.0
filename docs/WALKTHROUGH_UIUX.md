@@ -7,7 +7,7 @@ This branch ports the guided walkthrough described in WALKTHROUGH_IMPLEMENTATION
 - The first eligible safety-screen session offers an introduction and eleven spotlight steps.
 - The sequence covers navigation, safeword, manual alert, contacts, vault, camera, community map, support, decoy call, disguise, and replay.
 - Settings → Help & onboarding provides Replay walkthrough and Feature help.
-- Replay returns to Settings and restores the original list position. First-use completion/dismissal returns to Spaces.
+- Replay returns to Settings and restores the original list position. First-use completion/dismissal returns to Vaani.
 - Not now and Skip tour mark the current version handled. Finish also marks it completed. Replay remains available after either choice.
 - The modal blocks real controls, locks the vault on entry, and pauses voice/gesture recognition while active without rewriting the user's mode preferences.
 - Backgrounding hides the overlay and preserves its step. Camera, recording, sealing, disguise, and blackout interrupt it. A deferred offer in Notes does not activate walkthrough suppression.
@@ -17,8 +17,8 @@ This branch ports the guided walkthrough described in WALKTHROUGH_IMPLEMENTATION
 
 - Retains the existing separate ArmedScreen, VaultScreen, CommunityScreen, SupportScreen, and SettingsScreen files.
 - Uses gold spotlight accents and 4dp card corners to match the existing theme.
-- Uses Spaces in navigation copy and double-tap in blackout help.
-- Each screen uses its own indexed tour list state. The navigation step scrolls to the existing alert panel and highlights the bottom navigation.
+- Uses Vaani in navigation copy and double-tap in blackout help.
+- Each screen uses its own indexed tour list state. The navigation step highlights the actual icons-and-labels row, excluding the Android navigation inset.
 - Gives the decoy controls a separate keyed panel so auto-scrolling can position them reliably.
 - Restores the Settings scroll once on replay exit rather than again on subsequent eligibility changes.
 - Does not port the source branch's new shake detector or listening-window deadline. Gesture help describes this branch's existing trigger.
@@ -32,7 +32,17 @@ SharedPreferences file: vaani_walkthrough. Integer keys: handled_version and com
 
 The active step and replay scroll position use session-keyed Compose saved state. The process UUID and activity Bundle flag preserve a tour through activity recreation in the same process. After process death an unhandled first-use tour can be offered again; a completed user's interrupted replay is not automatically resumed.
 
-Only default English copy is included. Additional Android locale resource files can reuse the same string IDs and format arguments.
+English, Hindi and Marathi copy use matching Android string IDs and format arguments.
+
+## Spotlight alignment correction
+
+The walkthrough now shares the app's Compose root instead of using a separate dialog window. Targets keep their full measured bounds in root coordinates; the overlay converts those bounds to its own local origin. This removes the status-bar offset and the former arbitrary 64dp crop on tall features.
+
+Cards are measured against the available space above or below the actual target and placed next to it with room for the pointer. System bars and display cutouts stay outside the card area. Descriptions scroll independently while Back, Next/Finish and Skip stay visible. In a short window, the highlight is limited to the portion of the real target outside the card's reserved area.
+
+Auto-scroll waits for the selected tab and its target to lay out, then aligns the actual control within the content viewport. Contacts highlight the entry form; decoy highlights the scheduling buttons. All eleven steps retain unique anchors and stable scroll keys.
+
+`WalkthroughPlacementTest` covers all eleven target sizes, landscape constraints and unavailable targets. `WalkthroughAlignmentTest` checks all eleven steps with an offset host root and targets taller than the old cropped strip. `WalkthroughTest` additionally checks actual-tour card/highlight separation and passive touch handling. These new checks have not been compiled or run on a device; no build was requested for this correction. `python scripts/check-walkthrough.py` validates anchor wiring without building.
 
 ## Validation
 

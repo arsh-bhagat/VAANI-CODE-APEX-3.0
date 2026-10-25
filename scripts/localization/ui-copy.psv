@@ -1,0 +1,496 @@
+English|Hindi|Marathi
+Cannot open the selected media|चुना हुआ मीडिया खुल नहीं सका|निवडलेले माध्यम उघडता आले नाही
+SMS alerts are ready|SMS अलर्ट तैयार हैं|SMS सूचना तयार आहेत
+SMS permission denied — emergency recording still works|SMS की अनुमति नहीं मिली — आपातकालीन रिकॉर्डिंग काम करती रहेगी|SMS ची परवानगी नाकारली — आपत्कालीन रेकॉर्डिंग कार्य करते
+Could not create private pending-evidence storage|निजी लंबित साक्ष्य संग्रहण नहीं बना सके|खाजगी प्रलंबित पुरावा साठवण तयार करता आली नाही
+ Any captured bytes were retained for recovery.| रिकॉर्ड किया गया डेटा पुनर्प्राप्ति के लिए रखा गया है।| टिपलेला डेटा पुनर्प्राप्तीसाठी ठेवला आहे.
+Invalid evidence filename|अमान्य साक्ष्य फ़ाइल नाम|अवैध पुरावा फाइल नाव
+Evidence destination already exists|साक्ष्य का गंतव्य पहले से मौजूद है|पुराव्याचे गंतव्य आधीच अस्तित्वात आहे
+Could not clear an old temporary evidence file|पुरानी अस्थायी साक्ष्य फ़ाइल हटा नहीं सके|जुनी तात्पुरती पुरावा फाइल काढता आली नाही
+Media sealed; private temporary file cleanup needs attention|मीडिया सुरक्षित हुआ; निजी अस्थायी फ़ाइल की सफ़ाई पर ध्यान देना होगा|माध्यम सुरक्षित झाले; खाजगी तात्पुरती फाइल काढण्याकडे लक्ष देणे आवश्यक आहे
+Evidence no longer exists|साक्ष्य अब मौजूद नहीं है|पुरावा आता अस्तित्वात नाही
+Encrypted evidence is missing; verify the chain|एन्क्रिप्टेड साक्ष्य गायब है; शृंखला जाँचें|कूटबद्ध पुरावा सापडत नाही; साखळी तपासा
+Evidence hash does not match the vault chain|साक्ष्य हैश तिजोरी की शृंखला से मेल नहीं खाता|पुराव्याचा हॅश तिजोरीच्या साखळीशी जुळत नाही
+Could not save the deletion record|हटाने का रिकॉर्ड सहेज नहीं सके|हटवण्याची नोंद जतन करता आली नाही
+Deletion record is missing its file hash|हटाने के रिकॉर्ड में फ़ाइल हैश नहीं है|हटवण्याच्या नोंदीत फाइलचा हॅश नाही
+Encrypted recording changed after deletion was requested|हटाने का अनुरोध करने के बाद एन्क्रिप्टेड रिकॉर्डिंग बदल गई|हटवण्याची विनंती केल्यानंतर कूटबद्ध रेकॉर्डिंग बदलले
+Could not remove the pending raw recording|लंबित मूल रिकॉर्डिंग हटा नहीं सके|प्रलंबित मूळ रेकॉर्डिंग काढता आले नाही
+Could not remove the encrypted recording|एन्क्रिप्टेड रिकॉर्डिंग हटा नहीं सके|कूटबद्ध रेकॉर्डिंग काढता आले नाही
+Could not finish the deletion record|हटाने का रिकॉर्ड पूरा नहीं कर सके|हटवण्याची नोंद पूर्ण करता आली नाही
+Share chain of custody record|अभिरक्षा शृंखला का रिकॉर्ड साझा करें|ताबा साखळीची नोंद सामायिक करा
+Could not clear playback cache|प्लेबैक कैश हटा नहीं सके|वाजवण्याचा कॅश काढता आला नाही
+Could not clear preview cache|पूर्वावलोकन कैश हटा नहीं सके|पूर्वावलोकन कॅश काढता आला नाही
+Chain links verified; %1$s evidence deletions still pending|शृंखला कड़ियाँ सत्यापित; %1$s साक्ष्य हटाना अभी बाकी है|साखळीचे दुवे पडताळले; %1$s पुरावे हटवणे अजून बाकी आहे
+Chain links verified; %1$s evidence deletion still pending|शृंखला कड़ियाँ सत्यापित; %1$s साक्ष्य हटाना अभी बाकी है|साखळीचे दुवे पडताळले; %1$s पुरावा हटवणे अजून बाकी आहे
+Chain verified ✓ — %1$s evidence items intact; %2$s deletion records retained|शृंखला सत्यापित ✓ — %1$s साक्ष्य सही; हटाने के %2$s रिकॉर्ड रखे गए|साखळी पडताळली ✓ — %1$s पुरावे अखंड; हटवण्याच्या %2$s नोंदी ठेवल्या
+Chain verified ✓ — %1$s evidence items intact; %2$s deletion record retained|शृंखला सत्यापित ✓ — %1$s साक्ष्य सही; हटाने के %2$s रिकॉर्ड रखे गए|साखळी पडताळली ✓ — %1$s पुरावे अखंड; हटवण्याची %2$s नोंद ठेवली
+Recovered %1$s sealed recordings into the vault|%1$s सुरक्षित रिकॉर्डिंग तिजोरी में वापस लाई गईं|%1$s सुरक्षित रेकॉर्डिंग तिजोरीत परत मिळवली
+Recovered %1$s sealed recording into the vault|%1$s सुरक्षित रिकॉर्डिंग तिजोरी में वापस लाई गई|%1$s सुरक्षित रेकॉर्डिंग तिजोरीत परत मिळवले
+%1$s (Loud Peak)|%1$s (तेज़ आवाज़)|%1$s (मोठा आवाज)
+Interactive community safety map|समुदाय सुरक्षा का इंटरैक्टिव नक्शा|समुदाय सुरक्षेचा परस्परसंवादी नकाशा
+Loading map tiles…|नक्शा लोड हो रहा है…|नकाशा लोड होत आहे…
+Reloading map tiles…|नक्शा फिर लोड हो रहा है…|नकाशा पुन्हा लोड होत आहे…
+Retry Tiles|नक्शा फिर लोड करें|नकाशा पुन्हा लोड करा
+Offline — connect to the internet to load map tiles.|ऑफ़लाइन — नक्शा लोड करने के लिए इंटरनेट से जुड़ें।|ऑफलाइन — नकाशा लोड करण्यासाठी इंटरनेटशी जोडा.
+Some map tiles could not load.|नक्शे के कुछ हिस्से लोड नहीं हुए।|नकाशाचे काही भाग लोड झाले नाहीत.
+ILLUSTRATIVE SIGNALS|उदाहरण के संकेत|उदाहरणार्थ संकेत
+Well-lit corridor|रोशनी वाला रास्ता|प्रकाश असलेला मार्ग
+Adaptive sample community route|अनुकूलित नमूना सामुदायिक रास्ता|अनुकूलित नमुना समुदाय मार्ग
+Patrolled point · Local market|गश्त का स्थान · स्थानीय बाज़ार|गस्तीचे ठिकाण · स्थानिक बाजार
+Patrolled point · Transit stop|गश्त का स्थान · परिवहन स्टॉप|गस्तीचे ठिकाण · वाहतूक थांबा
+Verified haven · 24-hour pharmacy|सत्यापित आश्रय · 24 घंटे की दवा दुकान|पडताळलेला आश्रय · 24 तास औषधांचे दुकान
+Illustrative location — not a verified service|उदाहरण का स्थान — सत्यापित सेवा नहीं|उदाहरणार्थ स्थान — पडताळलेली सेवा नाही
+Well-lit route|रोशनी वाला रास्ता|प्रकाश असलेला मार्ग
+Patrol / support|गश्त / सहायता|गस्त / मदत
+Recenter on your location|अपने स्थान पर केंद्रित करें|तुमच्या स्थानावर केंद्रित करा
+Adaptive sample incident history|अनुकूलित नमूना घटना इतिहास|अनुकूलित नमुना घटनांचा इतिहास
+You are here|आप यहाँ हैं|तुम्ही येथे आहात
+Your current location|आपका मौजूदा स्थान|तुमचे सध्याचे स्थान
+Accuracy: about %1$s m|सटीकता: लगभग %1$s मीटर|अचूकता: सुमारे %1$s मीटर
+Updated %1$s|अपडेट: %1$s|अद्ययावत: %1$s
+Zoom in|ज़ूम बढ़ाएँ|झूम वाढवा
+Zoom out|ज़ूम घटाएँ|झूम कमी करा
+Checking voice recognition|वाक् पहचान की जाँच हो रही है|आवाज ओळख तपासत आहे
+Voice support has not been checked|वाक् पहचान की उपलब्धता जाँची नहीं गई|आवाज ओळखीची उपलब्धता तपासलेली नाही
+On-device speech is unavailable on this device. Manual recording remains available. You can explicitly allow the device speech service below.|इस डिवाइस पर स्थानीय वाक् पहचान उपलब्ध नहीं। मैन्युअल रिकॉर्डिंग उपलब्ध है। नीचे डिवाइस की वाक् सेवा की अनुमति दे सकते हैं।|या उपकरणावर स्थानिक आवाज ओळख उपलब्ध नाही. स्वतः रेकॉर्डिंग करणे उपलब्ध आहे. खाली उपकरणाच्या आवाज सेवेला परवानगी देऊ शकता.
+No device speech recognition service is available. Manual recording remains available.|डिवाइस पर वाक् पहचान सेवा उपलब्ध नहीं। मैन्युअल रिकॉर्डिंग उपलब्ध है।|उपकरणावर आवाज ओळख सेवा उपलब्ध नाही. स्वतः रेकॉर्डिंग करणे उपलब्ध आहे.
+The selected speech service could not be opened. Manual recording remains available.|चुनी हुई वाक् सेवा खुल नहीं सकी। मैन्युअल रिकॉर्डिंग उपलब्ध है।|निवडलेली आवाज सेवा उघडता आली नाही. स्वतः रेकॉर्डिंग करणे उपलब्ध आहे.
+The selected speech language is unavailable. Download its speech model or choose another language.|चुनी हुई वाक् पहचान की भाषा उपलब्ध नहीं। उसका मॉडल डाउनलोड करें या दूसरी भाषा चुनें।|निवडलेली आवाज ओळखीची भाषा उपलब्ध नाही. तिचे मॉडेल डाउनलोड करा किंवा दुसरी भाषा निवडा.
+Device speech service selected for %1$s. It may use the network.|%1$s के लिए डिवाइस की वाक् सेवा चुनी गई। यह नेटवर्क इस्तेमाल कर सकती है।|%1$s साठी उपकरणाची आवाज सेवा निवडली आहे. ती नेटवर्क वापरू शकते.
+On-device speech model installed for %1$s. Test your saved phrase before relying on recognition.|%1$s का स्थानीय वाक् मॉडल इंस्टॉल है। पहचान पर भरोसा करने से पहले सहेजा हुआ वाक्यांश परखें।|%1$s चे स्थानिक आवाज मॉडेल स्थापित आहे. ओळखीवर अवलंबून राहण्यापूर्वी जतन केलेला वाक्यांश तपासा.
+An on-device speech model for %1$s is not installed. Download it and check voice support again.|%1$s का स्थानीय वाक् मॉडल इंस्टॉल नहीं है। डाउनलोड करके वाक् पहचान की उपलब्धता फिर जाँचें।|%1$s चे स्थानिक आवाज मॉडेल स्थापित नाही. ते डाउनलोड करून आवाज ओळखीची उपलब्धता पुन्हा तपासा.
+The speech service could not verify %1$s (error %2$s). Manual recording remains available.|वाक् सेवा %1$s की पुष्टि नहीं कर सकी (त्रुटि %2$s)। मैन्युअल रिकॉर्डिंग उपलब्ध है।|आवाज सेवा %1$s ची पडताळणी करू शकली नाही (त्रुटी %2$s). स्वतः रेकॉर्डिंग करणे उपलब्ध आहे.
+This speech service cannot verify the selected language. Manual recording remains available.|यह वाक् सेवा चुनी भाषा की पुष्टि नहीं कर सकती। मैन्युअल रिकॉर्डिंग उपलब्ध है।|ही आवाज सेवा निवडलेल्या भाषेची पडताळणी करू शकत नाही. स्वतः रेकॉर्डिंग करणे उपलब्ध आहे.
+On-device speech service selected for %1$s. This Android version cannot check installed language models; test your phrase on this device.|%1$s के लिए स्थानीय वाक् सेवा चुनी गई। यह Android संस्करण इंस्टॉल भाषा मॉडल नहीं जाँच सकता; अपना वाक्यांश इस डिवाइस पर परखें।|%1$s साठी स्थानिक आवाज सेवा निवडली आहे. ही Android आवृत्ती स्थापित भाषा मॉडेल तपासू शकत नाही; तुमचा वाक्यांश या उपकरणावर तपासा.
+Speech model download requested. Your speech service may require network access or confirmation. Check voice support after it finishes.|वाक् मॉडल डाउनलोड का अनुरोध किया गया। वाक् सेवा को नेटवर्क या पुष्टि की ज़रूरत हो सकती है। पूरा होने पर वाक् पहचान की उपलब्धता जाँचें।|आवाज मॉडेल डाउनलोडची विनंती केली आहे. आवाज सेवेला नेटवर्क किंवा पुष्टी लागू शकते. पूर्ण झाल्यावर आवाज ओळखीची उपलब्धता तपासा.
+This speech service cannot download the selected model. Check your device speech settings.|यह वाक् सेवा चुना मॉडल डाउनलोड नहीं कर सकती। डिवाइस की वाक् सेटिंग्स जाँचें।|ही आवाज सेवा निवडलेले मॉडेल डाउनलोड करू शकत नाही. उपकरणाच्या आवाज सेटिंग्ज तपासा.
+Manage offline speech languages in your device speech settings. In-app download requests require Android 13 or newer and a compatible service.|ऑफ़लाइन वाक् भाषाएँ डिवाइस की वाक् सेटिंग्स में प्रबंधित करें। ऐप से डाउनलोड अनुरोध के लिए Android 13 या नया और अनुकूल सेवा चाहिए।|ऑफलाइन आवाज भाषा उपकरणाच्या आवाज सेटिंग्जमध्ये व्यवस्थापित करा. ॲपमधून डाउनलोड विनंतीसाठी Android 13 किंवा नवीन आवृत्ती आणि सुसंगत सेवा आवश्यक आहे.
+Safeword not heard — gesture remains armed|सुरक्षा शब्द नहीं सुनाई दिया — हलचल पहचान तैयार है|सुरक्षितता शब्द ऐकू आला नाही — हालचाल ओळख सज्ज आहे
+Speech recognizer was busy — wait a moment and jerk again|वाक् पहचान व्यस्त थी — थोड़ी देर रुककर फिर झटका दें|आवाज ओळख व्यस्त होती — थोडे थांबून पुन्हा झटका द्या
+Microphone permission is required for the safeword window|सुरक्षा शब्द सुनने के लिए माइक्रोफ़ोन की अनुमति चाहिए|सुरक्षितता शब्द ऐकण्यासाठी मायक्रोफोनची परवानगी आवश्यक आहे
+Speech recognition is unavailable offline on this device|इस डिवाइस पर ऑफ़लाइन वाक् पहचान उपलब्ध नहीं|या उपकरणावर ऑफलाइन आवाज ओळख उपलब्ध नाही
+Safeword window closed — gesture remains armed|सुरक्षा शब्द सुनने का समय समाप्त — हलचल पहचान तैयार है|सुरक्षितता शब्द ऐकण्याचा कालावधी संपला — हालचाल ओळख सज्ज आहे
+Could not open the safeword window — check microphone access|सुरक्षा शब्द सुनना शुरू नहीं हुआ — माइक्रोफ़ोन की अनुमति जाँचें|सुरक्षितता शब्द ऐकणे सुरू झाले नाही — मायक्रोफोनची परवानगी तपासा
+Microphone did not become ready — gesture remains armed|माइक्रोफ़ोन तैयार नहीं हुआ — हलचल पहचान तैयार है|मायक्रोफोन तयार झाला नाही — हालचाल ओळख सज्ज आहे
+Could not reopen the safeword listener — gesture remains armed|सुरक्षा शब्द सुनना फिर शुरू नहीं हुआ — हलचल पहचान तैयार है|सुरक्षितता शब्द ऐकणे पुन्हा सुरू झाले नाही — हालचाल ओळख सज्ज आहे
+Enable microphone access and a speech recognition service to listen for your safeword|सुरक्षा शब्द सुनने के लिए माइक्रोफ़ोन की अनुमति और वाक् पहचान सेवा चालू करें|सुरक्षितता शब्द ऐकण्यासाठी मायक्रोफोनची परवानगी आणि आवाज ओळख सेवा सुरू करा
+No speech recognition service is available on this device|इस डिवाइस पर वाक् पहचान सेवा उपलब्ध नहीं|या उपकरणावर आवाज ओळख सेवा उपलब्ध नाही
+Gesture-Wake needs microphone permission|हलचल से जागने के लिए माइक्रोफ़ोन की अनुमति चाहिए|हालचालीने जागे होण्यासाठी मायक्रोफोनची परवानगी आवश्यक आहे
+Microphone permission denied — cannot record evidence|माइक्रोफ़ोन की अनुमति नहीं मिली — साक्ष्य रिकॉर्ड नहीं हो सकता|मायक्रोफोनची परवानगी नाकारली — पुरावा रेकॉर्ड करता येत नाही
+Please wait while the previous recording is sealed|पिछली रिकॉर्डिंग सुरक्षित होने तक प्रतीक्षा करें|आधीचे रेकॉर्डिंग सुरक्षित होईपर्यंत थांबा
+Location permission denied — location features are unavailable|स्थान की अनुमति नहीं मिली — स्थान सुविधाएँ उपलब्ध नहीं|स्थानाची परवानगी नाकारली — स्थान सुविधा उपलब्ध नाहीत
+Location services are off — using the most recent saved fix|स्थान सेवाएँ बंद हैं — अंतिम सहेजे स्थान का उपयोग हो रहा है|स्थान सेवा बंद आहेत — अलीकडील जतन केलेले स्थान वापरत आहे
+Could not add contact: %1$s|संपर्क जोड़ नहीं सके: %1$s|संपर्क जोडता आला नाही: %1$s
+Invalid contact|अमान्य संपर्क|अवैध संपर्क
+Location protection could not start: %1$s|स्थान सुरक्षा शुरू नहीं हुई: %1$s|स्थान संरक्षण सुरू झाले नाही: %1$s
+Wait for the current evidence to finish sealing|मौजूदा साक्ष्य सुरक्षित होने तक प्रतीक्षा करें|सध्याचा पुरावा सुरक्षित होईपर्यंत थांबा
+Choose an image or video|छवि या वीडियो चुनें|प्रतिमा किंवा व्हिडिओ निवडा
+Choose a file under 250 MB|250 MB से छोटी फ़ाइल चुनें|250 MB पेक्षा लहान फाइल निवडा
+Media import failed: %1$s|मीडिया आयात असफल: %1$s|माध्यम आयात अयशस्वी: %1$s
+Recording started, but SMS failed: %1$s|रिकॉर्डिंग शुरू हुई, लेकिन SMS असफल: %1$s|रेकॉर्डिंग सुरू झाले, पण SMS अयशस्वी: %1$s
+Recording could not start: %1$s.%2$s|रिकॉर्डिंग शुरू नहीं हुई: %1$s।%2$s|रेकॉर्डिंग सुरू झाले नाही: %1$s.%2$s
+Recording could not be finalized|रिकॉर्डिंग पूरी नहीं की जा सकी|रेकॉर्डिंग पूर्ण करता आले नाही
+Evidence could not be finalized. The pending raw file was retained for recovery.|साक्ष्य पूरा नहीं हुआ। पुनर्प्राप्ति के लिए लंबित मूल फ़ाइल रखी गई है।|पुरावा पूर्ण झाला नाही. पुनर्प्राप्तीसाठी प्रलंबित मूळ फाइल ठेवली आहे.
+Sealing failed: %1$s|सुरक्षित करना असफल: %1$s|सुरक्षित करणे अयशस्वी: %1$s
+Evidence could not be sealed: %1$s. Raw audio was retained for recovery.|साक्ष्य सुरक्षित नहीं हुआ: %1$s। पुनर्प्राप्ति के लिए मूल ऑडियो रखा गया है।|पुरावा सुरक्षित झाला नाही: %1$s. पुनर्प्राप्तीसाठी मूळ ध्वनी ठेवला आहे.
+Evidence sealed, but hash SMS failed: %1$s|साक्ष्य सुरक्षित हुआ, लेकिन हैश SMS असफल: %1$s|पुरावा सुरक्षित झाला, पण हॅश SMS अयशस्वी: %1$s
+Evidence sealed and added to the vault ✓|साक्ष्य सुरक्षित करके तिजोरी में जोड़ा गया ✓|पुरावा सुरक्षित करून तिजोरीत जोडला ✓
+Evidence sealed. The encrypted record is safe, but plaintext cleanup needs attention.|साक्ष्य सुरक्षित हुआ। एन्क्रिप्टेड रिकॉर्ड सुरक्षित है, लेकिन बिना एन्क्रिप्शन वाले डेटा की सफ़ाई पर ध्यान देना होगा।|पुरावा सुरक्षित झाला. कूटबद्ध नोंद सुरक्षित आहे, पण अकूटबद्ध डेटा काढण्याकडे लक्ष देणे आवश्यक आहे.
+Media capture is incomplete; no vault entry was created|मीडिया कैप्चर अधूरा है; तिजोरी में प्रविष्टि नहीं बनी|माध्यम टिपणे अपूर्ण आहे; तिजोरीत नोंद तयार झाली नाही
+Media sealed in Vault|मीडिया तिजोरी में सुरक्षित किया गया|माध्यम तिजोरीत सुरक्षित केले
+Media could not be sealed: %1$s. Private raw file retained for recovery|मीडिया सुरक्षित नहीं हुआ: %1$s। पुनर्प्राप्ति के लिए निजी मूल फ़ाइल रखी गई|माध्यम सुरक्षित झाले नाही: %1$s. पुनर्प्राप्तीसाठी खाजगी मूळ फाइल ठेवली आहे
+No fingerprint/face/PIN set up on this device|इस डिवाइस पर उँगली की छाप, चेहरा या PIN सेट नहीं है|या उपकरणावर बोटांचे ठसे, चेहरा किंवा PIN सेट केलेला नाही
+Unlock failed: %1$s|लॉक खोलना असफल: %1$s|कुलूप उघडणे अयशस्वी: %1$s
+Fingerprint/face not recognized — try again|उँगली की छाप या चेहरा पहचाना नहीं गया — फिर प्रयास करें|बोटांचे ठसे किंवा चेहरा ओळखला नाही — पुन्हा प्रयत्न करा
+No evidence to verify yet|अभी जाँचने के लिए साक्ष्य नहीं है|अद्याप तपासण्यासाठी पुरावा नाही
+⚠ Tamper detected: evidence #%1$s does not match its deletion record|⚠ छेड़छाड़ मिली: साक्ष्य #%1$s अपने हटाने के रिकॉर्ड से मेल नहीं खाता|⚠ छेडछाड आढळली: पुरावा #%1$s हटवण्याच्या नोंदीशी जुळत नाही
+⚠ Deletion incomplete for evidence #%1$s|⚠ साक्ष्य #%1$s को हटाना अधूरा है|⚠ पुरावा #%1$s हटवणे अपूर्ण आहे
+⚠ Tamper detected: evidence #%1$s is missing|⚠ छेड़छाड़ मिली: साक्ष्य #%1$s गायब है|⚠ छेडछाड आढळली: पुरावा #%1$s सापडत नाही
+⚠ Tamper detected: evidence #%1$s does not match its recorded hash chain|⚠ छेड़छाड़ मिली: साक्ष्य #%1$s अपनी दर्ज हैश शृंखला से मेल नहीं खाता|⚠ छेडछाड आढळली: पुरावा #%1$s नोंदवलेल्या हॅश साखळीशी जुळत नाही
+Chain verification failed: %1$s|शृंखला की जाँच असफल: %1$s|साखळी पडताळणी अयशस्वी: %1$s
+Chain verified ✓ — all %1$s evidence items intact|शृंखला सत्यापित ✓ — सभी %1$s साक्ष्य सही हैं|साखळी पडताळली ✓ — सर्व %1$s पुरावे अखंड आहेत
+Evidence deleted; its hash-chain deletion record remains|साक्ष्य हटा दिया गया; हैश शृंखला में हटाने का रिकॉर्ड मौजूद है|पुरावा हटवला; हॅश साखळीतील हटवण्याची नोंद कायम आहे
+Delete incomplete: %1$s. Tap Delete to retry|हटाना अधूरा: %1$s। फिर प्रयास के लिए हटाएँ पर टैप करें|हटवणे अपूर्ण: %1$s. पुन्हा प्रयत्न करण्यासाठी हटवा वर टॅप करा
+Evidence recovery needs attention: %1$s|साक्ष्य पुनर्प्राप्ति पर ध्यान देना होगा: %1$s|पुरावा पुनर्प्राप्तीकडे लक्ष देणे आवश्यक आहे: %1$s
+Export failed: %1$s|निर्यात असफल: %1$s|निर्यात अयशस्वी: %1$s
+Playback failed: %1$s|चलाना असफल: %1$s|वाजवणे अयशस्वी: %1$s
+Encrypted file not found|एन्क्रिप्टेड फ़ाइल नहीं मिली|कूटबद्ध फाइल सापडली नाही
+This evidence audio could not be played|इस साक्ष्य का ऑडियो चलाया नहीं जा सका|या पुराव्याचा ध्वनी वाजवता आला नाही
+Decryption or playback failed: %1$s|डिक्रिप्ट करना या चलाना असफल: %1$s|उकलणे किंवा वाजवणे अयशस्वी: %1$s
+Could not seek in this recording: %1$s|इस रिकॉर्डिंग में आगे-पीछे नहीं जा सके: %1$s|या रेकॉर्डिंगमध्ये पुढे-मागे जाता आले नाही: %1$s
+Encrypted media file not found|एन्क्रिप्टेड मीडिया फ़ाइल नहीं मिली|कूटबद्ध माध्यम फाइल सापडली नाही
+Media preview failed: %1$s|मीडिया पूर्वावलोकन असफल: %1$s|माध्यम पूर्वावलोकन अयशस्वी: %1$s
+SOS|SOS|SOS
+Evidence hash|साक्ष्य हैश|पुराव्याचा हॅश
+SMS permission missing|SMS की अनुमति नहीं है|SMS ची परवानगी नाही
+No default SMS SIM|डिफ़ॉल्ट SMS SIM नहीं है|मूलभूत SMS SIM नाही
+Sending %1$s|%1$s भेज रहे हैं|%1$s पाठवत आहे
+Send failed: %1$s (%2$s)|भेजना असफल: %1$s (%2$s)|पाठवणे अयशस्वी: %1$s (%2$s)
+%1$s: Sent; delivery unconfirmed|%1$s: भेजा गया; पहुँचने की पुष्टि नहीं|%1$s: पाठवले; पोहोचल्याची पुष्टी नाही
+%1$s: Delivered|%1$s: पहुँच गया|%1$s: पोहोचले
+%1$s: Sent|%1$s: भेजा गया|%1$s: पाठवले
+Send failed (%1$s): %2$s|भेजना असफल (%1$s): %2$s|पाठवणे अयशस्वी (%1$s): %2$s
+Location protection active|स्थान सुरक्षा चालू है|स्थान संरक्षण सुरू आहे
+Last known location ready for emergency alerts|आपातकालीन अलर्ट के लिए अंतिम ज्ञात स्थान तैयार है|आपत्कालीन सूचनांसाठी शेवटचे ज्ञात स्थान तयार आहे
+Stop|रोकें|थांबवा
+01 / Crisis & legal support|01 / संकट और कानूनी सहायता|01 / संकट आणि कायदेशीर मदत
+Support when you need it|ज़रूरत के समय सहायता|गरजेच्या वेळी मदत
+Public crisis and legal resources. Calls open your dialer so you remain in control.|सार्वजनिक संकट और कानूनी संसाधन। कॉल के लिए डायलर खुलता है, जिससे नियंत्रण आपके पास रहता है।|सार्वजनिक संकट आणि कायदेशीर संसाधने. कॉलसाठी डायलर उघडतो, त्यामुळे नियंत्रण तुमच्याकडे राहते.
+Direct dial / India|सीधे कॉल करें / भारत|थेट कॉल करा / भारत
+Nearest station|नज़दीकी पुलिस थाना|जवळचे पोलीस ठाणे
+Search public stations in device maps|डिवाइस के नक्शे में पुलिस थाने खोजें|उपकरणाच्या नकाशात पोलीस ठाणी शोधा
+Locate|खोजें|शोधा
+Local care|स्थानीय चिकित्सा|स्थानिक वैद्यकीय मदत
+Search nearby public hospitals|पास के सार्वजनिक अस्पताल खोजें|जवळची सार्वजनिक रुग्णालये शोधा
+Find care|चिकित्सा खोजें|वैद्यकीय मदत शोधा
+EMERGENCY & SUPPORT • INDIA|आपातकाल और सहायता • भारत|आपत्कालीन मदत • भारत
+Emergency assistance|आपातकालीन सहायता|आपत्कालीन मदत
+India's emergency response number for police, fire and medical emergencies.|पुलिस, अग्निशमन और चिकित्सा आपातकाल के लिए भारत का आपातकालीन नंबर।|पोलीस, अग्निशमन आणि वैद्यकीय आपत्कालासाठी भारताचा आपत्कालीन क्रमांक.
+Dial 112|112 पर कॉल करें|112 वर कॉल करा
+Official service information|आधिकारिक सेवा की जानकारी|अधिकृत सेवेची माहिती
+Legal Aid & Assistance|कानूनी सहायता|कायदेशीर मदत
+National Legal Services Authority (NALSA)|राष्ट्रीय विधिक सेवा प्राधिकरण (NALSA)|राष्ट्रीय विधी सेवा प्राधिकरण (NALSA)
+Public helpline|सार्वजनिक हेल्पलाइन|सार्वजनिक मदत क्रमांक
+Dial 15100|15100 पर कॉल करें|15100 वर कॉल करा
+Legal assistance resources|कानूनी सहायता संसाधन|कायदेशीर मदतीची संसाधने
+Cyber Safety & Harassment|साइबर सुरक्षा और उत्पीड़न|सायबर सुरक्षा आणि छळ
+Use the National Cyber Crime Reporting Portal to report cybercrime. 1930 is the financial cyber fraud helpline.|साइबर अपराध की रिपोर्ट के लिए राष्ट्रीय साइबर अपराध रिपोर्टिंग पोर्टल इस्तेमाल करें। वित्तीय साइबर धोखाधड़ी की हेल्पलाइन 1930 है।|सायबर गुन्ह्याची तक्रार राष्ट्रीय सायबर गुन्हे तक्रार पोर्टलवर करा. आर्थिक सायबर फसवणुकीचा मदत क्रमांक 1930 आहे.
+Open reporting portal|रिपोर्टिंग पोर्टल खोलें|तक्रार पोर्टल उघडा
+Dial 1930 • financial fraud|1930 पर कॉल करें • वित्तीय धोखाधड़ी|1930 वर कॉल करा • आर्थिक फसवणूक
+SUPPORT GUIDES|सहायता मार्गदर्शिकाएँ|मदत मार्गदर्शिका
+Finding legal assistance|कानूनी सहायता खोजना|कायदेशीर मदत शोधणे
+Explore NALSA's official assistance page for available services and eligibility.|उपलब्ध सेवाओं और पात्रता के लिए NALSA का आधिकारिक सहायता पेज देखें।|उपलब्ध सेवा आणि पात्रतेसाठी NALSA चे अधिकृत मदत पान पाहा.
+Digital privacy|डिजिटल गोपनीयता|डिजिटल गोपनीयता
+Review app permissions and linked devices in your device settings. The official cybercrime portal provides reporting resources.|डिवाइस की सेटिंग्स में ऐप अनुमतियाँ और जुड़े हुए डिवाइस जाँचें। आधिकारिक साइबर अपराध पोर्टल पर रिपोर्टिंग के संसाधन हैं।|उपकरणाच्या सेटिंग्जमध्ये ॲपच्या परवानग्या आणि जोडलेली उपकरणे तपासा. अधिकृत सायबर गुन्हे पोर्टलवर तक्रारीची संसाधने आहेत.
+Finding local care|स्थानीय चिकित्सा खोजना|स्थानिक वैद्यकीय मदत शोधणे
+Use device maps to search for nearby hospitals. In an emergency in India, open the dialer for 112.|पास के अस्पताल खोजने के लिए डिवाइस का नक्शा इस्तेमाल करें। भारत में आपातकाल होने पर 112 के लिए डायलर खोलें।|जवळची रुग्णालये शोधण्यासाठी उपकरणाचा नकाशा वापरा. भारतात आपत्कालीन प्रसंगी 112 साठी डायलर उघडा.
+Groceries|किराना|किराणा
+Reading|पढ़ाई|वाचन
+Work Sync|काम का समन्वय|कामाचा समन्वय
+Cold-pressed olive oil & balsamic vinegar|कोल्ड-प्रेस्ड जैतून का तेल और बाल्समिक सिरका|कोल्ड-प्रेस्ड ऑलिव्ह तेल आणि बाल्सॅमिक व्हिनेगर
+Organic unsweetened almond milk|जैविक बिना चीनी वाला बादाम दूध|सेंद्रिय साखर नसलेले बदाम दूध
+Artisan sourdough boule (sliced)|हाथ से बनी सावरडो ब्रेड (कटी हुई)|हाताने बनवलेला सावरडो पाव (कापलेला)
+Fresh mint leaves & baby spinach|ताज़े पुदीने के पत्ते और छोटी पालक|ताजी पुदिन्याची पाने आणि कोवळा पालक
+Loose leaf chamomile tea|खुली पत्तियों वाली कैमोमाइल चाय|मोकळ्या पानांचा कॅमोमाइल चहा
+Search memos, recipes, lists…|नोट्स, व्यंजन, सूचियाँ खोजें…|नोंदी, पाककृती, याद्या शोधा…
+Weekly Grocery & Market|साप्ताहिक किराना और बाज़ार|आठवड्याचा किराणा आणि बाजार
+Items for Saturday brunch prep & weekly staples from the corner market.|शनिवार के नाश्ते की तैयारी और साप्ताहिक ज़रूरतों के लिए पास के बाज़ार का सामान।|शनिवारच्या न्याहारीची तयारी आणि आठवड्याच्या गरजांसाठी जवळच्या बाजारातील सामान.
+%1$s of 5 done  •  Groceries|5 में से %1$s पूरे  •  किराना|5 पैकी %1$s पूर्ण  •  किराणा
+Reading Journal|पढ़ने की डायरी|वाचन नोंदवही
+‘In Praise of Shadows’ & essays on quiet architecture, domestic rituals…|‘In Praise of Shadows’ और शांत वास्तुकला, घरेलू परंपराओं पर निबंध…|‘In Praise of Shadows’ आणि शांत वास्तुकला, घरगुती परंपरांवरील निबंध…
+Personal • 3 recommendations|निजी • 3 सुझाव|वैयक्तिक • 3 शिफारसी
+Tuesday Sync: Platform Review|मंगलवार की बैठक: प्लेटफ़ॉर्म समीक्षा|मंगळवारची बैठक: प्लॅटफॉर्म आढावा
+Action items from product design alignment and quarterly review:|उत्पाद डिज़ाइन समन्वय और तिमाही समीक्षा के कार्य:|उत्पादन रचना समन्वय आणि तिमाही आढाव्यातील कृती:
+• Standardize typography across the app.\n\n• Review the memo input experience.\n\n• Finalize this week's deliverables.|• पूरे ऐप में अक्षरों की शैली एक जैसी करें।\n\n• नोट लिखने के अनुभव की समीक्षा करें।\n\n• इस सप्ताह के काम पूरे करें।|• संपूर्ण ॲपमध्ये अक्षरशैली एकसमान करा.\n\n• नोंद लिहिण्याच्या अनुभवाचा आढावा घ्या.\n\n• या आठवड्याची कामे पूर्ण करा.
+Updated by Sarah • Work Sync|सारा ने अपडेट किया • काम का समन्वय|साराने अद्ययावत केले • कामाचा समन्वय
+Roasted Butternut Soup|भुने कद्दू का सूप|भाजलेल्या भोपळ्याचे सूप
+Caramelize with nutmeg, brown butter, shallots, and crisp sage…|जायफल, भूरा मक्खन, छोटे प्याज़ और कुरकुरी सेज के साथ भूनें…|जायफळ, तपकिरी लोणी, छोटे कांदे आणि कुरकुरीत सेजसोबत भाजा…
+Kitchen • 45 mins|रसोई • 45 मिनट|स्वयंपाकघर • 45 मिनिटे
+My memo|मेरा नोट|माझी नोंद
+Edit memo|नोट संपादित करें|नोंद संपादित करा
+Write a memo|नोट लिखें|नोंद लिहा
+Note|नोट|नोंद
+Silence|शांति|शांतता
+Ambient Noise|आसपास की आवाज़|सभोवतालचा आवाज
+Speech|बातचीत|बोलणे
+Screaming|चीखना|किंचाळणे
+Scream|चीख|किंचाळी
+Shout|चिल्लाना|ओरडणे
+Shouting|चिल्लाना|ओरडणे
+Crying|रोना|रडणे
+Crying, sobbing|रोना, सिसकना|रडणे, हुंदके देणे
+Siren|सायरन|सायरन
+Glass|काँच|काच
+Breaking|टूटने की आवाज़|तुटण्याचा आवाज
+Shatter|चकनाचूर होने की आवाज़|चक्काचूर होण्याचा आवाज
+Gunshot, gunfire|गोली चलने की आवाज़|गोळीबाराचा आवाज
+Explosion|विस्फोट|स्फोट
+high confidence|उच्च विश्वास स्तर|उच्च खात्री
+moderate confidence|मध्यम विश्वास स्तर|मध्यम खात्री
+low confidence|कम विश्वास स्तर|कमी खात्री
+very low confidence|बहुत कम विश्वास स्तर|अत्यल्प खात्री
+Stealth Evidence Vault|गोपनीय साक्ष्य तिजोरी|गोपनीय पुरावा तिजोरी
+On-device • AES-256-GCM|डिवाइस पर • AES-256-GCM|उपकरणावर • AES-256-GCM
+Unlocked|लॉक खुला है|कुलूप उघडे आहे
+Locked|लॉक है|कुलूप बंद आहे
+01 / Emergency location SMS|01 / आपातकालीन स्थान SMS|01 / आपत्कालीन स्थान SMS
+Location protection on|स्थान सुरक्षा चालू है|स्थान संरक्षण सुरू आहे
+Location protection off|स्थान सुरक्षा बंद है|स्थान संरक्षण बंद आहे
+WAITING FOR LOCATION|स्थान की प्रतीक्षा है|स्थानाची प्रतीक्षा आहे
+Emergency SMS includes a maps link when a location is available.|स्थान उपलब्ध होने पर आपातकालीन SMS में नक्शे का लिंक शामिल होता है।|स्थान उपलब्ध असल्यास आपत्कालीन SMS मध्ये नकाशाची लिंक असते.
+After recording is sealed, the original trusted contacts receive its encrypted-file SHA-256 hash in a follow-up SMS.|रिकॉर्डिंग सुरक्षित होने के बाद मूल विश्वसनीय संपर्कों को अगले SMS में उसकी एन्क्रिप्टेड फ़ाइल का SHA-256 हैश मिलता है।|रेकॉर्डिंग सुरक्षित झाल्यानंतर मूळ विश्वासू संपर्कांना पुढील SMS मध्ये कूटबद्ध फाइलचा SHA-256 हॅश मिळतो.
+No SMS delivery receipts yet|अभी SMS पहुँचने की पुष्टि नहीं मिली|अद्याप SMS पोहोचल्याची पावती नाही
+Send failed|भेजना असफल रहा|पाठवणे अयशस्वी झाले
+Capture|कैप्चर करें|टिपा
+Import|आयात करें|आयात करा
+Lock vault|तिजोरी लॉक करें|तिजोरी लॉक करा
+Stop & seal vault|रोकें और तिजोरी सुरक्षित करें|थांबवा आणि तिजोरी सुरक्षित करा
+Offline first storage|ऑफ़लाइन संग्रहण|ऑफलाइन साठवण
+Sealed recordings stay on this device. Unlock to play or export a chain-of-custody record. No cloud or peer sync is connected.|सुरक्षित रिकॉर्डिंग इसी डिवाइस पर रहती हैं। चलाने या अभिरक्षा शृंखला निर्यात करने के लिए लॉक खोलें। क्लाउड या अन्य डिवाइस से सिंक जुड़ा नहीं है।|सुरक्षित रेकॉर्डिंग याच उपकरणावर राहते. वाजवण्यासाठी किंवा ताबा साखळी निर्यात करण्यासाठी कुलूप उघडा. क्लाउड किंवा इतर उपकरणाशी समक्रमण जोडलेले नाही.
+ENCRYPTED EVIDENCE LOG|एन्क्रिप्टेड साक्ष्य सूची|कूटबद्ध पुरावा नोंद
+Your evidence is private|आपके साक्ष्य निजी हैं|तुमचे पुरावे खाजगी आहेत
+Authenticate to view sealed recordings.|सुरक्षित रिकॉर्डिंग देखने के लिए अपनी पहचान सत्यापित करें।|सुरक्षित रेकॉर्डिंग पाहण्यासाठी तुमची ओळख पडताळा.
+Set up a device screen lock or biometrics to access the vault.|तिजोरी खोलने के लिए डिवाइस का स्क्रीन लॉक या बायोमेट्रिक्स सेट करें।|तिजोरी उघडण्यासाठी उपकरणावर स्क्रीन लॉक किंवा बायोमेट्रिक्स सेट करा.
+Unlock vault|तिजोरी का लॉक खोलें|तिजोरीचे कुलूप उघडा
+Verify chain integrity|साक्ष्य शृंखला की अखंडता जाँचें|पुरावा साखळीची अखंडता तपासा
+No sealed recordings yet|अभी कोई सुरक्षित रिकॉर्डिंग नहीं|अद्याप सुरक्षित रेकॉर्डिंग नाही
+Record from Vaani, then stop and seal to create your first entry.|वाणी से रिकॉर्ड करें, फिर रोककर सुरक्षित करें ताकि पहली प्रविष्टि बने।|वाणीमधून रेकॉर्ड करा, नंतर थांबवून सुरक्षित करा म्हणजे पहिली नोंद तयार होईल.
+INCIDENT %1$s|घटना %1$s|घटना %1$s
+%1$s sealed items|%1$s सुरक्षित साक्ष्य|%1$s सुरक्षित पुरावे
+%1$s sealed item|%1$s सुरक्षित साक्ष्य|%1$s सुरक्षित पुरावा
+Hash chained|हैश शृंखला से जुड़ा|हॅश साखळीशी जोडलेले
+Delete evidence?|साक्ष्य हटाएँ?|पुरावा हटवायचा?
+Retry deletion?|हटाने का फिर प्रयास करें?|हटवण्याचा पुन्हा प्रयत्न करायचा?
+The encrypted %1$s file will be permanently removed from this device. Its hash-only deletion record stays in the chain, so later evidence can still be verified.|एन्क्रिप्टेड %1$s फ़ाइल इस डिवाइस से हमेशा के लिए हट जाएगी। उसका केवल हैश वाला हटाने का रिकॉर्ड शृंखला में रहेगा, ताकि बाद के साक्ष्य सत्यापित किए जा सकें।|कूटबद्ध %1$s फाइल या उपकरणावरून कायमची हटवली जाईल. फक्त हॅश असलेली हटवण्याची नोंद साखळीत राहील, त्यामुळे नंतरच्या पुराव्यांची पडताळणी करता येईल.
+Delete permanently|हमेशा के लिए हटाएँ|कायमचे हटवा
+Video evidence|वीडियो साक्ष्य|व्हिडिओ पुरावा
+Image evidence|छवि साक्ष्य|प्रतिमा पुरावा
+Close preview|पूर्वावलोकन बंद करें|पूर्वावलोकन बंद करा
+Preview unavailable|पूर्वावलोकन उपलब्ध नहीं|पूर्वावलोकन उपलब्ध नाही
+This image could not be decoded|यह छवि खोली नहीं जा सकी|ही प्रतिमा उघडता आली नाही
+Decrypted evidence image|डिक्रिप्ट की गई साक्ष्य छवि|उकललेली पुराव्याची प्रतिमा
+Temporary decrypted preview • removed when this window closes|अस्थायी डिक्रिप्ट किया गया पूर्वावलोकन • विंडो बंद होने पर हट जाता है|तात्पुरते उकललेले पूर्वावलोकन • ही खिडकी बंद झाल्यावर काढले जाते
+Unlock Evidence Vault|साक्ष्य तिजोरी का लॉक खोलें|पुरावा तिजोरीचे कुलूप उघडा
+Verify it's you before viewing sealed evidence|सुरक्षित साक्ष्य देखने से पहले अपनी पहचान सत्यापित करें|सुरक्षित पुरावे पाहण्यापूर्वी तुमची ओळख पडताळा
+PRIVATE EVIDENCE CAMERA|निजी साक्ष्य कैमरा|खाजगी पुरावा कॅमेरा
+Camera access is required for private capture.|निजी फ़ोटो या वीडियो लेने के लिए कैमरे की अनुमति ज़रूरी है।|खाजगी फोटो किंवा व्हिडिओ घेण्यासाठी कॅमेऱ्याची परवानगी आवश्यक आहे.
+Allow camera|कैमरे की अनुमति दें|कॅमेऱ्याला परवानगी द्या
+Photo|फ़ोटो|फोटो
+Silent video|बिना आवाज़ का वीडियो|आवाज नसलेला व्हिडिओ
+Stop and seal video|रोकें और वीडियो सुरक्षित करें|थांबवा आणि व्हिडिओ सुरक्षित करा
+Record up to 60 seconds|अधिकतम 60 सेकंड रिकॉर्ड करें|60 सेकंदांपर्यंत रेकॉर्ड करा
+Capture and seal photo|फ़ोटो लें और सुरक्षित करें|फोटो घ्या आणि सुरक्षित करा
+Camera unavailable: %1$s|कैमरा उपलब्ध नहीं: %1$s|कॅमेरा उपलब्ध नाही: %1$s
+Cannot create private evidence storage|निजी साक्ष्य संग्रहण नहीं बना सके|खाजगी पुरावा साठवण तयार करता आली नाही
+Video could not be saved|वीडियो सहेजा नहीं जा सका|व्हिडिओ जतन करता आला नाही
+Photo could not be saved: %1$s|फ़ोटो सहेजा नहीं जा सका: %1$s|फोटो जतन करता आला नाही: %1$s
+Open preview|पूर्वावलोकन खोलें|पूर्वावलोकन उघडा
+Preview • no alert was sent|पूर्वावलोकन • कोई अलर्ट नहीं भेजा गया|पूर्वावलोकन • कोणतीही सूचना पाठवलेली नाही
+No app available to open this action|यह कार्य खोलने के लिए कोई ऐप उपलब्ध नहीं|ही कृती उघडण्यासाठी ॲप उपलब्ध नाही
+Harassment reports|उत्पीड़न की रिपोर्ट|छळाच्या तक्रारी
+%1$s sample reports in the past 30 days|पिछले 30 दिनों में %1$s नमूना रिपोर्ट|गेल्या 30 दिवसांत %1$s नमुना अहवाल
+Poorly lit stretch|कम रोशनी वाला रास्ता|कमी प्रकाशाचा रस्ता
+Isolated route|सुनसान रास्ता|निर्जन मार्ग
+Nearby incident cluster|पास की घटनाओं का समूह|जवळच्या घटनांचा समूह
+%1$s adaptive sample reports in this map area|इस नक्शे के क्षेत्र में %1$s अनुकूलित नमूना रिपोर्ट|या नकाशाच्या भागात %1$s अनुकूलित नमुना अहवाल
+Map did not finish loading. Tap Retry to reload it.|नक्शा पूरी तरह लोड नहीं हुआ। दोबारा लोड करने के लिए पुनः प्रयास पर टैप करें।|नकाशा पूर्ण लोड झाला नाही. पुन्हा लोड करण्यासाठी पुन्हा प्रयत्न करा वर टॅप करा.
+Map page could not load. Tap Retry to try again.|नक्शे का पेज लोड नहीं हुआ। दोबारा कोशिश के लिए पुनः प्रयास पर टैप करें।|नकाशाचे पान लोड झाले नाही. पुन्हा प्रयत्न करा वर टॅप करा.
+Loading community map…|समुदाय का नक्शा लोड हो रहा है…|समुदायाचा नकाशा लोड होत आहे…
+Map unavailable|नक्शा उपलब्ध नहीं|नकाशा उपलब्ध नाही
+Retry map|नक्शा फिर लोड करें|नकाशा पुन्हा लोड करा
+All Signals|सभी संकेत|सर्व संकेत
+Dark stretch|अँधेरा रास्ता|अंधारा रस्ता
+Caution: you are inside the sample %1$s zone. Check local conditions and choose a well-lit route.|सावधान: आप नमूना %1$s क्षेत्र में हैं। स्थानीय हालात जाँचें और रोशनी वाला रास्ता चुनें।|सावधान: तुम्ही नमुना %1$s भागात आहात. स्थानिक परिस्थिती तपासा आणि प्रकाश असलेला मार्ग निवडा.
+01 / Community safe routes|01 / समुदाय के सुरक्षित रास्ते|01 / समुदायाचे सुरक्षित मार्ग
+Route intelligence|रास्ते की जानकारी|मार्गाची माहिती
+Sample overlays / no live mesh|नमूना परतें / लाइव नेटवर्क नहीं|नमुना थर / थेट जाळे नाही
+Current GPS with illustrative community signals. Sample routes do not establish that a street is safe.|मौजूदा GPS के साथ उदाहरण के सामुदायिक संकेत। नमूना रास्ते किसी सड़क के सुरक्षित होने की पुष्टि नहीं करते।|सध्याच्या GPS सोबत उदाहरणार्थ समुदाय संकेत. नमुना मार्ग रस्ता सुरक्षित असल्याची खात्री देत नाहीत.
+Caution near %1$s|%1$s के पास सावधानी रखें|%1$s जवळ सावध राहा
+Your current location overlaps this sample risk area. Use the map to check a well-lit alternative.|आपका मौजूदा स्थान इस नमूना जोखिम क्षेत्र में है। नक्शे पर रोशनी वाला दूसरा रास्ता देखें।|तुमचे सध्याचे स्थान या नमुना धोका क्षेत्रात आहे. नकाशावर प्रकाश असलेला पर्यायी मार्ग पाहा.
+Refresh|ताज़ा करें|अद्ययावत करा
+Recenter|फिर केंद्र में लाएँ|पुन्हा मध्यभागी आणा
+Well-Lit Streets|रोशनी वाली सड़कें|प्रकाश असलेले रस्ते
+Patrol Points|गश्त के स्थान|गस्त ठिकाणे
+Safe Haven|सुरक्षित आश्रय|सुरक्षित आश्रय
+Risk Corridor|जोखिम वाला रास्ता|धोकादायक मार्ग
+Safe Corridor Preview|सुरक्षित रास्ते का पूर्वावलोकन|सुरक्षित मार्गाचे पूर्वावलोकन
+Adaptive sample data|अनुकूलित नमूना डेटा|अनुकूलित नमुना डेटा
+Suggested: Nearby Well-Lit Corridor|सुझाव: पास का रोशनी वाला रास्ता|सुचवलेला: जवळचा प्रकाश असलेला मार्ग
+Leaflet route overlay near the current map area • no live safety score|मौजूदा नक्शे के पास Leaflet रास्ते की परत • लाइव सुरक्षा स्कोर नहीं|सध्याच्या नकाशाजवळ Leaflet मार्गाचा थर • थेट सुरक्षा गुण नाहीत
+Open device maps|डिवाइस का नक्शा खोलें|उपकरणाचा नकाशा उघडा
+Map tiles require internet access. Route availability and local conditions must still be checked.|नक्शे के लिए इंटरनेट ज़रूरी है। रास्ते की उपलब्धता और स्थानीय हालात फिर भी जाँचें।|नकाशासाठी इंटरनेट आवश्यक आहे. मार्गाची उपलब्धता आणि स्थानिक परिस्थिती तरीही तपासा.
+COMMUNITY OBSERVATIONS|समुदाय की जानकारी|समुदायाची निरीक्षणे
+Night transit shuttle|रात्रि परिवहन शटल|रात्रीची वाहतूक शटल
+Sample • Gate 4 station, regular service|नमूना • गेट 4 स्टेशन, नियमित सेवा|नमुना • गेट 4 स्थानक, नियमित सेवा
+Report environmental factor|आसपास की स्थिति की रिपोर्ट करें|परिसरातील परिस्थिती नोंदवा
+Try a local demo report. Nothing is published or sent.|डिवाइस पर नमूना रिपोर्ट बनाएँ। कुछ प्रकाशित या भेजा नहीं जाएगा।|उपकरणावर नमुना अहवाल तयार करा. काहीही प्रकाशित किंवा पाठवले जाणार नाही.
+Isolated alley|सुनसान गली|निर्जन गल्ली
+Harassment hotspot|उत्पीड़न वाला इलाका|छळ होणारा भाग
+Stray dogs|आवारा कुत्ते|भटके कुत्रे
+Save demo signal|नमूना संकेत सहेजें|नमुना संकेत जतन करा
+Demo signal saved for this session: %1$s. It has not been shared.|इस सत्र के लिए नमूना संकेत सहेजा: %1$s। इसे साझा नहीं किया गया है।|या सत्रासाठी नमुना संकेत जतन केला: %1$s. तो सामायिक केलेला नाही.
+%1$s local demo signals this session|इस सत्र में %1$s स्थानीय नमूना संकेत|या सत्रात %1$s स्थानिक नमुना संकेत
+Nearby police stations|पास के पुलिस थाने|जवळची पोलीस ठाणी
+Preview nearby public stations. This does not notify or dispatch police.|पास के पुलिस थानों का पूर्वावलोकन करें। इससे पुलिस को सूचना नहीं जाती और पुलिस नहीं भेजी जाती।|जवळच्या पोलीस ठाण्यांचे पूर्वावलोकन पाहा. यातून पोलिसांना कळवले जात नाही किंवा पोलीस पाठवले जात नाहीत.
+Preview: no alert was sent. Opening nearby police stations in your device map.|पूर्वावलोकन: कोई अलर्ट नहीं भेजा गया। डिवाइस के नक्शे में पास के पुलिस थाने खोल रहे हैं।|पूर्वावलोकन: सूचना पाठवलेली नाही. उपकरणाच्या नकाशात जवळची पोलीस ठाणी उघडत आहे.
+Nearby NGOs|पास के NGO|जवळच्या NGO
+Preview local support organizations. No organization is contacted from this panel.|स्थानीय सहायता संगठनों का पूर्वावलोकन करें। इस पैनल से किसी संगठन से संपर्क नहीं होता।|स्थानिक मदत संस्थांचे पूर्वावलोकन पाहा. या पॅनेलमधून कोणत्याही संस्थेशी संपर्क होत नाही.
+Preview: no alert was sent. Connect an approved recipient integration before using this for dispatch.|पूर्वावलोकन: कोई अलर्ट नहीं भेजा गया। सहायता भेजने के लिए पहले स्वीकृत प्राप्तकर्ता सेवा जोड़ें।|पूर्वावलोकन: सूचना पाठवलेली नाही. मदत पाठवण्यासाठी आधी मान्य प्राप्तकर्ता सेवा जोडा.
+Peer support|साथियों से सहायता|सहकाऱ्यांची मदत
+Preview consenting peer-support options. No peer is contacted from this panel.|सहमति वाले साथी-सहायता विकल्प देखें। इस पैनल से किसी साथी से संपर्क नहीं होता।|संमती दिलेल्या सहकारी मदतीचे पर्याय पाहा. या पॅनेलमधून कोणत्याही सहकाऱ्याशी संपर्क होत नाही.
+Preview: no alert was sent. Peer support requires an approved, consent-based integration.|पूर्वावलोकन: कोई अलर्ट नहीं भेजा गया। साथी सहायता के लिए स्वीकृत, सहमति आधारित सेवा ज़रूरी है।|पूर्वावलोकन: सूचना पाठवलेली नाही. सहकारी मदतीसाठी मान्य, संमतीवर आधारित सेवा आवश्यक आहे.
+Nearby shelters|पास के आश्रय|जवळचे आश्रय
+Preview local shelters and public resources. No shelter is contacted from this panel.|स्थानीय आश्रय और सार्वजनिक संसाधन देखें। इस पैनल से किसी आश्रय से संपर्क नहीं होता।|स्थानिक आश्रय आणि सार्वजनिक संसाधने पाहा. या पॅनेलमधून कोणत्याही आश्रयाशी संपर्क होत नाही.
+Preview: no alert was sent. Opening this preview does not reserve a place or notify a shelter.|पूर्वावलोकन: कोई अलर्ट नहीं भेजा गया। इसे खोलने से जगह आरक्षित नहीं होती और आश्रय को सूचना नहीं जाती।|पूर्वावलोकन: सूचना पाठवलेली नाही. हे उघडल्याने जागा राखीव होत नाही किंवा आश्रयाला कळवले जात नाही.
+Interface language|इंटरफ़ेस की भाषा|इंटरफेसची भाषा
+Choose the language used throughout VAANI.|VAANI में इस्तेमाल होने वाली भाषा चुनें।|VAANI मध्ये वापरायची भाषा निवडा.
+Changing interface language does not change speech recognition, your safeword or saved notes.|इंटरफ़ेस की भाषा बदलने से वाक् पहचान, आपका सुरक्षा शब्द या सहेजे गए नोट्स नहीं बदलते।|इंटरफेसची भाषा बदलल्याने आवाज ओळख, तुमचा सुरक्षितता शब्द किंवा जतन केलेल्या नोंदी बदलत नाहीत.
+Speech language only changes voice recognition and phrase suggestions. Interface language is set separately above.|वाक् पहचान की भाषा केवल आवाज़ पहचानने और सुझाए गए वाक्यांशों को बदलती है। इंटरफ़ेस की भाषा ऊपर अलग से चुनें।|आवाज ओळखीची भाषा केवळ आवाज ओळख आणि सुचवलेली वाक्ये बदलते. इंटरफेसची भाषा वर स्वतंत्रपणे निवडा.
+Vaani|वाणी|वाणी
+Vault|तिजोरी|तिजोरी
+Community|समुदाय|समुदाय
+Support|सहायता|मदत
+Settings|सेटिंग्स|सेटिंग्ज
+PERSONAL|निजी|वैयक्तिक
+All Notes|सभी नोट्स|सर्व नोंदी
+Armed Operations|सुरक्षा नियंत्रण|सुरक्षा नियंत्रण
+Evidence / Vault|साक्ष्य / तिजोरी|पुरावे / तिजोरी
+Community Routes|समुदाय के रास्ते|समुदायाचे मार्ग
+Support Network|सहायता नेटवर्क|मदत जाळे
+Discreet Settings|गोपनीय सेटिंग्स|गोपनीय सेटिंग्ज
+Exit blackout|काली स्क्रीन से बाहर आएँ|काळ्या स्क्रीनमधून बाहेर पडा
+Double-tap to exit blackout|काली स्क्रीन से बाहर आने के लिए दो बार टैप करें|काळ्या स्क्रीनमधून बाहेर पडण्यासाठी दोनदा टॅप करा
+Show notes disguise|नोट्स का छद्म रूप दिखाएँ|नोंदींचे छद्म रूप दाखवा
+Blackout display|स्क्रीन काली करें|स्क्रीन काळी करा
+Got it|समझ गया|समजले
+Incoming call · Home|आने वाली कॉल · घर|येणारा कॉल · घर
+Local decoy call. It does not place a real call or play a voice clip.|यह केवल फ़ोन पर दिखाई जाने वाली नकली कॉल है। इससे असली कॉल नहीं होती और कोई आवाज़ नहीं चलती।|हा केवळ फोनवरील बनावट कॉल आहे. यातून खरा कॉल होत नाही किंवा आवाजाची क्लिप वाजत नाही.
+End call|कॉल समाप्त करें|कॉल संपवा
+Toggle|चालू या बंद करें|चालू किंवा बंद करा
+Hold for two seconds to alert trusted contacts and record evidence|विश्वसनीय संपर्कों को सूचित करने और साक्ष्य रिकॉर्ड करने के लिए दो सेकंड दबाए रखें|विश्वासू संपर्कांना कळवण्यासाठी आणि पुरावा रेकॉर्ड करण्यासाठी दोन सेकंद दाबून धरा
+Holding|दबाए हुए हैं|दाबून धरले आहे
+Ready|तैयार|तयार
+Activate emergency recording|आपातकालीन रिकॉर्डिंग शुरू करें|आपत्कालीन रेकॉर्डिंग सुरू करा
+HOLD FIRM…|दबाए रखें…|दाबून धरा…
+PRESS & HOLD 2 SECONDS|2 सेकंड दबाए रखें|2 सेकंद दाबून धरा
+STOP &\nSEAL|रोकें और\nसुरक्षित करें|थांबवा आणि\nसुरक्षित करा
+ACTIVATE|सक्रिय करें|सक्रिय करा
+THREAT AI|खतरे का AI आकलन|धोक्याचे AI मूल्यांकन
+Audio|ऑडियो|ध्वनी
+Video|वीडियो|व्हिडिओ
+Image|छवि|प्रतिमा
+GPS unavailable|GPS उपलब्ध नहीं|GPS उपलब्ध नाही
+%1$s evidence #%2$s|%1$s साक्ष्य #%2$s|%1$s पुरावा #%2$s
+View video|वीडियो देखें|व्हिडिओ पाहा
+View image|छवि देखें|प्रतिमा पाहा
+Opening…|खोल रहे हैं…|उघडत आहे…
+Pause|रोकें|विराम द्या
+Replay|फिर चलाएँ|पुन्हा वाजवा
+Resume|जारी रखें|पुढे सुरू करा
+Play|चलाएँ|वाजवा
+Stop playback|चलाना बंद करें|वाजवणे थांबवा
+Export chain of custody|साक्ष्य की अभिरक्षा शृंखला निर्यात करें|पुराव्याची ताबा साखळी निर्यात करा
+Deletion pending — retry to remove the encrypted evidence file.|हटाना बाकी है — एन्क्रिप्टेड साक्ष्य फ़ाइल हटाने के लिए फिर प्रयास करें।|हटवणे बाकी आहे — कूटबद्ध पुराव्याची फाइल हटवण्यासाठी पुन्हा प्रयत्न करा.
+Retry delete|हटाने का फिर प्रयास करें|हटवण्याचा पुन्हा प्रयत्न करा
+Delete evidence|साक्ष्य हटाएँ|पुरावा हटवा
+Safeword|सुरक्षा शब्द|सुरक्षितता शब्द
+Change safeword|सुरक्षा शब्द बदलें|सुरक्षितता शब्द बदला
+Set custom safeword|अपना सुरक्षा शब्द तय करें|स्वतःचा सुरक्षितता शब्द ठरवा
+e.g. PINEAPPLE|उदा. PINEAPPLE|उदा. PINEAPPLE
+Save|सहेजें|जतन करा
+Cancel|रद्द करें|रद्द करा
+Close|बंद करें|बंद करा
+Voice recognition|वाक् पहचान|आवाज ओळख
+Speech language|वाक् पहचान की भाषा|आवाज ओळखीची भाषा
+Choose speech language|वाक् पहचान की भाषा चुनें|आवाज ओळखीची भाषा निवडा
+Use on-device speech only|केवल डिवाइस पर वाक् पहचान करें|केवळ उपकरणावर आवाज ओळखा
+Turning this off allows your device speech service to use the network and potentially send microphone audio for recognition.|इसे बंद करने पर आपके डिवाइस की वाक् सेवा नेटवर्क इस्तेमाल कर सकती है और पहचान के लिए माइक्रोफ़ोन का ऑडियो भेज सकती है।|हे बंद केल्यावर उपकरणाची आवाज सेवा नेटवर्क वापरू शकते आणि ओळखीसाठी मायक्रोफोनचा ध्वनी पाठवू शकते.
+Check voice support|वाक् पहचान की उपलब्धता जाँचें|आवाज ओळखीची उपलब्धता तपासा
+Download speech model|वाक् पहचान मॉडल डाउनलोड करें|आवाज ओळख मॉडेल डाउनलोड करा
+Suggested trigger phrase (review and test before use)|सुझाया गया ट्रिगर वाक्यांश (इस्तेमाल से पहले जाँचें और परखें)|सुचवलेला सक्रियकरण वाक्यांश (वापरण्यापूर्वी तपासा आणि चाचणी करा)
+Use suggested phrase|सुझाया गया वाक्यांश इस्तेमाल करें|सुचवलेला वाक्यांश वापरा
+Changing speech language never changes your saved safeword. Only the saved phrase is a trigger.|वाक् पहचान की भाषा बदलने से आपका सहेजा हुआ सुरक्षा शब्द नहीं बदलता। केवल सहेजा गया वाक्यांश ट्रिगर है।|आवाज ओळखीची भाषा बदलल्याने जतन केलेला सुरक्षितता शब्द बदलत नाही. फक्त जतन केलेला वाक्यांश सक्रिय करतो.
+Replace active safeword?|मौजूदा सुरक्षा शब्द बदलें?|सध्याचा सुरक्षितता शब्द बदलायचा?
+This explicitly changes your active trigger. Test recognition in your chosen speech language.|इससे आपका सक्रिय ट्रिगर बदल जाएगा। चुनी हुई वाक् पहचान की भाषा में इसे परखें।|यामुळे तुमचा सक्रिय वाक्यांश बदलेल. निवडलेल्या आवाज ओळखीच्या भाषेत त्याची चाचणी करा.
+01 / Emergency activation|01 / आपातकालीन सक्रियण|01 / आपत्कालीन सक्रियकरण
+Sealing evidence|साक्ष्य सुरक्षित कर रहे हैं|पुरावा सुरक्षित करत आहे
+Recording active|रिकॉर्डिंग चालू है|रेकॉर्डिंग सुरू आहे
+Manually activate VAANI|VAANI को स्वयं सक्रिय करें|VAANI स्वतः सक्रिय करा
+Private capture / trusted-contact SMS|निजी रिकॉर्डिंग / विश्वसनीय संपर्कों को SMS|खाजगी रेकॉर्डिंग / विश्वासू संपर्कांना SMS
+Sealing evidence…|साक्ष्य सुरक्षित कर रहे हैं…|पुरावा सुरक्षित करत आहे…
+STOP & SEAL EVIDENCE|रोकें और साक्ष्य सुरक्षित करें|थांबवा आणि पुरावा सुरक्षित करा
+No trusted contacts configured. Add them in Settings for emergency SMS.|कोई विश्वसनीय संपर्क नहीं जोड़ा गया। आपातकालीन SMS के लिए सेटिंग्स में संपर्क जोड़ें।|विश्वासू संपर्क जोडलेले नाहीत. आपत्कालीन SMS साठी सेटिंग्जमध्ये संपर्क जोडा.
+%1$s trusted contacts configured. SMS requires permission and cellular service.|%1$s विश्वसनीय संपर्क जोड़े गए हैं। SMS के लिए अनुमति और मोबाइल सेवा ज़रूरी है।|%1$s विश्वासू संपर्क जोडले आहेत. SMS साठी परवानगी आणि मोबाइल सेवा आवश्यक आहे.
+02 / Acoustic trigger|02 / आवाज़ से सक्रियण|02 / आवाजाने सक्रियकरण
+Voice unavailable — check Voice recognition in Settings|वाक् पहचान उपलब्ध नहीं — सेटिंग्स में वाक् पहचान जाँचें|आवाज ओळख उपलब्ध नाही — सेटिंग्जमधील आवाज ओळख तपासा
+Opening microphone…|माइक्रोफ़ोन चालू कर रहे हैं…|मायक्रोफोन सुरू करत आहे…
+Microphone listening|माइक्रोफ़ोन सुन रहा है|मायक्रोफोन ऐकत आहे
+Monitoring motion|हलचल की निगरानी जारी है|हालचालीवर लक्ष ठेवत आहे
+Microphone paused|माइक्रोफ़ोन रुका हुआ है|मायक्रोफोन थांबवला आहे
+Continuous acoustic trigger|लगातार आवाज़ से सक्रियण|सतत आवाजाने सक्रियकरण
+Edit safeword|सुरक्षा शब्द संपादित करें|सुरक्षितता शब्द संपादित करा
+Listening window: %1$ss remaining|सुनने का समय: %1$s सेकंड बाकी|ऐकण्याचा कालावधी: %1$s सेकंद बाकी
+Motion armed / continuous acoustic trigger off|हलचल पहचान तैयार / लगातार आवाज़ ट्रिगर बंद|हालचाल ओळख सज्ज / सतत आवाज ट्रिगर बंद
+Motion and continuous acoustic triggers enabled|हलचल और लगातार आवाज़ ट्रिगर चालू हैं|हालचाल आणि सतत आवाज ट्रिगर सुरू आहेत
+Continuous listening while app is foregrounded|ऐप सामने खुला रहने पर लगातार सुनता है|ॲप समोर उघडे असताना सतत ऐकते
+Acoustic trigger and motion confirmation are off|आवाज़ ट्रिगर और हलचल की पुष्टि बंद हैं|आवाज ट्रिगर आणि हालचाल पुष्टी बंद आहेत
+03 / Response resources|03 / सहायता संसाधन|03 / प्रतिसाद संसाधने
+Public resources|सार्वजनिक संसाधन|सार्वजनिक संसाधने
+Police & support networks|पुलिस और सहायता नेटवर्क|पोलीस आणि मदत जाळे
+Find nearby public stations and support resources. Responder dispatch is not connected.|पास के पुलिस थाने और सहायता संसाधन खोजें। सहायता दल भेजने की सेवा जुड़ी नहीं है।|जवळची पोलीस ठाणी आणि मदत संसाधने शोधा. प्रतिसाद पथक पाठवण्याची सेवा जोडलेली नाही.
+Stations|पुलिस थाने|पोलीस ठाणी
+04 / Quick actions|04 / त्वरित कार्य|04 / झटपट कृती
+Live location|मौजूदा स्थान|सध्याचे स्थान
+Location protection keeps a recent fix ready for emergency SMS to your trusted contacts.|स्थान सुरक्षा आपके विश्वसनीय संपर्कों को आपातकालीन SMS भेजने के लिए हाल का स्थान तैयार रखती है।|स्थान संरक्षण तुमच्या विश्वासू संपर्कांना आपत्कालीन SMS पाठवण्यासाठी अलीकडील स्थान तयार ठेवते.
+Location & contacts|स्थान और संपर्क|स्थान आणि संपर्क
+Private camera|निजी कैमरा|खाजगी कॅमेरा
+Photo or silent video / sealed into the encrypted evidence chain|फ़ोटो या बिना आवाज़ का वीडियो / एन्क्रिप्टेड साक्ष्य शृंखला में सुरक्षित|फोटो किंवा आवाज नसलेला व्हिडिओ / कूटबद्ध पुरावा साखळीत सुरक्षित
+CAPTURE MEDIA|फ़ोटो या वीडियो लें|फोटो किंवा व्हिडिओ घ्या
+05 / Decoy & nearby care|05 / नकली कॉल और पास की चिकित्सा|05 / बनावट कॉल आणि जवळची वैद्यकीय मदत
+Fake incoming call|नकली आने वाली कॉल|बनावट येणारा कॉल
+Scheduled in %1$ss|%1$s सेकंड बाद निर्धारित|%1$s सेकंदांनंतर नियोजित
+Local incoming-call simulation|फ़ोन पर नकली आने वाली कॉल|फोनवर येणाऱ्या कॉलचे अनुकरण
+Now|अभी|आता
++%1$ss|+%1$s सेकंड|+%1$s सेकंद
+Search nearby public hospitals and pharmacies in device maps.|डिवाइस के नक्शे में पास के सार्वजनिक अस्पताल और दवा की दुकानें खोजें।|उपकरणाच्या नकाशात जवळची सार्वजनिक रुग्णालये आणि औषधांची दुकाने शोधा.
+Find nearby care|पास की चिकित्सा खोजें|जवळची वैद्यकीय मदत शोधा
+06 / Local evidence|06 / डिवाइस पर साक्ष्य|06 / उपकरणावरील पुरावे
+Stealth vault|गोपनीय तिजोरी|गोपनीय तिजोरी
+%1$s sealed items / on this device|%1$s सुरक्षित साक्ष्य / इस डिवाइस पर|%1$s सुरक्षित पुरावे / या उपकरणावर
+Open encrypted vault|एन्क्रिप्टेड तिजोरी खोलें|कूटबद्ध तिजोरी उघडा
+Community route preview|समुदाय के रास्ते का पूर्वावलोकन|समुदायाच्या मार्गाचे पूर्वावलोकन
+Quick exit to Notes|तुरंत नोट्स पर जाएँ|लगेच नोंदींकडे जा
+MIC RECORDING|माइक्रोफ़ोन रिकॉर्डिंग|मायक्रोफोन रेकॉर्डिंग
+Recording…|रिकॉर्डिंग जारी है…|रेकॉर्डिंग सुरू आहे…
+Auto-seals after 5 minutes|5 मिनट बाद अपने आप सुरक्षित होती है|5 मिनिटांनंतर आपोआप सुरक्षित होते
+Location|स्थान|स्थान
+Last sealed location: %1$s, %2$s|अंतिम सुरक्षित स्थान: %1$s, %2$s|शेवटचे सुरक्षित स्थान: %1$s, %2$s
+A location fix is requested when evidence is sealed.|साक्ष्य सुरक्षित करते समय स्थान माँगा जाता है।|पुरावा सुरक्षित करताना स्थान मागवले जाते.
+Protection preferences|सुरक्षा प्राथमिकताएँ|सुरक्षा प्राधान्ये
+Local capture • notes disguise|डिवाइस पर रिकॉर्डिंग • नोट्स का छद्म रूप|उपकरणावर रेकॉर्डिंग • नोंदींचे छद्म रूप
+Enabled|चालू|सुरू
+Paused|रुका हुआ|थांबवलेले
+ACOUSTIC TRIGGER|आवाज़ से सक्रियण|आवाजाने सक्रियकरण
+Current safeword phrase|मौजूदा सुरक्षा शब्द|सध्याचा सुरक्षितता शब्द
+Turning this off stops continuous listening. Motion confirmation stays independently armed and can still listen for your safeword for 15 seconds.|इसे बंद करने से लगातार सुनना बंद हो जाता है। हलचल की पुष्टि अलग से तैयार रहती है और 15 सेकंड तक आपका सुरक्षा शब्द सुन सकती है।|हे बंद केल्याने सतत ऐकणे थांबते. हालचाल पुष्टी स्वतंत्रपणे सज्ज राहते आणि 15 सेकंद तुमचा सुरक्षितता शब्द ऐकू शकते.
+Motion confirmation (15s window)|हलचल की पुष्टि (15 सेकंड का समय)|हालचाल पुष्टी (15 सेकंदांचा कालावधी)
+Motion confirmation|हलचल की पुष्टि|हालचाल पुष्टी
+Uses accelerometer and gyroscope rules; no trained model is needed. A possible drop or snatch opens a 15-second safeword window while VAANI or Notes is open in the foreground. No safeword means no alert.|यह एक्सेलेरोमीटर और जाइरोस्कोप के नियमों का उपयोग करता है; प्रशिक्षित मॉडल की ज़रूरत नहीं। VAANI या नोट्स सामने खुला होने पर संभावित गिरने या छीने जाने से सुरक्षा शब्द सुनने का 15 सेकंड का समय शुरू होता है। सुरक्षा शब्द के बिना अलर्ट नहीं जाता।|हे ॲक्सेलरोमीटर आणि जायरोस्कोपचे नियम वापरते; प्रशिक्षित मॉडेलची गरज नाही. VAANI किंवा नोंदी समोर उघडे असताना फोन पडल्याची किंवा हिसकावल्याची शक्यता आढळल्यास सुरक्षितता शब्द ऐकण्यासाठी 15 सेकंद मिळतात. सुरक्षितता शब्दाशिवाय सूचना जात नाही.
+Motion rules can miss events or respond to ordinary handling. Test on your device before relying on this feature.|हलचल के नियम कुछ घटनाएँ छोड़ सकते हैं या सामान्य इस्तेमाल पर सक्रिय हो सकते हैं। भरोसा करने से पहले अपने डिवाइस पर जाँचें।|हालचालीचे नियम काही घटना चुकवू शकतात किंवा नेहमीच्या हाताळणीवर सक्रिय होऊ शकतात. या सुविधेवर अवलंबून राहण्यापूर्वी तुमच्या उपकरणावर चाचणी करा.
+Offline recognition depends on your device.|ऑफ़लाइन पहचान आपके डिवाइस पर निर्भर करती है।|ऑफलाइन ओळख तुमच्या उपकरणावर अवलंबून असते.
+DEVICE & VAULT SECURITY|डिवाइस और तिजोरी की सुरक्षा|उपकरण आणि तिजोरीची सुरक्षा
+Biometric vault lock|बायोमेट्रिक तिजोरी लॉक|बायोमेट्रिक तिजोरी कुलूप
+Uses your device fingerprint, face, or screen lock. The vault locks when the app leaves the foreground.|आपके डिवाइस की उँगली की छाप, चेहरे या स्क्रीन लॉक का उपयोग करता है। ऐप सामने से हटते ही तिजोरी लॉक हो जाती है।|उपकरणाचे बोटांचे ठसे, चेहरा किंवा स्क्रीन लॉक वापरते. ॲप समोरून हटल्यावर तिजोरी लॉक होते.
+Device security settings|डिवाइस की सुरक्षा सेटिंग्स|उपकरणाच्या सुरक्षा सेटिंग्ज
+Location protection|स्थान सुरक्षा|स्थान संरक्षण
+Keeps a timestamped last known location ready for emergency SMS. Android shows an ongoing notification while active.|आपातकालीन SMS के लिए समय सहित अंतिम ज्ञात स्थान तैयार रखता है। चालू होने पर Android लगातार सूचना दिखाता है।|आपत्कालीन SMS साठी वेळेसह शेवटचे ज्ञात स्थान तयार ठेवते. सक्रिय असताना Android सतत सूचना दाखवते.
+Track while armed|सुरक्षा चालू होने पर स्थान ट्रैक करें|सुरक्षा सज्ज असताना स्थानाचा मागोवा घ्या
+Location tracking|स्थान ट्रैकिंग|स्थानाचा मागोवा
+No location fix cached yet|अभी कोई स्थान सहेजा नहीं गया|अद्याप स्थान जतन केलेले नाही
+Last fix: %1$s|अंतिम स्थान: %1$s|शेवटचे स्थान: %1$s
+Trusted contacts|विश्वसनीय संपर्क|विश्वासू संपर्क
+Emergency SMS sends only to contacts you add here.|आपातकालीन SMS केवल यहाँ जोड़े गए संपर्कों को भेजा जाता है।|आपत्कालीन SMS केवळ येथे जोडलेल्या संपर्कांना पाठवला जातो.
+Remove|हटाएँ|काढा
+Name|नाम|नाव
+Phone number|फ़ोन नंबर|फोन क्रमांक
+Add|जोड़ें|जोडा
+Pick contact|संपर्क चुनें|संपर्क निवडा
+Allow emergency SMS|आपातकालीन SMS की अनुमति दें|आपत्कालीन SMS ला परवानगी द्या
+Camera evidence|कैमरे का साक्ष्य|कॅमेऱ्याचा पुरावा
+Capture private photos or silent videos up to 60 seconds, then seal them in the encrypted vault.|निजी फ़ोटो या अधिकतम 60 सेकंड के बिना आवाज़ वाले वीडियो लें, फिर उन्हें एन्क्रिप्टेड तिजोरी में सुरक्षित करें।|खाजगी फोटो किंवा 60 सेकंदांपर्यंत आवाज नसलेले व्हिडिओ घ्या आणि कूटबद्ध तिजोरीत सुरक्षित करा.
+Open private camera|निजी कैमरा खोलें|खाजगी कॅमेरा उघडा
+Import image or video|छवि या वीडियो आयात करें|प्रतिमा किंवा व्हिडिओ आयात करा
+DECOY APP PERSONA|ऐप का छद्म रूप|ॲपचे छद्म रूप
+Disguise as Notes App|नोट्स ऐप के रूप में दिखाएँ|नोंदींच्या ॲपसारखे दाखवा
+Notes launcher disguise|लॉन्चर में नोट्स का छद्म रूप|लाँचरमध्ये नोंदींचे छद्म रूप
+The launcher appears as Notes and future launches open All Notes.|लॉन्चर में नोट्स दिखता है और आगे ऐप खोलने पर सभी नोट्स खुलते हैं।|लाँचरमध्ये नोंदी दिसतात आणि पुढे ॲप उघडल्यावर सर्व नोंदी उघडतात.
+The launcher appears as VAANI and opens the safety dashboard.|लॉन्चर में VAANI दिखता है और सुरक्षा डैशबोर्ड खुलता है।|लाँचरमध्ये VAANI दिसते आणि सुरक्षा नियंत्रण उघडते.
+Lock to Notes now|अभी नोट्स पर लॉक करें|आता नोंदींवर लॉक करा
+LANGUAGE & DISPATCH|भाषा और सहायता प्रेषण|भाषा आणि मदत पाठवणे
+Emergency dispatch|आपातकालीन सहायता प्रेषण|आपत्कालीन मदत पाठवणे
+Trusted-contact SMS is active when configured. Police, NGO, peer, and shelter panels are preview actions until an approved integration is connected.|संपर्क जोड़ने पर विश्वसनीय संपर्कों को SMS भेजना चालू होता है। स्वीकृत सेवा जुड़ने तक पुलिस, NGO, साथियों और आश्रय के पैनल केवल पूर्वावलोकन हैं।|संपर्क जोडलेले असताना विश्वासू संपर्कांना SMS पाठवणे सक्रिय असते. मान्य सेवा जोडेपर्यंत पोलीस, NGO, सहकारी आणि आश्रय पॅनेल केवळ पूर्वावलोकन आहेत.
+Preview action|पूर्वावलोकन कार्य|पूर्वावलोकन कृती
+Preview: no police or NGO alert was sent.|पूर्वावलोकन: पुलिस या NGO को कोई अलर्ट नहीं भेजा गया।|पूर्वावलोकन: पोलीस किंवा NGO ला सूचना पाठवलेली नाही.
+About preview actions|पूर्वावलोकन कार्यों के बारे में|पूर्वावलोकन कृतींबद्दल
+Test interface quietly|बिना अलर्ट इंटरफ़ेस जाँचें|सूचना न पाठवता इंटरफेस तपासा
+Interface check complete. No recording was started and no contacts were notified. To test real recording, use the activation hold on Vaani.|इंटरफ़ेस की जाँच पूरी हुई। रिकॉर्डिंग शुरू नहीं हुई और संपर्कों को सूचित नहीं किया गया। असली रिकॉर्डिंग जाँचने के लिए वाणी में सक्रियण बटन दबाए रखें।|इंटरफेस तपासणी पूर्ण. रेकॉर्डिंग सुरू झाले नाही आणि संपर्कांना कळवले नाही. खरे रेकॉर्डिंग तपासण्यासाठी वाणीमधील सक्रियकरण बटण दाबून धरा.

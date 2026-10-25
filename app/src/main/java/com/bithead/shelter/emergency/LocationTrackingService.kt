@@ -1,5 +1,8 @@
 package com.bithead.shelter.emergency
 
+import com.bithead.shelter.ui.localization.UiLanguage
+import com.bithead.shelter.ui.localization.tr
+
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -85,6 +88,7 @@ class LocationTrackingService : Service(), LocationListener {
 
     override fun onCreate() {
         super.onCreate()
+        UiLanguage.initialize(applicationContext)
         manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 
@@ -102,7 +106,7 @@ class LocationTrackingService : Service(), LocationListener {
         }
         val notifications = getSystemService(NotificationManager::class.java)
         notifications.createNotificationChannel(NotificationChannel(
-            CHANNEL, "Location protection", NotificationManager.IMPORTANCE_LOW
+            CHANNEL, tr("Location protection"), NotificationManager.IMPORTANCE_LOW
         ))
         val open = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
@@ -111,11 +115,11 @@ class LocationTrackingService : Service(), LocationListener {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val notification = NotificationCompat.Builder(this, CHANNEL)
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
-            .setContentTitle("Location protection active")
-            .setContentText("Last known location ready for emergency alerts")
+            .setContentTitle(tr("Location protection active"))
+            .setContentText(tr("Last known location ready for emergency alerts"))
             .setContentIntent(open)
             .setOngoing(true)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stop)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, tr("Stop"), stop)
             .build()
         try {
             ServiceCompat.startForeground(this, NOTIFICATION_ID, notification,

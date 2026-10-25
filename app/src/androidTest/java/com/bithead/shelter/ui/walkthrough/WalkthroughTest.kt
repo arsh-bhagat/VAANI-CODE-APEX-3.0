@@ -64,12 +64,25 @@ class WalkthroughTest {
         walkthroughSteps.forEachIndexed { index, step ->
             compose.waitForIdle()
             compose.onNodeWithText(context.getString(step.feature.title)).assertIsDisplayed()
-            // The modal window consumes even a hold in the spotlight region.
+            compose.waitUntil(5_000L) {
+                compose.onNodeWithTag("walkthrough_shade").fetchSemanticsNode()
+                    .config[WalkthroughHighlightBounds] != androidx.compose.ui.geometry.Rect.Zero
+            }
+            val overlay = compose.onNodeWithTag("walkthrough_overlay").fetchSemanticsNode().boundsInRoot
+            val highlight = compose.onNodeWithTag("walkthrough_shade").fetchSemanticsNode()
+                .config[WalkthroughHighlightBounds].translate(overlay.topLeft)
+            val card = compose.onNodeWithTag("walkthrough_card").fetchSemanticsNode().boundsInRoot
+            assertTrue("Step ${index + 1}: card covers highlight",
+                card.bottom <= highlight.top || card.top >= highlight.bottom)
+            assertTrue("Step ${index + 1}: card outside viewport",
+                card.top >= overlay.top && card.bottom <= overlay.bottom)
+            // The overlay consumes even a hold in the spotlight region.
             compose.onNodeWithTag("walkthrough_overlay").performTouchInput { longClick(androidx.compose.ui.geometry.Offset(20f, 180f), 2200L) }
             compose.onNodeWithText(if (index == walkthroughSteps.lastIndex) "Finish" else "Next").performClick()
         }
         compose.runOnIdle { assertFalse(offered); assertFalse(suppressed); assertEquals(0, actions) }
         compose.onNodeWithText("Settings", useUnmergedTree = true).performClick()
+        compose.onNodeWithTag("settings_list").performScrollToNode(hasText("Replay walkthrough"))
         compose.onNodeWithText("Replay walkthrough").performClick()
         compose.onNodeWithText("Start walkthrough").performClick()
         compose.onNodeWithText("Skip tour").performClick()
@@ -82,6 +95,7 @@ class WalkthroughTest {
         compose.onNodeWithText("Not now").performClick()
         compose.runOnIdle { assertFalse(offered); assertFalse(suppressed) }
         compose.onNodeWithText("Settings", useUnmergedTree = true).performClick()
+        compose.onNodeWithTag("settings_list").performScrollToNode(hasText("Feature help"))
         compose.onNodeWithText("Feature help").performClick()
         compose.onNodeWithText("Learn about a feature").assertIsDisplayed()
         compose.onNodeWithText("Close").performClick()

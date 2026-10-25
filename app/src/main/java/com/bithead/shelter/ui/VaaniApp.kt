@@ -1,12 +1,22 @@
 package com.bithead.shelter.ui
 
+import com.bithead.shelter.ui.localization.uiText
+import com.bithead.shelter.ui.localization.tr
+
+import androidx.compose.material3.Text
 import android.media.RingtoneManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import com.bithead.shelter.ui.walkthrough.*
@@ -48,7 +58,7 @@ import java.util.Locale
 
 import com.bithead.shelter.ui.screens.*
 
-private val tabs = listOf("Spaces", "Vault", "Community", "Support", "Settings")
+private val tabs = listOf("Vaani", "Vault", "Community", "Support", "Settings")
 private val tabIcons = listOf(Icons.Outlined.Dashboard, Icons.Outlined.FolderSpecial, Icons.Outlined.NearMe, Icons.AutoMirrored.Outlined.HelpOutline, Icons.Outlined.Tune)
 @Composable
 fun VaaniApp(
@@ -76,7 +86,11 @@ fun VaaniApp(
     onAddContact: (String, String) -> Unit, onRemoveContact: (String) -> Unit,
     onPickContact: () -> Unit, onLocationTrackingChange: (Boolean) -> Unit,
     onRequestSmsPermission: () -> Unit, onImportMedia: () -> Unit,
-    pendingEvidenceDir: java.io.File, activeIncidentId: String?, onMediaCaptured: (java.io.File) -> Unit
+    pendingEvidenceDir: java.io.File, activeIncidentId: String?, onMediaCaptured: (java.io.File) -> Unit,
+    speechStatus: String = "Voice support has not been checked",
+    speechAvailable: Boolean = true,
+    onUseSuggestedSafeword: (String) -> Unit = {},
+    onRefreshSpeech: () -> Unit = {}, onDownloadSpeech: () -> Unit = {}
 ) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
     var disguised by rememberSaveable { mutableStateOf(disguiseEnabled) }
@@ -98,6 +112,7 @@ fun VaaniApp(
     val visibleTour = tourIndex >= -1 && available
     SideEffect { tour.active = tourIndex >= -1 }
     val configuration = LocalConfiguration.current
+    val targetPadding = with(LocalDensity.current) { 16.dp.toPx() }
     val finishTour: (Boolean) -> Unit = { completed ->
         tourIndex = -2
         tab = if (replay) 4 else 0
@@ -127,18 +142,33 @@ fun VaaniApp(
         if (visibleTour && tourIndex >= 0) {
             val step = walkthroughSteps[tourIndex]
             tab = step.tab
-            withTimeoutOrNull(2_000L) {
+            // Let the newly selected tab compose and place before consulting its old list state.
+            withFrameNanos { }
+            withFrameNanos { }
+            if (step.feature == FeatureHelp.NAVIGATION) {
+                targetReady = tour.targets[step.feature] != null
+                return@LaunchedEffect
+            }
+            withTimeoutOrNull(5_000L) {
                 val state = listStates[step.tab]
                 snapshotFlow { state.layoutInfo.totalItemsCount }.first { it > 0 }
                 // Search stable item keys rather than coupling the tour to screen item counts.
                 var index = 0
                 while (index < state.layoutInfo.totalItemsCount) {
                     state.scrollToItem(index)
+                    withFrameNanos { }
+                    withFrameNanos { }
                     val visible = snapshotFlow { state.layoutInfo.visibleItemsInfo }.first { it.isNotEmpty() }
                     val found = visible.firstOrNull { it.key == step.itemKey }
                     if (found != null) {
                         state.scrollToItem(found.index)
-                        snapshotFlow { tour.targets[step.feature] }.first { it != null }
+                        withFrameNanos { }
+                        withFrameNanos { }
+                        val bounds = snapshotFlow { tour.targets[step.feature] }.first { it != null }!!
+                        // Align the actual control, which can be deep inside a tall contacts panel.
+                        state.scrollBy(bounds.top - tour.viewport.top - targetPadding)
+                        withFrameNanos { }
+                        withFrameNanos { }
                         targetReady = true
                         break
                     }
@@ -169,7 +199,7 @@ fun VaaniApp(
         }
     }
     val disguise = { onLockVault(); disguised = true }
-    val unlockDisguise = { disguised = false }
+    val unlockDisguise = { tab = 0; disguised = false }
     BackHandler(blackout || disguised || tab != 0) {
         when { blackout -> blackout = false; disguised -> Unit; else -> tab = 0 }
     }
@@ -177,9 +207,9 @@ fun VaaniApp(
         Box(Modifier.fillMaxSize().background(Color.Black).pointerInput(Unit) {
             detectTapGestures(onDoubleTap = { blackout = false })
         }.semantics {
-            customActions = listOf(CustomAccessibilityAction("Exit blackout") { blackout = false; true })
+            customActions = listOf(CustomAccessibilityAction(tr("Exit blackout")) { blackout = false; true })
         }) {
-            Text("Double-tap to exit blackout", color = TextMidGray.copy(alpha = 0.3f),
+            Text(uiText("Double-tap to exit blackout"), color = TextMidGray.copy(alpha = 0.3f),
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(24.dp))
         }
@@ -195,12 +225,20 @@ fun VaaniApp(
         )
         return
     }
+    Box(Modifier.fillMaxSize()) {
     CompositionLocalProvider(LocalWalkthrough provides tour) {
     Scaffold(
         modifier = if (visibleTour) Modifier.clearAndSetSemantics { } else Modifier,
         containerColor = ShelterInk,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState) { data ->
+            Snackbar(action = { data.visuals.actionLabel?.let { label ->
+                TextButton(onClick = { data.performAction() }) { Text(uiText(label)) }
+            } }, dismissAction = { if (data.visuals.withDismissAction) {
+                TextButton(onClick = { data.dismiss() }) { Text(uiText("Close")) }
+            } }) { Text(uiText(data.visuals.message)) }
+        } },
         topBar = {
+            Column {
             Row(Modifier.statusBarsPadding().fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                 if (disguised) {
                     Column(
@@ -210,28 +248,30 @@ fun VaaniApp(
                             })
                         }
                     ) {
-                        Text("PERSONAL", style = MaterialTheme.typography.labelMedium, color = ShelterTextDim)
-                        Text("All Notes", style = MaterialTheme.typography.titleLarge)
+                        Text(uiText("PERSONAL"), style = MaterialTheme.typography.labelMedium, color = ShelterTextDim)
+                        Text(uiText("All Notes"), style = MaterialTheme.typography.titleLarge)
                     }
                 } else {
                     IconButton(onClick = disguise, modifier = Modifier.brutalBorder().background(SurfaceElevated)) {
-                        Icon(Icons.Outlined.Calculate, "Show notes disguise", tint = GoldPrimaryDim)
+                        Icon(Icons.Outlined.Calculate, uiText("Show notes disguise"), tint = GoldPrimaryDim)
                     }
                     Column(Modifier.weight(1f).padding(start = 8.dp)) {
-                        Text("VAANI", style = MaterialTheme.typography.labelMedium, color = ShelterBlueSoft)
-                        Text(listOf("Armed Operations", "Evidence / Vault", "Community Routes", "Support Network", "Discreet Settings")[tab].uppercase(Locale.ROOT), style = MaterialTheme.typography.titleMedium)
+                        Text(uiText("VAANI"), style = MaterialTheme.typography.labelMedium, color = ShelterBlueSoft)
+                        Text(uiText(listOf("Armed Operations", "Evidence / Vault", "Community Routes", "Support Network", "Discreet Settings")[tab].uppercase(Locale.ROOT)), style = MaterialTheme.typography.titleMedium)
                     }
                     IconButton(onClick = { onLockVault(); blackout = true }) {
-                        Icon(Icons.Outlined.VisibilityOff, "Blackout display", tint = TextMidGray)
+                        Icon(Icons.Outlined.VisibilityOff, uiText("Blackout display"), tint = TextMidGray)
                     }
                     Image(painterResource(R.drawable.vaani_mark), "VAANI", Modifier.size(40.dp).brutalBorder().clip(RoundedCornerShape(4.dp)))
                 }
             }
+
+            }
         },
         bottomBar = {
-            if (!disguised) Column(Modifier.featureTarget(FeatureHelp.NAVIGATION).background(SurfaceLowest).navigationBarsPadding()) {
+            if (!disguised) Column(Modifier.background(SurfaceLowest).navigationBarsPadding()) {
                 HorizontalDivider(color = BorderSubtle)
-                Row(Modifier.fillMaxWidth().selectableGroup()) {
+                Row(Modifier.fillMaxWidth().featureTarget(FeatureHelp.NAVIGATION).selectableGroup()) {
                     tabs.forEachIndexed { i, title ->
                         val active = tab == i
                         Column(Modifier.weight(1f).selectable(selected = active, role = androidx.compose.ui.semantics.Role.Tab,
@@ -240,8 +280,10 @@ fun VaaniApp(
                             Column(Modifier.padding(vertical = 12.dp), horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                 Icon(tabIcons[i], null, tint = if (active) GoldPrimary else TextMidGray)
-                                Text(title, color = if (active) GoldPrimary else TextMidGray,
-                                    fontSize = 9.sp, maxLines = 1, fontWeight = if (active) FontWeight.Bold else FontWeight.Normal)
+                                Text(uiText(title), color = if (active) GoldPrimary else TextMidGray,
+                                    fontSize = if (com.bithead.shelter.ui.localization.LocalUiLanguage.current == "en") 9.sp else 11.sp,
+                                    maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                    fontWeight = if (active) FontWeight.Bold else FontWeight.Normal)
                             }
                         }
                     }
@@ -249,21 +291,24 @@ fun VaaniApp(
             }
         }
     ) { padding ->
-        Box(Modifier.padding(padding)) {
-            if (disguised) NotesScreen(unlockDisguise)
+        Box(Modifier.padding(padding).fillMaxSize().onGloballyPositioned {
+            tour.viewport = Rect(it.positionInRoot(), it.size.toSize())
+        }) {
+            if (disguised) NotesScreen(safeword, unlockDisguise)
             else when (tab) {
                 0 -> ArmedScreen(isEmergency, isSealing, safeword, evidence.size, listening, listeningActive, gestureWakeMode,
                     gestureWindowOpening, gestureWindowSecondsRemaining, onListeningChange, onEditSafeword, onTrigger,
                     { tab = it }, disguise, { message = it }, decoyDelay, { if (it == 0) decoyCall = true else decoyDelay = it }, trustedContacts.size,
-                    { showCamera = true }, { onLockVault(); blackout = true })
-                1 -> VaultScreen(isEmergency, isSealing, threatLabel, threatScore, lat, lng, evidence, vaultUnlocked, biometricAvailable,
+                    { showCamera = true }, { onLockVault(); blackout = true }, speechAvailable,
+                    threatLabel, threatScore, lat, lng, activeIncidentId)
+                1 -> VaultScreen(isEmergency, isSealing, evidence, vaultUnlocked, biometricAvailable,
                     onTrigger, onUnlockVault, onVerifyChain, playbackState, onPlaybackToggle, onPlaybackStop,
                     onPlaybackSeek, mediaPreviewState, onOpenMedia, onCloseMedia, onExport, onDeleteEvidence,
                     { onLockVault(); blackout = true }, { showCamera = true }, onImportMedia,
-                    onLockVault, locationTracking, cachedLocation, smsStatuses, activeIncidentId)
+                    onLockVault, locationTracking, cachedLocation, smsStatuses)
                 2 -> CommunityScreen(mapLat, mapLng, mapAccuracyMeters, mapLocationTimestamp, onRefreshMapLocation) { message = it }
                 3 -> SupportScreen(disguise)
-                4 -> SettingsScreen(safeword, listening, onListeningChange, gestureWakeMode, onGestureWakeModeChange, onEditSafeword, disguiseEnabled, onDisguiseEnabledChange, disguise, { message = it }, trustedContacts, smsStatuses, locationTracking, cachedLocation, onAddContact, onRemoveContact, onPickContact, onLocationTrackingChange, onRequestSmsPermission, onImportMedia, { showCamera = true }, startReplay, { showFeatureHelp = true }, available)
+                4 -> SettingsScreen(safeword, listening, onListeningChange, gestureWakeMode, onGestureWakeModeChange, onEditSafeword, disguiseEnabled, onDisguiseEnabledChange, disguise, { message = it }, trustedContacts, smsStatuses, locationTracking, cachedLocation, onAddContact, onRemoveContact, onPickContact, onLocationTrackingChange, onRequestSmsPermission, onImportMedia, { showCamera = true }, startReplay, { showFeatureHelp = true }, available, speechStatus, onUseSuggestedSafeword, onRefreshSpeech, onDownloadSpeech)
             }
         }
     }
@@ -276,8 +321,8 @@ fun VaaniApp(
             onSkip = { finishTour(false) })
     }
     message?.let { text ->
-        AlertDialog(onDismissRequest = { message = null }, title = { Text("VAANI") }, text = { Text(text) },
-            confirmButton = { TextButton(onClick = { message = null }) { Text("Got it") } })
+        AlertDialog(onDismissRequest = { message = null }, title = { Text(uiText("VAANI")) }, text = { Text(uiText(text)) },
+            confirmButton = { TextButton(onClick = { message = null }) { Text(uiText("Got it")) } })
     }
     if (decoyCall) {
         val context = LocalContext.current
@@ -289,8 +334,9 @@ fun VaaniApp(
             onDispose { ringtone?.stop() }
         }
         AlertDialog(onDismissRequest = { decoyCall = false }, icon = { Icon(Icons.Outlined.Phone, null) },
-            title = { Text("Incoming call · Home") }, text = { Text("Local decoy call. It does not place a real call or play a voice clip.") },
-            confirmButton = { TextButton(onClick = { decoyCall = false }) { Text("End call") } })
+            title = { Text(uiText("Incoming call · Home")) }, text = { Text(uiText("Local decoy call. It does not place a real call or play a voice clip.")) },
+            confirmButton = { TextButton(onClick = { decoyCall = false }) { Text(uiText("End call")) } })
     }
     if (mediaPreviewState.evidenceId != null) MediaPreview(mediaPreviewState, onCloseMedia)
+    } // Shared app / walkthrough coordinate root
 }

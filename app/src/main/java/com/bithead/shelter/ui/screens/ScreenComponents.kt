@@ -1,5 +1,9 @@
 package com.bithead.shelter.ui.screens
 
+import com.bithead.shelter.ui.localization.uiText
+import com.bithead.shelter.ui.localization.tr
+
+import androidx.compose.material3.Text
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -37,15 +41,15 @@ internal fun PreviewActionPanel(title: String, detail: String, icon: ImageVector
         }
         Caption(detail)
         Action("Open preview", Icons.Outlined.OpenInNew, onOpen, primary = false)
-        Text("Preview • no alert was sent", color = ShelterAmber, style = MaterialTheme.typography.labelMedium)
+        Text(uiText("Preview • no alert was sent"), color = ShelterAmber, style = MaterialTheme.typography.labelMedium)
     }
 }
 
 @Composable
-internal fun Heading(text: String) { Text(text.uppercase(Locale.ROOT), style = MaterialTheme.typography.titleMedium) }
+internal fun Heading(text: String) { Text(uiText(text.uppercase(Locale.ROOT)), style = MaterialTheme.typography.titleMedium) }
 
 @Composable
-internal fun Caption(text: String) { Text(text, style = MaterialTheme.typography.bodyMedium, color = ShelterTextDim) }
+internal fun Caption(text: String) { Text(uiText(text), style = MaterialTheme.typography.bodyMedium, color = ShelterTextDim) }
 
 @Composable
 internal fun Badge(text: String) { StatusPill(text) }
@@ -54,10 +58,10 @@ internal fun Badge(text: String) { StatusPill(text) }
 internal fun Action(text: String, icon: ImageVector, onClick: () -> Unit, modifier: Modifier = Modifier, primary: Boolean = true, enabled: Boolean = true) {
     BrutalButton(onClick = onClick, enabled = enabled, modifier = modifier.fillMaxWidth(),
         tone = if (primary) BrutalButtonTone.Primary else BrutalButtonTone.Neutral) {
-        Icon(icon, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text(text)
+        Icon(icon, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text(uiText(text))
     }
 }
 internal fun openLink(context: android.content.Context, uri: String) {
     try { context.startActivity(Intent(if (uri.startsWith("tel:")) Intent.ACTION_DIAL else Intent.ACTION_VIEW, Uri.parse(uri))) }
-    catch (_: android.content.ActivityNotFoundException) { Toast.makeText(context, "No app available to open this action", Toast.LENGTH_SHORT).show() }
+    catch (_: android.content.ActivityNotFoundException) { Toast.makeText(context, tr("No app available to open this action"), Toast.LENGTH_SHORT).show() }
 }

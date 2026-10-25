@@ -6,6 +6,7 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import com.bithead.shelter.ui.localization.LocalUiLanguage
 
 private val ShelterColorScheme = darkColorScheme(
     primary = GoldPrimary,
@@ -53,6 +54,7 @@ private val ShelterShapes = Shapes(
 
 @Composable
 fun ShelterTheme(content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = ShelterColorScheme, typography = ShelterTypography,
+    val typography = if (LocalUiLanguage.current == "en") ShelterTypography else DevanagariTypography
+    MaterialTheme(colorScheme = ShelterColorScheme, typography = typography,
         shapes = ShelterShapes, content = content)
 }

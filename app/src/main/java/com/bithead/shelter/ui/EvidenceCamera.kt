@@ -1,5 +1,8 @@
 package com.bithead.shelter.ui
 
+import com.bithead.shelter.ui.localization.uiText
+
+import androidx.compose.material3.Text
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.BackHandler
@@ -96,18 +99,18 @@ fun EvidenceCamera(
 
     Column(Modifier.fillMaxSize().background(CanvasDark).statusBarsPadding().navigationBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("PRIVATE EVIDENCE CAMERA", color = TextBone, style = MaterialTheme.typography.titleMedium)
-            TextButton(onClick = { if (recording != null) recording?.stop() else onClose() }) { Text("Close") }
+            Text(uiText("PRIVATE EVIDENCE CAMERA"), color = TextBone, style = MaterialTheme.typography.titleMedium)
+            TextButton(onClick = { if (recording != null) recording?.stop() else onClose() }) { Text(uiText("Close")) }
         }
         if (!permission) {
-            Text("Camera access is required for private capture.", Modifier.padding(20.dp), color = TextBone)
-            Button(onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }, Modifier.padding(20.dp)) { Text("Allow camera") }
+            Text(uiText("Camera access is required for private capture."), Modifier.padding(20.dp), color = TextBone)
+            Button(onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }, Modifier.padding(20.dp)) { Text(uiText("Allow camera")) }
         } else {
             AndroidView({ previewView }, Modifier.fillMaxWidth().weight(1f))
-            problem?.let { Text(it, Modifier.padding(12.dp), color = MaterialTheme.colorScheme.error) }
+            problem?.let { Text(uiText(it), Modifier.padding(12.dp), color = MaterialTheme.colorScheme.error) }
             Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(onClick = { videoMode = false }, enabled = recording == null, modifier = Modifier.weight(1f)) { Text("Photo") }
-                OutlinedButton(onClick = { videoMode = true }, enabled = recording == null, modifier = Modifier.weight(1f)) { Text("Silent video") }
+                OutlinedButton(onClick = { videoMode = false }, enabled = recording == null, modifier = Modifier.weight(1f)) { Text(uiText("Photo")) }
+                OutlinedButton(onClick = { videoMode = true }, enabled = recording == null, modifier = Modifier.weight(1f)) { Text(uiText("Silent video")) }
             }
             Button(
                 onClick = {
@@ -155,7 +158,7 @@ fun EvidenceCamera(
                     }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp)
-            ) { Text(if (recording != null) "Stop and seal video" else if (videoMode) "Record up to 60 seconds" else "Capture and seal photo") }
+            ) { Text(uiText(if (recording != null) "Stop and seal video" else if (videoMode) "Record up to 60 seconds" else "Capture and seal photo")) }
         }
     }
 }

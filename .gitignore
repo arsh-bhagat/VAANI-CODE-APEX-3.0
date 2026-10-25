@@ -47,3 +47,10 @@ Thumbs.db
 # Claude to Codex export bundle
 /claude-to-codex-export/
 /claude-to-codex-export.zip
+
+# Local motion datasets, training outputs and Python caches
+/motion-dataset/
+/motion-dataset.npz
+/motion-output/
+/.venv-motion/
+__pycache__/

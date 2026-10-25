@@ -63,7 +63,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("org.tensorflow:tensorflow-lite-task-audio:0.4.4")
-    implementation("org.tensorflow:tensorflow-lite-task-audio")
+    implementation("org.tensorflow:tensorflow-lite:2.13.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")

@@ -1,0 +1,3 @@
+# Python 3.10 or 3.11; match the Android 2.13 runtime for export compatibility.
+numpy==1.24.3
+tensorflow==2.13.0

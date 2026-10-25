@@ -1,5 +1,8 @@
 package com.bithead.shelter.ui.screens
 
+import com.bithead.shelter.ui.localization.uiText
+
+import androidx.compose.material3.Text
 import android.location.Location
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -12,19 +15,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.bithead.shelter.ui.components.*
 import com.bithead.shelter.ui.theme.*
+import kotlinx.coroutines.delay
 
 @Composable
 internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: String, count: Int, listening: Boolean, listeningActive: Boolean, gestureWakeMode: Boolean,
     gestureWindowOpening: Boolean, gestureWindowSecondsRemaining: Int,
     onListen: (Boolean) -> Unit, onEdit: () -> Unit, onTrigger: () -> Unit, navigate: (Int) -> Unit,
     disguise: () -> Unit, info: (String) -> Unit, decoyDelay: Int, scheduleDecoy: (Int) -> Unit,
-    trustedContactCount: Int, openCamera: () -> Unit, blackout: () -> Unit) {
+    trustedContactCount: Int, openCamera: () -> Unit, blackout: () -> Unit, speechAvailable: Boolean,
+    threatLabel: String, threatScore: Int, lat: Double?, lng: Double?, activeIncidentId: String?) {
     val context = LocalContext.current
     LazyColumn(state = LocalWalkthrough.current?.lists?.get(0) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item(key = "alert") { BrutalPanel(header = "01 / Emergency activation") {
@@ -39,8 +45,12 @@ internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: Strin
             }
             when {
                 isSealing -> Action("Sealing evidence…", Icons.Outlined.Lock, {}, enabled = false)
-                emergency -> BrutalButton(onTrigger, Modifier.fillMaxWidth(), tone = BrutalButtonTone.Emergency) { Text("STOP & SEAL EVIDENCE") }
+                emergency -> BrutalButton(onTrigger, Modifier.fillMaxWidth(), tone = BrutalButtonTone.Emergency) { Text(uiText("STOP & SEAL EVIDENCE")) }
                 else -> TactileHoldButton(onTrigger, Modifier.featureTarget(FeatureHelp.ALERT))
+            }
+            if (emergency) {
+                HorizontalDivider(color = BorderSubtle)
+                ActiveRecordingDetails(threatLabel, threatScore, lat, lng, activeIncidentId)
             }
             Caption(if (trustedContactCount == 0) "No trusted contacts configured. Add them in Settings for emergency SMS." else "$trustedContactCount trusted contacts configured. SMS requires permission and cellular service.")
         } }
@@ -50,17 +60,17 @@ internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: Strin
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
                     Heading("Safeword")
-                    Caption(if (gestureWindowOpening) "Opening microphone…" else if (listeningActive) "Microphone listening" else if (listening && gestureWakeMode) "Waiting for gesture" else "Microphone paused")
+                    Caption(if (!speechAvailable) "Voice unavailable — check Voice recognition in Settings" else if (gestureWindowOpening) "Opening microphone…" else if (listeningActive) "Microphone listening" else if (gestureWakeMode) "Monitoring motion" else "Microphone paused")
                 }
-                BrutalSwitch(listening, onListen, enabled = !emergency && !isSealing, label = "Safeword protection")
+                BrutalSwitch(listening, onListen, enabled = !emergency && !isSealing, label = "Continuous acoustic trigger")
             }
             Surface(onClick = onEdit, shape = RoundedCornerShape(4.dp), color = SurfaceLowest, border = BorderStroke(1.dp, BorderSubtle)) {
                 Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text("“$safeword”", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
-                    Icon(Icons.Outlined.EditNote, "Edit safeword", tint = GoldPrimary)
+                    Icon(Icons.Outlined.EditNote, uiText("Edit safeword"), tint = GoldPrimary)
                 }
             }
-            Caption(if (gestureWakeMode && listeningActive) "Listening window: ${gestureWindowSecondsRemaining}s remaining" else if (gestureWakeMode) "Gesture wake / 12-second listening window" else "Continuous listening while app is foregrounded")
+            Caption(if (gestureWindowSecondsRemaining > 0) "Listening window: ${gestureWindowSecondsRemaining}s remaining" else if (gestureWakeMode && !listening) "Motion armed / continuous acoustic trigger off" else if (gestureWakeMode) "Motion and continuous acoustic triggers enabled" else if (listening) "Continuous listening while app is foregrounded" else "Acoustic trigger and motion confirmation are off")
         } }
         item { BrutalPanel(header = "03 / Response resources") {
             StatusPill("Public resources", tone = StatusTone.Mesh)
@@ -79,18 +89,19 @@ internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: Strin
             Heading("Private camera")
             Caption("Photo or silent video / sealed into the encrypted evidence chain")
             BrutalButton(openCamera, Modifier.fillMaxWidth(), tone = BrutalButtonTone.Emergency) {
-                Icon(Icons.Outlined.PhotoCamera, null); Spacer(Modifier.width(8.dp)); Text("CAPTURE MEDIA")
+                Icon(Icons.Outlined.PhotoCamera, null); Spacer(Modifier.width(8.dp)); Text(uiText("CAPTURE MEDIA"))
             }
             FeatureHelpLink(FeatureHelp.CAMERA)
         } }
-        item(key = "decoy") { BrutalPanel(Modifier.featureTarget(FeatureHelp.DECOY), header = "05 / Decoy & nearby care") {
+        item(key = "decoy") { BrutalPanel(header = "05 / Decoy & nearby care") {
             Heading("Fake incoming call")
             FeatureHelpLink(FeatureHelp.DECOY)
             Caption(if (decoyDelay > 0) "Scheduled in ${decoyDelay}s" else "Local incoming-call simulation")
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(Modifier.fillMaxWidth().featureTarget(FeatureHelp.DECOY),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(0, 15, 30).forEach { seconds ->
                     BrutalButton({ scheduleDecoy(seconds) }, Modifier.weight(1f), tone = BrutalButtonTone.Neutral) {
-                        Text(if (seconds == 0) "Now" else "+${seconds}s")
+                        Text(uiText(if (seconds == 0) "Now" else "+${seconds}s"))
                     }
                 }
             }
@@ -109,5 +120,34 @@ internal fun ArmedScreen(emergency: Boolean, isSealing: Boolean, safeword: Strin
         } }
         item { Action("Blackout display", Icons.Outlined.VisibilityOff, blackout, primary = false) }
         item { Action("Quick exit to Notes", Icons.Outlined.Calculate, disguise, primary = false) }
+    }
+}
+
+/** Only composed during active emergency recording; no standby panel is shown. */
+@Composable
+private fun ActiveRecordingDetails(label: String, score: Int, lat: Double?, lng: Double?, activeIncidentId: String?) {
+    var audioTab by rememberSaveable(activeIncidentId) { mutableIntStateOf(0) }
+    val captureStartedAt = activeIncidentId?.toLongOrNull()
+    var elapsedSeconds by remember(activeIncidentId) { mutableLongStateOf(0L) }
+    LaunchedEffect(captureStartedAt) {
+        if (captureStartedAt != null) while (true) {
+            elapsedSeconds = ((System.currentTimeMillis() - captureStartedAt) / 1_000L).coerceAtLeast(0L)
+            delay(250L)
+        }
+    }
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        StatusPill("Recording active", tone = StatusTone.Critical)
+        Heading("MIC RECORDING")
+        AudioWaveformSimulator(true, Modifier.align(Alignment.CenterHorizontally))
+        if (captureStartedAt != null) TimerDisplay(elapsedSeconds, Modifier.align(Alignment.CenterHorizontally))
+        Text(uiText("Recording…"), Modifier.align(Alignment.CenterHorizontally), style = MaterialTheme.typography.headlineSmall)
+        Caption("Auto-seals after 5 minutes")
+        TabRow(selectedTabIndex = audioTab, containerColor = ShelterSurfaceRaised) {
+            listOf("Audio", "Location").forEachIndexed { index, title ->
+                Tab(audioTab == index, onClick = { audioTab = index }, text = { Text(uiText(title)) })
+            }
+        }
+        if (audioTab == 0) ThreatMeter(label, score)
+        else Caption(if (lat != null && lng != null) "Last sealed location: $lat, $lng" else "A location fix is requested when evidence is sealed.")
     }
 }

@@ -89,13 +89,20 @@
     <button id="retry-tiles" type="button">Retry Tiles</button>
 </div>
 <script src="leaflet/leaflet.js"></script>
+<script src="ui_copy.js"></script>
 <script>
+    let uiLanguage = 'en';
+    function mapText(source, ...args) {
+        const localized = window.vaaniUiCopy?.[source.toLowerCase()]?.[uiLanguage] || source;
+        return localized.replace(/%([1-9]\d*)\$s/g, (_, index) => String(args[Number(index) - 1] ?? ''));
+    }
     const DEFAULT_CENTER = [28.6335, 77.2199];
     const map = L.map('map', { zoomControl: true }).setView(DEFAULT_CENTER, 13);
     const tileStatus = document.getElementById('tile-status');
     const tileStatusMessage = document.getElementById('tile-status-message');
     const retryTilesButton = document.getElementById('retry-tiles');
     let tileErrors = 0;
+    let tileStatusSource = 'Loading map tiles…';
 
     const tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -103,7 +110,8 @@
     });
 
     function showTileStatus(message, allowRetry) {
-        tileStatusMessage.textContent = message;
+        tileStatusSource = message;
+        tileStatusMessage.textContent = mapText(message);
         retryTilesButton.style.display = allowRetry ? 'inline-block' : 'none';
         tileStatus.classList.remove('hidden');
     }
@@ -185,7 +193,7 @@
             offsetPoint(center, 860, 560)
         ];
         L.polyline(corridor, { color: '#c9a227', weight: 4, opacity: .9 })
-            .bindPopup('<strong>Well-lit corridor</strong><br>Adaptive sample community route')
+            .bindPopup(`<strong>${mapText('Well-lit corridor')}</strong><br>${mapText('Adaptive sample community route')}`)
             .addTo(corridorLayer);
 
         [
@@ -195,7 +203,7 @@
         ].forEach(item => {
             const isHaven = item[1].startsWith('Verified haven');
             squareMarker(item[0], isHaven ? 'haven' : 'patrol')
-                .bindPopup(`<strong>${item[1]}</strong><br><small>Illustrative location — not a verified service</small>`)
+                .bindPopup(`<strong>${mapText(item[1])}</strong><br><small>${mapText('Illustrative location — not a verified service')}</small>`)
                 .addTo(isHaven ? havenLayer : patrolLayer);
         });
     }
@@ -205,12 +213,32 @@
     const legend = L.control({ position: 'bottomleft' });
     legend.onAdd = function () {
         const box = L.DomUtil.create('div', 'legend');
-        box.innerHTML = '<div>ILLUSTRATIVE SIGNALS</div><div><i style="background:#8f2d2d"></i>Risk corridor</div>' +
-            '<div><i style="background:#c9a227"></i>Well-lit route</div>' +
-            '<div><i style="background:#4a6fa5"></i>Patrol / support</div>';
+        box.innerHTML = `<div>${mapText('ILLUSTRATIVE SIGNALS')}</div><div><i style="background:#8f2d2d"></i>${mapText('Risk corridor')}</div>` +
+            `<div><i style="background:#c9a227"></i>${mapText('Well-lit route')}</div>` +
+            `<div><i style="background:#4a6fa5"></i>${mapText('Patrol / support')}</div>`;
         return box;
     };
     legend.addTo(map);
+
+    window.setUiLanguage = function (language) {
+        if (uiLanguage === language) return;
+        uiLanguage = ['hi', 'mr'].includes(language) ? language : 'en';
+        document.documentElement.lang = uiLanguage;
+        document.getElementById('map').setAttribute('aria-label', mapText('Interactive community safety map'));
+        retryTilesButton.textContent = mapText('Retry Tiles');
+        tileStatusMessage.textContent = mapText(tileStatusSource);
+        legend.remove();
+        legend.addTo(map);
+        const recenter = document.querySelector('.recenter-control button');
+        if (recenter) {
+            recenter.title = mapText('Recenter on your location');
+            recenter.setAttribute('aria-label', recenter.title);
+        }
+        for (const [selector, label] of [['.leaflet-control-zoom-in', 'Zoom in'], ['.leaflet-control-zoom-out', 'Zoom out']]) {
+            const button = document.querySelector(selector);
+            if (button) { button.title = mapText(label); button.setAttribute('aria-label', button.title); }
+        }
+    };
 
     window.invalidateMapSize = function () {
         // Android WebView can measure the native view correctly while resolving
@@ -258,8 +286,8 @@
             const container = L.DomUtil.create('div', 'leaflet-bar recenter-control');
             const button = L.DomUtil.create('button', '', container);
             button.type = 'button';
-            button.title = 'Recenter on your location';
-            button.setAttribute('aria-label', 'Recenter on your location');
+            button.title = mapText('Recenter on your location');
+            button.setAttribute('aria-label', button.title);
             button.textContent = '◎';
             L.DomEvent.disableClickPropagation(container);
             L.DomEvent.on(button, 'click', window.recenterUserLocation);
@@ -281,7 +309,7 @@
             const source = document.createElement('small');
             title.textContent = zone.title;
             detail.textContent = zone.detail;
-            source.textContent = 'Adaptive sample incident history';
+            source.textContent = mapText('Adaptive sample incident history');
             popup.append(title, detail, source);
             L.circle([zone.lat, zone.lng], {
                 color, fillColor: color, fillOpacity: .12, opacity: .85, radius: zone.radius, weight: 2, dashArray: '6 6'
@@ -320,9 +348,9 @@
             opacity: .65,
             weight: 2
         }).addTo(map);
-        userMarker = squareMarker(userLatLng, 'user').bindTooltip('You are here', {
+        userMarker = squareMarker(userLatLng, 'user').bindTooltip(mapText('You are here'), {
             permanent: true, direction: 'top', offset: [0, -8], className: 'user-tooltip'
-        }).bindPopup(`<strong>Your current location</strong><br><small>Accuracy: about ${Math.round(accuracy)} m<br>Updated ${updated.toLocaleTimeString()}</small>`)
+        }).bindPopup(`<strong>${mapText('Your current location')}</strong><br><small>${mapText('Accuracy: about %1$s m', Math.round(accuracy))}<br>${mapText('Updated %1$s', updated.toLocaleTimeString(uiLanguage))}</small>`)
             .addTo(map);
         map.setView(userLatLng, 15);
         window.invalidateMapSize();

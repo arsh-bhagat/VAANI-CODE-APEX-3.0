@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.telephony.SmsManager
 import android.telephony.SubscriptionManager
 import androidx.core.content.ContextCompat
@@ -17,6 +18,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 data class ContactAlertStatus(val name: String, val number: String, val status: String)
 
@@ -37,24 +39,8 @@ object EmergencySms {
         }.getOrDefault(emptyList())
     }
 
-    fun send(context: Context, contacts: List<TrustedContact>, location: CachedLocation?) {
-        if (contacts.isEmpty()) {
-            statuses.value = emptyList()
-            return
-        }
-        val permission = ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
-        val subscription = SubscriptionManager.getDefaultSmsSubscriptionId()
-        val ready = permission && subscription != SubscriptionManager.INVALID_SUBSCRIPTION_ID
-        val initial = contacts.map {
-            ContactAlertStatus(it.name, it.number, when {
-                !permission -> "SMS permission missing"
-                !ready -> "No default SMS SIM"
-                else -> "Sending"
-            })
-        }
-        persist(context, initial)
-        if (!ready) return
-
+    fun send(context: Context, contacts: List<TrustedContact>, location: CachedLocation?, incidentId: String) {
+        require(incidentId.matches(Regex("[0-9]{1,20}"))) { "Invalid incident ID" }
         val body = buildString {
             append("VAANI SOS: Please call me. ")
             if (location == null) append("Location unavailable.")
@@ -64,7 +50,35 @@ object EmergencySms {
                 append(": https://maps.google.com/?q=")
                 append(String.format(Locale.US, "%.6f,%.6f", location.latitude, location.longitude))
             }
+            append("\nIncident: $incidentId")
         }
+        dispatch(context, contacts, body, "SOS")
+    }
+
+    fun sendEvidenceHash(context: Context, contacts: List<TrustedContact>, incidentId: String, fileSha256: String) {
+        dispatch(context, contacts, EvidenceHashSms.body(incidentId, fileSha256), "Evidence hash")
+    }
+
+    private fun dispatch(context: Context, contacts: List<TrustedContact>, body: String, label: String) {
+        val batchId = UUID.randomUUID().toString()
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString("batch_id", batchId).apply()
+        if (contacts.isEmpty()) {
+            persist(context, emptyList())
+            return
+        }
+        val permission = ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
+        val subscription = SubscriptionManager.getDefaultSmsSubscriptionId()
+        val ready = permission && subscription != SubscriptionManager.INVALID_SUBSCRIPTION_ID
+        val initial = contacts.map {
+            ContactAlertStatus(it.name, it.number, when {
+                !permission -> "SMS permission missing"
+                !ready -> "No default SMS SIM"
+                else -> "Sending $label"
+            })
+        }
+        persist(context, initial)
+        if (!ready) return
+
         val manager = if (android.os.Build.VERSION.SDK_INT >= 31) {
             context.getSystemService(SmsManager::class.java).createForSubscriptionId(subscription)
         } else {
@@ -74,25 +88,31 @@ object EmergencySms {
         contacts.forEachIndexed { index, contact ->
             try {
                 val parts = manager.divideMessage(body)
-                // A short, single-part message keeps each status tied to one SMS.
+                // SOS and the full hash follow-up each fit a single SMS.
                 require(parts.size == 1) { "Emergency message is too long for one SMS" }
                 val request = (System.currentTimeMillis() % 100_000L).toInt() + index * 2
                 val sent = PendingIntent.getBroadcast(context, request,
                     Intent(context, SmsStatusReceiver::class.java)
-                        .setAction(SmsStatusReceiver.ACTION_SENT).putExtra("number", contact.number),
+                        .setAction(SmsStatusReceiver.ACTION_SENT)
+                        .setData(Uri.parse("vaani-sms://$batchId/$index/sent"))
+                        .putExtra("number", contact.number).putExtra("batch_id", batchId).putExtra("label", label),
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 val delivered = PendingIntent.getBroadcast(context, request + 1,
                     Intent(context, SmsStatusReceiver::class.java)
-                        .setAction(SmsStatusReceiver.ACTION_DELIVERED).putExtra("number", contact.number),
+                        .setAction(SmsStatusReceiver.ACTION_DELIVERED)
+                        .setData(Uri.parse("vaani-sms://$batchId/$index/delivered"))
+                        .putExtra("number", contact.number).putExtra("batch_id", batchId).putExtra("label", label),
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 manager.sendTextMessage(contact.number, null, body, sent, delivered)
             } catch (error: Exception) {
-                update(context, contact.number, "Failed: ${error.message ?: "SMS unavailable"}")
+                update(context, contact.number, "Send failed: $label (${error.message ?: "SMS unavailable"})", batchId)
             }
         }
     }
 
-    fun update(context: Context, number: String, status: String) {
+    fun update(context: Context, number: String, status: String, batchId: String) {
+        // A late SOS receipt must not be reported as delivery of the evidence hash.
+        if (context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString("batch_id", null) != batchId) return
         persist(context, statuses.value.map { if (it.number == number) it.copy(status = status) else it })
     }
 
@@ -112,12 +132,14 @@ class SmsStatusReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val number = intent.getStringExtra("number") ?: return
+        val batchId = intent.getStringExtra("batch_id") ?: return
+        val label = intent.getStringExtra("label") ?: "SMS"
         EmergencySms.restore(context)
         val status = when (intent.action) {
-            ACTION_SENT -> if (resultCode == Activity.RESULT_OK) "Sent" else "Send failed ($resultCode)"
-            ACTION_DELIVERED -> if (resultCode == Activity.RESULT_OK) "Delivered" else "Sent; delivery unconfirmed"
+            ACTION_SENT -> if (resultCode == Activity.RESULT_OK) "$label: Sent" else "Send failed ($resultCode): $label"
+            ACTION_DELIVERED -> if (resultCode == Activity.RESULT_OK) "$label: Delivered" else "$label: Sent; delivery unconfirmed"
             else -> return
         }
-        EmergencySms.update(context, number, status)
+        EmergencySms.update(context, number, status, batchId)
     }
 }

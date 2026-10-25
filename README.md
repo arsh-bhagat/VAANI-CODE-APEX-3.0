@@ -55,3 +55,30 @@ evidence keys are Keystore-backed. The safeword *trigger path*, however, is
 still built on Android's general-purpose SpeechRecognizer rather than a
 dedicated offline wake-word model — do not describe safeword detection as
 fully offline until that replacement is made.
+
+## Voice recognition and motion confirmation
+
+Settings → Interface language offers English, हिन्दी and मराठी with bundled
+translations. The choice persists and updates the interface without restarting
+the activity. Settings → Voice recognition independently offers ten speech
+languages, support checks, and explicit safeword suggestions. Google ML Kit
+translation remains removed; UI languages require no network or model downloads.
+See the [language implementation notes](docs/MULTILINGUAL_IMPLEMENTATION.md).
+
+Speech models may require an initial download. On-device speech is used only
+when the device provides it; a network-capable device speech service requires
+an explicit Settings choice. Changing speech language preserves the saved phrase.
+
+Motion confirmation is independent of the continuous acoustic trigger. With
+motion enabled and the acoustic trigger off, accelerometer/gyroscope rules can
+still open a 15-second safeword listening window. A recognized phrase confirms
+the emergency; timeout dismisses the window. Both modes work only while the
+app is open in the foreground.
+
+The initial SOS includes an incident ID. After emergency audio is finalized and
+sealed, the original contacts who remain trusted receive a follow-up SMS with
+the same incident ID and the full SHA-256 hash of the encrypted evidence file.
+The fingerprint verifies that file's integrity; it is separate from the Vault's
+chain hash and is not an encryption/decryption key. No hash is sent for a failed
+or unfinished recording. SMS permission, a default SMS SIM and carrier service
+are required for both messages.

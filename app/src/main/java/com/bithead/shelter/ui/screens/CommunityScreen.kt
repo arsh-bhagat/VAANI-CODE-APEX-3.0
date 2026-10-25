@@ -1,5 +1,10 @@
 package com.bithead.shelter.ui.screens
 
+import com.bithead.shelter.ui.localization.uiText
+import com.bithead.shelter.ui.localization.tr
+import com.bithead.shelter.ui.localization.LocalUiLanguage
+
+import androidx.compose.material3.Text
 import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
@@ -92,8 +97,8 @@ private fun dangerZonesJson(zones: List<MapDangerZone>) = JSONArray().apply {
             .put("lng", zone.longitude)
             .put("radius", zone.radiusMeters)
             .put("level", zone.level)
-            .put("title", zone.title)
-            .put("detail", zone.detail))
+            .put("title", tr(zone.title))
+            .put("detail", tr(zone.detail)))
     }
 }.toString()
 
@@ -150,10 +155,7 @@ private fun LeafletMap(
             addJavascriptInterface(object {
                 @JavascriptInterface
                 fun onMapReady() {
-                    (context as? android.app.Activity)?.runOnUiThread {
-                        mapReady = true
-                        mapError = null
-                    } ?: run {
+                    android.os.Handler(android.os.Looper.getMainLooper()).post {
                         mapReady = true
                         mapError = null
                     }
@@ -173,7 +175,7 @@ private fun LeafletMap(
                     val path = request.url.path.orEmpty()
                     val asset = path.removePrefix("/assets/")
                     if (!path.startsWith("/assets/") || asset.contains("..") ||
-                        (asset != "leaflet_map.html" && !asset.startsWith("leaflet/"))) {
+                        (asset != "leaflet_map.html" && asset != "ui_copy.js" && !asset.startsWith("leaflet/"))) {
                         return WebResourceResponse("text/plain", "UTF-8", 404, "Not Found", emptyMap(), ByteArrayInputStream(byteArrayOf()))
                     }
                     val mime = when {
@@ -217,13 +219,15 @@ private fun LeafletMap(
         }
     }
     val validLocation = latitude?.isFinite() == true && longitude?.isFinite() == true
-    val zonesJson = remember(zones) { dangerZonesJson(zones) }
-    val script = remember(filter, latitude, longitude, accuracyMeters, locationTimestamp, zonesJson, recenterRequest) {
+    val uiLanguage = LocalUiLanguage.current
+    val zonesJson = remember(zones, uiLanguage) { dangerZonesJson(zones) }
+    val script = remember(filter, latitude, longitude, accuracyMeters, locationTimestamp, zonesJson, recenterRequest, uiLanguage) {
         val lat = if (validLocation) latitude.toString() else "null"
         val lng = if (validLocation) longitude.toString() else "null"
         val accuracy = accuracyMeters?.takeIf { it.isFinite() && it > 0f }?.toString() ?: "null"
         val timestamp = locationTimestamp?.takeIf { it > 0L }?.toString() ?: "null"
         buildString {
+            append("window.setUiLanguage && window.setUiLanguage(").append(JSONObject.quote(uiLanguage)).append(");")
             append("window.applyNativeState && window.applyNativeState(")
             append(JSONObject.quote(filter)).append(", ").append(lat).append(", ").append(lng)
             append(", ").append(accuracy).append(", ").append(timestamp).append(", ").append(zonesJson).append(");")
@@ -256,15 +260,15 @@ private fun LeafletMap(
                 if (mapError == null) {
                     CircularProgressIndicator()
                     Spacer(Modifier.height(12.dp))
-                    Text("Loading community map…")
+                    Text(uiText("Loading community map…"))
                 } else {
-                    Text(mapError ?: "Map unavailable")
+                    Text(uiText(mapError ?: "Map unavailable"))
                     Spacer(Modifier.height(12.dp))
                     Button(onClick = {
                         mapError = null
                         mapReady = false
                         mapLoadAttempt++
-                    }) { Text("Retry map") }
+                    }) { Text(uiText("Retry map")) }
                 }
             }
         }
@@ -316,18 +320,18 @@ internal fun CommunityScreen(
             )
         }
         item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            OutlinedButton(onClick = refreshLocation, modifier = Modifier.weight(1f)) { Icon(Icons.Outlined.Refresh, null); Spacer(Modifier.width(6.dp)); Text("Refresh") }
+            OutlinedButton(onClick = refreshLocation, modifier = Modifier.weight(1f)) { Icon(Icons.Outlined.Refresh, null); Spacer(Modifier.width(6.dp)); Text(uiText("Refresh")) }
             OutlinedButton(onClick = {
                 if (latitude != null && longitude != null) recenterRequest++ else refreshLocation()
-            }, modifier = Modifier.weight(1f)) { Icon(Icons.Outlined.MyLocation, null); Spacer(Modifier.width(6.dp)); Text("Recenter") }
+            }, modifier = Modifier.weight(1f)) { Icon(Icons.Outlined.MyLocation, null); Spacer(Modifier.width(6.dp)); Text(uiText("Recenter")) }
         } }
-        item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All Signals", "Well-Lit Streets", "Patrol Points", "Safe Haven", "Risk Corridor").forEach { label -> FilterChip(filter == label, { filter = label }, shape = RoundedCornerShape(4.dp), label = { Text(label) }) } } }
+        item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All Signals", "Well-Lit Streets", "Patrol Points", "Safe Haven", "Risk Corridor").forEach { label -> FilterChip(filter == label, { filter = label }, shape = RoundedCornerShape(4.dp), label = { Text(uiText(label)) }) } } }
         item { Panel { Heading("Safe Corridor Preview"); Badge("Adaptive sample data"); Panel(color = ShelterSurfaceRaised) { Heading("Suggested: Nearby Well-Lit Corridor"); Caption("Leaflet route overlay near the current map area • no live safety score"); Action("Open device maps", Icons.Outlined.NearMe, { openLink(context, "geo:0,0?q=nearby+police+station") }) }; Caption("Map tiles require internet access. Route availability and local conditions must still be checked.") } }
         item { Heading("COMMUNITY OBSERVATIONS") }
         item { Panel { Heading("Night transit shuttle"); Caption("Sample • Gate 4 station, regular service") } }
         item { Panel {
             Heading("Report environmental factor"); Caption("Try a local demo report. Nothing is published or sent.")
-            listOf("Dark stretch", "Isolated alley", "Harassment hotspot", "Stray dogs").chunked(2).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { row.forEach { text -> FilterChip(factor == text, { factor = text }, label = { Text(text, fontSize = 12.sp) }) } } }
+            listOf("Dark stretch", "Isolated alley", "Harassment hotspot", "Stray dogs").chunked(2).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { row.forEach { text -> FilterChip(factor == text, { factor = text }, label = { Text(uiText(text), fontSize = 12.sp) }) } } }
             Action("Save demo signal", Icons.Outlined.AddLocationAlt, { reports++; info("Demo signal saved for this session: $factor. It has not been shared.") })
             Caption("$reports local demo signals this session")
         } }

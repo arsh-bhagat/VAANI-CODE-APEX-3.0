@@ -1,5 +1,7 @@
 package com.bithead.shelter.ui.components
 
+import com.bithead.shelter.ui.localization.uiText
+
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
@@ -38,7 +40,7 @@ fun AudioWaveformSimulator(active: Boolean, modifier: Modifier = Modifier, color
 @Composable
 fun TimerDisplay(elapsedSeconds: Long, modifier: Modifier = Modifier) {
     val seconds = elapsedSeconds.coerceAtLeast(0)
-    Text(String.format(Locale.ROOT, "%02d:%02d", seconds / 60, seconds % 60), modifier,
+    Text(uiText(String.format(Locale.ROOT, "%02d:%02d", seconds / 60, seconds % 60)), modifier,
         style = MaterialTheme.typography.labelLarge.copy(fontSize = 32.sp, lineHeight = 40.sp,
             fontFeatureSettings = "tnum"))
 }

@@ -18,9 +18,9 @@
     <string name="tour_busy">Available after recording or sealing finishes.</string>
     <string name="tour_choose_feature">Learn about a feature</string>
     <string name="feature_navigation_title">Find your way around</string>
-    <string name="feature_navigation_body">Use the tabs to reach Spaces, Vault, Community, Support and Settings.</string>
+    <string name="feature_navigation_body">Use the tabs to reach Vaani, Vault, Community, Support and Settings.</string>
     <string name="feature_safeword_title">Safeword protection</string>
-    <string name="feature_safeword_body">Choose your trigger phrase and enable recognition while the app is open in the foreground. Offline recognition depends on your device.</string>
+    <string name="feature_safeword_body">Choose your trigger phrase and enable continuous acoustic listening while the app is open in the foreground. Turning it off does not disable motion confirmation or its 15-second safeword window. Offline recognition depends on your device.</string>
     <string name="feature_alert_title">Record and alert</string>
     <string name="feature_alert_body">Hold the alert control for two seconds to record audio. Configured trusted contacts can receive one SMS when permission is granted. Stop and seal encrypts the evidence on this device.</string>
     <string name="feature_contacts_title">Trusted contacts</string>
@@ -36,11 +36,11 @@
     <string name="feature_decoy_title">Decoy call</string>
     <string name="feature_decoy_body">Show a simulated incoming-call screen now or after a delay. It rings locally but does not place a real call or play a voice conversation.</string>
     <string name="feature_disguise_title">Notes disguise</string>
-    <string name="feature_disguise_body">Disguise changes the launcher and opens All Notes on future launches. To return to VAANI, hold the %1$s header for two seconds, or enter ##, vaani, or 911 in the Notes search field. Lock to Notes hides the safety interface immediately.</string>
+    <string name="feature_disguise_body">Disguise changes the launcher and opens All Notes on future launches. To return to Vaani, type your saved safeword in the Notes search field, hold the %1$s header for two seconds, or enter ##, vaani, or 911. Typing the safeword reveals Vaani without activating an emergency. Lock to Notes hides the safety interface immediately.</string>
     <string name="feature_replay_title">Replay the walkthrough</string>
     <string name="feature_replay_body">Return to Help &amp; onboarding in Settings to replay this tour anytime. Feature help also lets you review individual explanations.</string>
-    <string name="feature_gesture_title">Gesture wake</string>
-    <string name="feature_gesture_body">In Gesture-Wake mode, a physical jerk opens a listening window for up to 12 seconds. Gesture detection works only while VAANI or Notes is open in the foreground.</string>
+    <string name="feature_gesture_title">Motion confirmation</string>
+    <string name="feature_gesture_body">Motion mode uses accelerometer and gyroscope rules without a trained model. A possible drop or snatch opens a 15-second safeword window even when continuous acoustic listening is off. A recognized safeword is required to activate an emergency. Detection works only while VAANI or Notes is open in the foreground. Ordinary handling can trigger a window, and some events may be missed.</string>
     <string name="feature_location_title">Location protection</string>
     <string name="feature_location_body">Track while armed keeps a timestamped last known location ready for emergency SMS. Android shows an ongoing notification while tracking is active.</string>
     <string name="feature_security_title">Device and vault security</string>

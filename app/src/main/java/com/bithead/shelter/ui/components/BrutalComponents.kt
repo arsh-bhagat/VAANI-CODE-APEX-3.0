@@ -1,5 +1,8 @@
 package com.bithead.shelter.ui.components
 
+import com.bithead.shelter.ui.localization.uiText
+
+import androidx.compose.material3.Text
 import android.os.SystemClock
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,7 +32,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun BrutalSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier, enabled: Boolean = true, label: String = "Toggle") {
-    Box(modifier.size(64.dp, 48.dp).semantics { contentDescription = label }
+    val localizedLabel = uiText(label)
+    Box(modifier.size(64.dp, 48.dp).semantics { contentDescription = localizedLabel }
         .toggleable(checked, enabled = enabled, role = Role.Switch, onValueChange = onCheckedChange),
         contentAlignment = Alignment.Center) {
         Box(Modifier.size(60.dp, 28.dp).brutalBorder().background(CanvasDark, RoundedCornerShape(4.dp))) {
@@ -47,7 +51,7 @@ fun BrutalPanel(modifier: Modifier = Modifier, color: Color = SurfacePanel,
     Column(modifier.fillMaxWidth().neoShadow().brutalBorder()
         .clip(RoundedCornerShape(4.dp)).background(color)) {
         if (header != null) {
-            Text(header.uppercase(Locale.ROOT), Modifier.padding(16.dp),
+            Text(uiText(header.uppercase(Locale.ROOT)), Modifier.padding(16.dp),
                 style = MaterialTheme.typography.labelMedium, color = TextMidGray)
             HorizontalDivider(color = BorderSubtle)
         }
@@ -87,7 +91,7 @@ fun StatusPill(text: String, modifier: Modifier = Modifier, tone: StatusTone = S
     Surface(modifier = modifier.heightIn(min = 22.dp), color = background,
         shape = RoundedCornerShape(9999.dp),
         border = androidx.compose.foundation.BorderStroke(1.dp, foreground.copy(alpha = 0.5f))) {
-        Text(text.uppercase(Locale.ROOT), Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+        Text(uiText(text.uppercase(Locale.ROOT)), Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
             style = MaterialTheme.typography.labelSmall, color = foreground)
     }
 }
@@ -99,15 +103,18 @@ fun TactileHoldButton(onComplete: () -> Unit, modifier: Modifier = Modifier, ena
     var holding by remember { mutableStateOf(false) }
     val complete by rememberUpdatedState(onComplete)
     val haptics = LocalHapticFeedback.current
+    val holdDescription = uiText("Hold for two seconds to alert trusted contacts and record evidence")
+    val holdState = uiText(if (holding) "Holding" else "Ready")
+    val activationLabel = uiText("Activate emergency recording")
     Box(modifier.fillMaxWidth().heightIn(min = 64.dp).neoShadow().brutalBorder(color = GoldPrimaryDim)
         .clip(RoundedCornerShape(4.dp)).background(SurfaceLowest)
         .semantics {
             role = Role.Button
-            contentDescription = "Hold for two seconds to alert trusted contacts and record evidence"
-            stateDescription = if (holding) "Holding" else "Ready"
+            contentDescription = holdDescription
+            stateDescription = holdState
             if (!enabled) disabled()
             // Accessibility services have no physical press-and-hold gesture.
-            customActions = listOf(CustomAccessibilityAction("Activate emergency recording") {
+            customActions = listOf(CustomAccessibilityAction(activationLabel) {
                 if (enabled) { complete(); true } else false
             })
         }.pointerInput(enabled) {
@@ -140,7 +147,7 @@ fun TactileHoldButton(onComplete: () -> Unit, modifier: Modifier = Modifier, ena
         Box(Modifier.matchParentSize()) {
             Box(Modifier.fillMaxHeight().fillMaxWidth(progress).background(GoldSubtleContainer))
         }
-        Text(if (holding) "HOLD FIRM…" else "PRESS & HOLD 2 SECONDS",
+        Text(uiText(if (holding) "HOLD FIRM…" else "PRESS & HOLD 2 SECONDS"),
             Modifier.padding(16.dp), style = MaterialTheme.typography.labelLarge,
             color = if (enabled) GoldPrimary else TextMutedCarbon)
     }

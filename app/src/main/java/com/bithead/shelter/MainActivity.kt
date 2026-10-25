@@ -16,6 +16,8 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.speech.RecognitionSupport
+import android.speech.RecognitionSupportCallback
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -31,6 +33,11 @@ import androidx.compose.runtime.*
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.bithead.shelter.ai.SpeechPreferences
+import com.bithead.shelter.ai.ListeningPolicy
+import com.bithead.shelter.ai.LanguageCatalog
+import com.bithead.shelter.ai.SafewordMatcher
+import kotlinx.coroutines.flow.combine
 import com.bithead.shelter.ai.ThreatAnalyzer
 import com.bithead.shelter.ai.IncidentSummary
 import com.bithead.shelter.data.AppDatabase
@@ -43,7 +50,7 @@ import com.bithead.shelter.emergency.LocationCache
 import com.bithead.shelter.emergency.LocationTrackingService
 import com.bithead.shelter.security.Crypto
 import com.bithead.shelter.security.AppDisguiseManager
-import com.bithead.shelter.sensors.GestureDetector
+import com.bithead.shelter.sensors.MotionThreatDetector
 import com.bithead.shelter.ui.VaaniApp
 import com.bithead.shelter.ui.components.EvidencePlaybackState
 import com.bithead.shelter.ui.components.EvidenceMediaPreviewState
@@ -74,7 +81,7 @@ class MainActivity : FragmentActivity() {
 
     private enum class CaptureState { IDLE, RECORDING, SEALING }
 
-    private data class SealResult(val entryId: Long, val rawDeleted: Boolean)
+    private data class SealResult(val entryId: Long, val rawDeleted: Boolean, val fileSha256: String)
 
     private data class RecoveryResult(val recovered: Int, val failure: String? = null)
 
@@ -100,14 +107,14 @@ class MainActivity : FragmentActivity() {
         private var activeSealCompletion: CompletableDeferred<Unit>? = null
 
         private val walkthroughSessionId = java.util.UUID.randomUUID().toString()
-        private const val GESTURE_WINDOW_SECONDS = 12
+        private const val GESTURE_WINDOW_SECONDS = 15
         private const val GESTURE_READY_TIMEOUT_MS = 3_000L
-        private const val GESTURE_FINAL_RESULT_TIMEOUT_MS = 2_000L
     }
 
     private lateinit var db: AppDatabase
     private var recorder: MediaRecorder? = null
     private var rawFile: File? = null
+    private var activeSmsContacts: List<TrustedContact> = emptyList()
     private var activeIncidentId by mutableStateOf<String?>(null)
     private var mediaSealsPending by mutableIntStateOf(0)
     private var trustedContacts by mutableStateOf<List<TrustedContact>>(emptyList())
@@ -123,7 +130,10 @@ class MainActivity : FragmentActivity() {
     private var mediaPreviewJob: Job? = null
     private var mediaPreviewRequestId = 0L
     private var speechRecognizer: SpeechRecognizer? = null
-    private lateinit var gestureDetector: GestureDetector
+    private var speechEpoch = 0
+    private var speechReady by mutableStateOf(false)
+    private var speechStatus by mutableStateOf("Checking voice recognition")
+    private lateinit var gestureDetector: MotionThreatDetector
     private var autoStopJob: Job? = null
     private val snackbarHostState = SnackbarHostState()
 
@@ -188,6 +198,8 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        com.bithead.shelter.ui.localization.UiLanguage.initialize(applicationContext)
+        SpeechPreferences.initialize(applicationContext)
         walkthroughPreferences = WalkthroughPreferences(this)
         walkthroughPending = walkthroughPreferences.shouldOffer
         walkthroughActive = savedInstanceState?.getString("walkthrough_session") == walkthroughSessionId &&
@@ -208,26 +220,36 @@ class MainActivity : FragmentActivity() {
         safewordState = loadSafeword()
         listeningEnabled = getSharedPreferences("shelter_prefs", MODE_PRIVATE).getBoolean("listening", true)
         gestureWakeMode = getSharedPreferences("shelter_prefs", MODE_PRIVATE).getBoolean("gesture_wake_mode", false)
-        if (gestureWakeMode && !listeningEnabled) {
-            listeningEnabled = true
-            getSharedPreferences("shelter_prefs", MODE_PRIVATE).edit().putBoolean("listening", true).apply()
-        }
         disguiseEnabled = AppDisguiseManager.isEnabled(this)
         AppDisguiseManager.applyLauncherState(this, disguiseEnabled)
         if (!walkthroughPending && !walkthroughActive) requestPermissionsIfNeeded()
-        initSpeechRecognizer()
-        gestureDetector = GestureDetector(this) {
-            if (!recognitionSuppressed && gestureWakeMode && listeningEnabled && foreground) startSafewordWindow()
+        gestureDetector = MotionThreatDetector(this, canDetect = {
+            !recognitionSuppressed && gestureWakeMode && foreground &&
+                captureState == CaptureState.IDLE && !gestureWindowPending && !safewordActivationPending
+        }) {
+            if (!recognitionSuppressed && gestureWakeMode && foreground) startSafewordWindow()
         }
         checkBiometricAvailability()
+        lifecycleScope.launch {
+            combine(SpeechPreferences.language, SpeechPreferences.offlineSpeechOnly) { language, offline -> language to offline }
+                .collect {
+                    cancelSafewordSession()
+                    initSpeechRecognizer()
+                }
+        }
 
         setContent {
-            ShelterTheme {
+            com.bithead.shelter.ui.localization.ProvideUiLanguage { ShelterTheme {
                 val evidenceList by db.evidenceDao().observeAll().collectAsStateWithLifecycle(initialValue = emptyList())
                 val smsStatuses by EmergencySms.statuses.collectAsStateWithLifecycle()
                 val cachedLocation by LocationCache.latest.collectAsStateWithLifecycle()
                 val locationTracking by LocationCache.trackingEnabled.collectAsStateWithLifecycle()
                 VaaniApp(
+                    speechStatus = speechStatus,
+                    speechAvailable = speechReady,
+                    onUseSuggestedSafeword = { saveSafeword(it) },
+                    onRefreshSpeech = { cancelSafewordSession(); initSpeechRecognizer() },
+                    onDownloadSpeech = { downloadSpeechModel() },
                     walkthroughSessionId = walkthroughSessionId,
                     walkthroughPending = walkthroughPending,
                     walkthroughEligible = foreground && !permissionsPending && !showSafewordDialog,
@@ -308,7 +330,7 @@ class MainActivity : FragmentActivity() {
                         onSave = { saveSafeword(it); showSafewordDialog = false }
                     )
                 }
-            }
+            } }
         }
         if (needsPipelineBarrier) {
             lifecycleScope.launch {
@@ -317,7 +339,7 @@ class MainActivity : FragmentActivity() {
                     awaitActiveSeal()
                 } finally {
                     captureState = CaptureState.IDLE
-                    if (!gestureWakeMode) restartSafewordListening()
+                    restartSafewordListening()
                 }
             }
         }
@@ -337,8 +359,11 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun saveSafeword(newWord: String) {
-        safewordState = newWord.trim().uppercase(Locale.getDefault())
+        if (newWord.isBlank()) return
+        cancelSafewordSession()
+        safewordState = newWord.trim()
         getSharedPreferences("shelter_prefs", MODE_PRIVATE).edit().putString("user_safeword", safewordState).apply()
+        initSpeechRecognizer()
     }
 
     private fun requestPermissionsIfNeeded() {
@@ -562,21 +587,40 @@ class MainActivity : FragmentActivity() {
 
     // ---- Safeword voice trigger ----------------------------------------------
 
-    private fun initSpeechRecognizer() {
-        if (!SpeechRecognizer.isRecognitionAvailable(this)) {
-            listeningEnabled = false
-            gestureWakeMode = false
-            getSharedPreferences("shelter_prefs", MODE_PRIVATE).edit()
-                .putBoolean("listening", false)
-                .putBoolean("gesture_wake_mode", false)
-                .apply()
+    private fun initSpeechRecognizer(forMotionWindow: Boolean = false) {
+        cancelSafewordSession()
+        val epoch = ++speechEpoch
+        if (forMotionWindow) {
+            gestureWindowPending = true
+            gestureWindowOpening = true
+        }
+        speechReady = false
+        speechRecognizer?.destroy()
+        speechRecognizer = null
+        val offline = SpeechPreferences.offlineSpeechOnly.value
+        val onDevice = Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
+        if (offline && !onDevice) {
+            speechStatus = "On-device speech is unavailable on this device. Manual recording remains available. You can explicitly allow the device speech service below."
             return
         }
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this).apply {
+        if (!offline && !SpeechRecognizer.isRecognitionAvailable(this)) {
+            speechStatus = "No device speech recognition service is available. Manual recording remains available."
+            return
+        }
+        val recognizer = try {
+            if (offline && Build.VERSION.SDK_INT >= 31) SpeechRecognizer.createOnDeviceSpeechRecognizer(this)
+            else SpeechRecognizer.createSpeechRecognizer(this)
+        } catch (_: Exception) {
+            speechStatus = "The selected speech service could not be opened. Manual recording remains available."
+            return
+        }
+        speechRecognizer = recognizer.apply {
             setRecognitionListener(object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {
+                    if (epoch != speechEpoch) return
                     speechRequestInFlight = false
-                    if (recognitionSuppressed || !foreground || !listeningEnabled || captureState != CaptureState.IDLE) {
+                    if (recognitionSuppressed || !foreground ||
+                        !ListeningPolicy.mayListen(listeningEnabled, gestureWakeMode, gestureWindowPending) || captureState != CaptureState.IDLE) {
                         speechRecognizer?.cancel()
                         return
                     }
@@ -597,6 +641,11 @@ class MainActivity : FragmentActivity() {
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {}
                 override fun onError(error: Int) {
+                    if (epoch != speechEpoch) return
+                    if (Build.VERSION.SDK_INT >= 31 && (error == SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED || error == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE)) {
+                        speechReady = false
+                        speechStatus = "The selected speech language is unavailable. Download its speech model or choose another language."
+                    }
                     val wasGestureWindow = gestureWakeMode && gestureWindowPending
                     speechRequestInFlight = false
                     safewordListeningActive = false
@@ -608,11 +657,12 @@ class MainActivity : FragmentActivity() {
                                 snackbarHostState.showSnackbar(speechErrorMessage(error))
                             }
                         }
-                    } else if (captureState == CaptureState.IDLE && !gestureWakeMode) {
+                    } else if (captureState == CaptureState.IDLE) {
                         restartSafewordListening()
                     }
                 }
                 override fun onResults(results: Bundle?) {
+                    if (epoch != speechEpoch) return
                     val wasGestureWindow = gestureWakeMode && gestureWindowPending
                     val matched = checkSafewordMatches(results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION))
                     speechRequestInFlight = false
@@ -620,14 +670,64 @@ class MainActivity : FragmentActivity() {
                     if (wasGestureWindow && !matched && !restartGestureRecognitionIfTimeRemains()) {
                         finishGestureWindow(cancelRecognizer = false)
                     }
-                    if (captureState == CaptureState.IDLE && !gestureWakeMode && !matched) restartSafewordListening()
+                    if (captureState == CaptureState.IDLE && !matched) restartSafewordListening()
                 }
                 override fun onPartialResults(partialResults: Bundle?) {
+                    if (epoch != speechEpoch) return
                     checkSafewordMatches(partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION))
                 }
                 override fun onEvent(eventType: Int, params: Bundle?) {}
             })
         }
+        checkSpeechSupport(epoch)
+    }
+
+    private fun speechIntent() = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+        putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        putExtra(RecognizerIntent.EXTRA_LANGUAGE, LanguageCatalog.get(SpeechPreferences.language.value).speechLocale)
+        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+        putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, SpeechPreferences.offlineSpeechOnly.value)
+    }
+
+    private fun checkSpeechSupport(epoch: Int) {
+        val locale = LanguageCatalog.get(SpeechPreferences.language.value).speechLocale
+        if (!SpeechPreferences.offlineSpeechOnly.value) {
+            speechReady = true
+            speechStatus = "Device speech service selected for $locale. It may use the network."
+            resumeRequestedListening()
+        } else if (Build.VERSION.SDK_INT >= 33) {
+            try { speechRecognizer?.checkRecognitionSupport(speechIntent(), mainExecutor, object : RecognitionSupportCallback {
+                override fun onSupportResult(support: RecognitionSupport) {
+                    if (epoch != speechEpoch) return
+                    speechReady = support.installedOnDeviceLanguages.any {
+                        it.equals(locale, true) || it.equals(locale.substringBefore('-'), true)
+                    }
+                    speechStatus = if (speechReady) "On-device speech model installed for $locale. Test your saved phrase before relying on recognition."
+                        else "An on-device speech model for $locale is not installed. Download it and check voice support again."
+                    if (speechReady) resumeRequestedListening()
+                }
+                override fun onError(error: Int) {
+                    if (epoch != speechEpoch) return
+                    speechReady = false
+                    speechStatus = "The speech service could not verify $locale (error $error). Manual recording remains available."
+                }
+            }) } catch (_: Exception) {
+                speechStatus = "This speech service cannot verify the selected language. Manual recording remains available."
+            }
+        } else {
+            speechReady = true
+            speechStatus = "On-device speech service selected for $locale. This Android version cannot check installed language models; test your phrase on this device."
+            resumeRequestedListening()
+        }
+    }
+
+    private fun downloadSpeechModel() {
+        if (Build.VERSION.SDK_INT >= 33 && speechRecognizer != null) {
+            try {
+                speechRecognizer?.triggerModelDownload(speechIntent())
+                speechStatus = "Speech model download requested. Your speech service may require network access or confirmation. Check voice support after it finishes."
+            } catch (_: Exception) { speechStatus = "This speech service cannot download the selected model. Check your device speech settings." }
+        } else speechStatus = "Manage offline speech languages in your device speech settings. In-app download requests require Android 13 or newer and a compatible service."
     }
 
     private fun speechErrorMessage(error: Int): String = when (error) {
@@ -643,18 +743,20 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun checkSafewordMatches(matches: ArrayList<String>?): Boolean {
-        if (recognitionSuppressed || captureState != CaptureState.IDLE || !listeningEnabled || !foreground || safewordActivationPending ||
-            (gestureWakeMode && !gestureWindowPending)) return false
-        val matched = matches?.any { it.contains(safewordState, ignoreCase = true) } == true
+        if (recognitionSuppressed || captureState != CaptureState.IDLE || !foreground || safewordActivationPending) return false
+        if (!ListeningPolicy.mayMatch(listeningEnabled, gestureWakeMode, gestureWindowPending,
+                gestureWindowOpening, gestureWindowDeadlineMs, SystemClock.elapsedRealtime())) return false
+        val matched = SafewordMatcher.matches(matches, safewordState)
         if (matched) queueEmergencyFromSafeword()
         return matched
     }
 
     private fun queueEmergencyFromSafeword() {
         if (recognitionSuppressed || safewordActivationPending) return
+        val confirmedInWindow = gestureWakeMode && gestureWindowPending
         safewordActivationPending = true
         restartListeningJob?.cancel()
-        if (gestureWakeMode) finishGestureWindow(cancelRecognizer = true)
+        if (gestureWindowPending) finishGestureWindow(cancelRecognizer = true)
         else {
             speechRequestInFlight = false
             safewordListeningActive = false
@@ -664,25 +766,19 @@ class MainActivity : FragmentActivity() {
         safewordActivationJob = lifecycleScope.launch {
             delay(200L)
             safewordActivationPending = false
-            if (!recognitionSuppressed && foreground && listeningEnabled && captureState == CaptureState.IDLE) activateEmergency()
+            if (!recognitionSuppressed && foreground && captureState == CaptureState.IDLE &&
+                ListeningPolicy.mayActivate(listeningEnabled, gestureWakeMode, confirmedInWindow)) activateEmergency()
+            else restartSafewordListening()
         }
     }
 
     private fun startSafewordListening(): Boolean {
-        if (recognitionSuppressed || captureState != CaptureState.IDLE || !foreground || !listeningEnabled || speechRecognizer == null ||
+        if (recognitionSuppressed || captureState != CaptureState.IDLE || !foreground ||
+            !ListeningPolicy.mayListen(listeningEnabled, gestureWakeMode, gestureWindowPending) || !speechReady || speechRecognizer == null ||
             speechRequestInFlight || safewordListeningActive ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) return false
         try {
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-                putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-                // Prefer the on-device recognizer where the OS/device supports it,
-                // so the safeword phrase isn't sent to a cloud speech API by default.
-                // NOTE: not all Android versions/devices honor this — see README
-                // "Known limitations" for the real offline-guarantee status.
-                putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
-            }
+            val intent = speechIntent()
             speechRequestInFlight = true
             speechRecognizer?.startListening(intent)
             return true
@@ -695,12 +791,10 @@ class MainActivity : FragmentActivity() {
 
     private fun startSafewordWindow() {
         if (recognitionSuppressed || !gestureWakeMode || gestureWindowPending || safewordActivationPending || captureState != CaptureState.IDLE ||
-            !foreground || !listeningEnabled) return
-        gestureWindowPending = true
-        gestureWindowOpening = true
-        gestureWindowDeadlineMs = 0L
-        gestureWindowSecondsRemaining = 0
-        if (!startSafewordListening()) {
+            !foreground) return
+        // Recreate the recognizer so callbacks from continuous listening cannot enter this window.
+        initSpeechRecognizer(forMotionWindow = true)
+        if (speechRecognizer == null) {
             finishGestureWindow(cancelRecognizer = true)
             lifecycleScope.launch {
                 snackbarHostState.showSnackbar("Could not open the safeword window — check microphone access")
@@ -730,9 +824,7 @@ class MainActivity : FragmentActivity() {
             if (!gestureWindowPending) return@launch
             gestureWindowSecondsRemaining = 0
             safewordListeningActive = false
-            speechRecognizer?.stopListening()
-            delay(GESTURE_FINAL_RESULT_TIMEOUT_MS)
-            if (gestureWindowPending) finishGestureWindow(cancelRecognizer = true)
+            finishGestureWindow(cancelRecognizer = true)
         }
     }
 
@@ -750,7 +842,8 @@ class MainActivity : FragmentActivity() {
         return true
     }
 
-    private fun finishGestureWindow(cancelRecognizer: Boolean) {
+    private fun finishGestureWindow(cancelRecognizer: Boolean, resumeContinuous: Boolean = true) {
+        val wasPending = gestureWindowPending
         gestureWindowPending = false
         gestureWindowOpening = false
         gestureWindowDeadlineMs = 0L
@@ -762,23 +855,46 @@ class MainActivity : FragmentActivity() {
         gestureRecognitionRestartJob?.cancel()
         gestureRecognitionRestartJob = null
         if (cancelRecognizer) speechRecognizer?.cancel()
+        if (wasPending) {
+            // Reject late window results even if continuous acoustic listening is enabled.
+            speechEpoch++
+            speechRecognizer?.destroy()
+            speechRecognizer = null
+            speechReady = false
+            if (resumeContinuous) restartSafewordListening()
+        }
     }
 
     private fun cancelSafewordSession() {
         restartListeningJob?.cancel()
         safewordActivationJob?.cancel()
         safewordActivationPending = false
-        finishGestureWindow(cancelRecognizer = true)
+        finishGestureWindow(cancelRecognizer = true, resumeContinuous = false)
+    }
+
+    private fun resumeRequestedListening() {
+        if (gestureWindowPending) {
+            if (!startSafewordListening() && !speechRequestInFlight && !safewordListeningActive) {
+                finishGestureWindow(cancelRecognizer = true)
+            }
+        } else restartSafewordListening()
     }
 
     private fun restartSafewordListening() {
         restartListeningJob?.cancel()
-        if (!recognitionSuppressed && listeningEnabled && foreground && captureState == CaptureState.IDLE && !gestureWakeMode) {
+        if (recognitionSuppressed || !foreground || captureState != CaptureState.IDLE ||
+            gestureWindowPending || safewordActivationPending) return
+        if (speechRecognizer == null && (listeningEnabled || gestureWakeMode)) {
+            initSpeechRecognizer()
+            return
+        }
+        if (listeningEnabled) {
             restartListeningJob = lifecycleScope.launch { delay(1000); startSafewordListening() }
         }
     }
 
     private fun updateListeningEnabled(enabled: Boolean) {
+        if (enabled && speechRecognizer == null) initSpeechRecognizer()
         if (enabled && (speechRecognizer == null ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)) {
             lifecycleScope.launch { snackbarHostState.showSnackbar("Enable microphone access and a speech recognition service to listen for your safeword") }
@@ -786,20 +902,21 @@ class MainActivity : FragmentActivity() {
             return
         }
         listeningEnabled = enabled
-        if (!enabled) gestureWakeMode = false
         getSharedPreferences("shelter_prefs", MODE_PRIVATE).edit()
             .putBoolean("listening", enabled)
-            .putBoolean("gesture_wake_mode", gestureWakeMode)
             .apply()
-        cancelSafewordSession()
-        if (enabled && !gestureWakeMode) restartSafewordListening()
+        if (!gestureWindowPending && !safewordActivationPending) {
+            cancelSafewordSession()
+            if (enabled) restartSafewordListening()
+        }
     }
 
     private fun updateGestureWakeMode(enabled: Boolean) {
         if (enabled && !gestureDetector.isAvailable) {
-            lifecycleScope.launch { snackbarHostState.showSnackbar("This device has no accelerometer for Gesture-Wake") }
+            lifecycleScope.launch { snackbarHostState.showSnackbar(gestureDetector.unavailableReason) }
             return
         }
+        if (enabled && speechRecognizer == null) initSpeechRecognizer()
         if (enabled && speechRecognizer == null) {
             lifecycleScope.launch { snackbarHostState.showSnackbar("No speech recognition service is available on this device") }
             return
@@ -810,18 +927,17 @@ class MainActivity : FragmentActivity() {
             return
         }
         if (enabled && foreground && !gestureDetector.start()) {
-            lifecycleScope.launch { snackbarHostState.showSnackbar("Accelerometer could not be started") }
+            lifecycleScope.launch { snackbarHostState.showSnackbar(gestureDetector.unavailableReason) }
             return
         }
         pendingGestureEnable = false
         gestureWakeMode = enabled
-        if (enabled) listeningEnabled = true
+        if (!enabled) gestureDetector.stop()
         getSharedPreferences("shelter_prefs", MODE_PRIVATE).edit()
             .putBoolean("gesture_wake_mode", enabled)
-            .putBoolean("listening", listeningEnabled)
             .apply()
-        cancelSafewordSession()
-        if (!enabled && listeningEnabled && foreground) restartSafewordListening()
+        if (!enabled && gestureWindowPending) cancelSafewordSession()
+        if (!gestureWindowPending) restartSafewordListening()
     }
 
     override fun onResume() {
@@ -830,18 +946,15 @@ class MainActivity : FragmentActivity() {
         if (LocationCache.trackingEnabled.value && hasLocationPermission()) startLocationProtection()
         checkBiometricAvailability()
         if (recognitionSuppressed || (walkthroughPending && !disguiseEnabled)) return
-        val sensorStarted = gestureDetector.start()
+        val sensorStarted = if (gestureWakeMode) gestureDetector.start() else true
         if (gestureWakeMode && !sensorStarted) {
             gestureWakeMode = false
-            listeningEnabled = false
             getSharedPreferences("shelter_prefs", MODE_PRIVATE).edit()
                 .putBoolean("gesture_wake_mode", false)
-                .putBoolean("listening", false)
                 .apply()
-            lifecycleScope.launch { snackbarHostState.showSnackbar("Gesture-Wake disabled because the accelerometer is unavailable") }
-        } else if (!gestureWakeMode) {
-            startSafewordListening()
+            lifecycleScope.launch { snackbarHostState.showSnackbar(gestureDetector.unavailableReason) }
         }
+        restartSafewordListening()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -859,10 +972,9 @@ class MainActivity : FragmentActivity() {
                         .apply()
                     lifecycleScope.launch { snackbarHostState.showSnackbar("Gesture-Wake needs microphone permission") }
                 }
-            } else if (pendingGestureEnable) {
-                updateGestureWakeMode(true)
-            } else if (!gestureWakeMode) {
-                startSafewordListening()
+            } else {
+                initSpeechRecognizer()
+                if (pendingGestureEnable) updateGestureWakeMode(true)
             }
             if (hasLocationPermission()) refreshCommunityLocation()
             if (pendingTrackingEnable && hasLocationPermission()) {
@@ -887,6 +999,7 @@ class MainActivity : FragmentActivity() {
             return
         }
         stopEvidencePlayback()
+        finishGestureWindow(cancelRecognizer = true, resumeContinuous = false)
         restartListeningJob?.cancel()
         safewordWindowJob?.cancel()
         safewordListeningActive = false
@@ -928,7 +1041,8 @@ class MainActivity : FragmentActivity() {
             // analyzer before MediaRecorder can starve or reject capture on
             // devices that do not support concurrent microphone clients.
             analyzer.startListening()
-            runCatching { EmergencySms.send(this, trustedContacts, LocationCache.latest.value) }
+            activeSmsContacts = trustedContacts.toList()
+            runCatching { EmergencySms.send(this, activeSmsContacts, LocationCache.latest.value, captureId.toString()) }
                 .onFailure { error -> lifecycleScope.launch {
                     snackbarHostState.showSnackbar("Recording started, but SMS failed: ${error.message}")
                 } }
@@ -945,13 +1059,14 @@ class MainActivity : FragmentActivity() {
             val preservedRaw = rawFile?.takeIf { it.exists() }
             rawFile = null
             activeIncidentId = null
+            activeSmsContacts = emptyList()
             threatLabel = "Recording failed: ${e.message}"
             captureState = CaptureState.IDLE
             lifecycleScope.launch {
                 val preserved = if (preservedRaw != null) " Any captured bytes were retained for recovery." else ""
                 snackbarHostState.showSnackbar("Recording could not start: ${e.message ?: "microphone unavailable"}.$preserved")
             }
-            if (!gestureWakeMode) restartSafewordListening()
+            restartSafewordListening()
         }
     }
 
@@ -974,6 +1089,8 @@ class MainActivity : FragmentActivity() {
         rawFile = null
         val incidentId = activeIncidentId
         activeIncidentId = null
+        val smsContacts = activeSmsContacts
+        activeSmsContacts = emptyList()
 
         if (!recorderStopped || raw == null || !raw.exists() || raw.length() == 0L) {
             threatLabel = "Recording could not be finalized"
@@ -984,7 +1101,7 @@ class MainActivity : FragmentActivity() {
                     "Evidence could not be finalized. The pending raw file was retained for recovery."
                 )
             }
-            if (!gestureWakeMode) restartSafewordListening()
+            restartSafewordListening()
             return
         }
 
@@ -998,7 +1115,7 @@ class MainActivity : FragmentActivity() {
             } finally {
                 finishActiveSeal(sealCompletion)
                 captureState = CaptureState.IDLE
-                if (!gestureWakeMode) restartSafewordListening()
+                restartSafewordListening()
             }
 
             if (sealed == null) {
@@ -1012,6 +1129,16 @@ class MainActivity : FragmentActivity() {
 
             threatLabel = result.label
             threatScore = result.score
+            if (incidentId != null) {
+                // Notify original SOS recipients who are still trusted; never send an unfinished-file hash.
+                val currentNumbers = TrustedContacts.load(applicationContext).map { it.number }.toSet()
+                val recipients = smsContacts.filter { it.number in currentNumbers }
+                if (recipients.isNotEmpty()) runCatching {
+                    EmergencySms.sendEvidenceHash(applicationContext, recipients, incidentId, sealed.fileSha256)
+                }.onFailure { error ->
+                    lifecycleScope.launch { snackbarHostState.showSnackbar("Evidence sealed, but hash SMS failed: ${error.message}") }
+                }
+            }
             snackbarHostState.showSnackbar(
                 if (sealed.rawDeleted) {
                     "Evidence sealed and added to the vault ✓"
@@ -1078,13 +1205,14 @@ class MainActivity : FragmentActivity() {
                         fileHash
                     )
                     committed = true
-                    SealResult(entryId, raw.delete())
+                    SealResult(entryId, raw.delete(), fileHash)
                 } catch (failure: Exception) {
                     temporary.delete()
                     if (finalized && !committed) {
                         val lookup = runCatching { db.evidenceDao().entryIdForFile(encrypted.name) }
                         if (lookup.isSuccess && lookup.getOrNull() != null) {
-                            return@withLock SealResult(lookup.getOrThrow()!!, raw.delete())
+                            val committedFileHash = Crypto.sha256(encrypted)
+                            return@withLock SealResult(lookup.getOrThrow()!!, raw.delete(), committedFileHash)
                         }
                         // Delete only when Room positively confirms that the
                         // transaction did not commit. Otherwise leave the final
@@ -1185,8 +1313,8 @@ class MainActivity : FragmentActivity() {
             return
         }
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Unlock Evidence Vault")
-            .setSubtitle("Verify it's you before viewing sealed evidence")
+            .setTitle(com.bithead.shelter.ui.localization.tr("Unlock Evidence Vault"))
+            .setSubtitle(com.bithead.shelter.ui.localization.tr("Verify it's you before viewing sealed evidence"))
             .setAllowedAuthenticators(
                 BiometricManager.Authenticators.BIOMETRIC_STRONG or
                     BiometricManager.Authenticators.DEVICE_CREDENTIAL
@@ -1217,8 +1345,8 @@ class MainActivity : FragmentActivity() {
             gestureDetector.stop()
             cancelSafewordSession()
         } else if (foreground) {
-            if (gestureWakeMode && listeningEnabled) gestureDetector.start()
-            else restartSafewordListening()
+            if (gestureWakeMode) gestureDetector.start()
+            restartSafewordListening()
         }
     }
 
@@ -1482,7 +1610,8 @@ class MainActivity : FragmentActivity() {
                 putExtra(Intent.EXTRA_STREAM, uri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            startActivity(Intent.createChooser(shareIntent, "Share chain of custody record"))
+            startActivity(Intent.createChooser(shareIntent,
+                com.bithead.shelter.ui.localization.tr("Share chain of custody record")))
         } catch (e: Exception) {
             lifecycleScope.launch { snackbarHostState.showSnackbar("Export failed: ${e.message}") }
         }
@@ -1707,7 +1836,8 @@ class MainActivity : FragmentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        gestureDetector.stop()
+        gestureDetector.close()
+        speechEpoch++
         speechRecognizer?.destroy()
         stopEvidencePlayback()
         analyzer.close()

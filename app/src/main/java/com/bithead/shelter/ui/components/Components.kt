@@ -1,5 +1,9 @@
 package com.bithead.shelter.ui.components
 
+import com.bithead.shelter.ui.localization.uiText
+import com.bithead.shelter.ui.localization.tr
+
+import androidx.compose.material3.Text
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -106,8 +110,8 @@ fun PulseTriggerButton(
                     modifier = Modifier.size(38.dp)
                 )
                 Spacer(Modifier.height(6.dp))
-                Text(
-                    text = if (isEmergency) "STOP &\nSEAL" else "ACTIVATE",
+                Text(uiText(
+                    text = if (isEmergency) "STOP &\nSEAL" else "ACTIVATE"),
                     color = Color.White,
                     fontWeight = FontWeight.Black,
                     fontSize = 15.sp,
@@ -167,8 +171,8 @@ fun ThreatMeter(label: String, score: Int, modifier: Modifier = Modifier) {
     }
     Column(modifier = modifier) {
         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Text("THREAT AI", style = MaterialTheme.typography.labelLarge, color = ShelterTextDim)
-            Text("$score/100", style = MaterialTheme.typography.titleMedium, color = color, fontWeight = FontWeight.Bold)
+            Text(uiText("THREAT AI"), style = MaterialTheme.typography.labelLarge, color = ShelterTextDim)
+            Text(uiText("$score/100"), style = MaterialTheme.typography.titleMedium, color = color, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.height(6.dp))
         LinearProgressIndicator(
@@ -181,7 +185,7 @@ fun ThreatMeter(label: String, score: Int, modifier: Modifier = Modifier) {
             trackColor = ShelterOutline,
         )
         Spacer(Modifier.height(6.dp))
-        Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(uiText(label), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -236,17 +240,17 @@ fun EvidenceCard(
                         .background(severity.copy(alpha = 0.18f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("$threatScore", color = severity, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    Text(uiText("$threatScore"), color = severity, fontWeight = FontWeight.Bold, fontSize = 13.sp)
                 }
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("${mediaType.lowercase().replaceFirstChar { it.uppercase() }} evidence #$index", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
-                    Text(timestamp, style = MaterialTheme.typography.bodyMedium, color = ShelterTextDim)
+                    Text(uiText("${mediaType.lowercase().replaceFirstChar { it.uppercase() }} evidence #$index"), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                    Text(uiText(timestamp), style = MaterialTheme.typography.bodyMedium, color = ShelterTextDim)
                 }
                 AssistChip(
                     onClick = {},
                     enabled = false,
-                    label = { Text(threatLabel, fontSize = 11.sp) },
+                    label = { Text(uiText(threatLabel), fontSize = 11.sp) },
                     colors = AssistChipDefaults.assistChipColors(
                         containerColor = severity.copy(alpha = 0.15f),
                         labelColor = severity,
@@ -261,8 +265,8 @@ fun EvidenceCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.LocationOn, contentDescription = null, tint = ShelterTextDim, modifier = Modifier.size(14.dp))
                 Spacer(Modifier.width(4.dp))
-                Text(
-                    text = if (lat != null && lng != null) "${lat.toString().take(7)}, ${lng.toString().take(7)}" else "GPS unavailable",
+                Text(uiText(
+                    text = if (lat != null && lng != null) "${lat.toString().take(7)}, ${lng.toString().take(7)}" else "GPS unavailable"),
                     style = MaterialTheme.typography.bodyMedium,
                     color = ShelterTextDim
                 )
@@ -279,8 +283,8 @@ fun EvidenceCard(
             }
 
             Spacer(Modifier.height(8.dp))
-            Text(
-                text = summary,
+            Text(uiText(
+                text = summary),
                 style = MaterialTheme.typography.bodySmall,
                 color = ShelterTextDim,
                 lineHeight = 16.sp
@@ -303,8 +307,8 @@ fun EvidenceCard(
                     enabled = !playback.isPreparing && playback.durationMs > 0L
                 )
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(formatPlaybackTime(if (isDragging) draggedPosition.toLong() else playback.positionMs), style = MaterialTheme.typography.labelSmall, color = ShelterTextDim)
-                    Text(formatPlaybackTime(playback.durationMs), style = MaterialTheme.typography.labelSmall, color = ShelterTextDim)
+                    Text(uiText(formatPlaybackTime(if (isDragging) draggedPosition.toLong() else playback.positionMs)), style = MaterialTheme.typography.labelSmall, color = ShelterTextDim)
+                    Text(uiText(formatPlaybackTime(playback.durationMs)), style = MaterialTheme.typography.labelSmall, color = ShelterTextDim)
                 }
             }
 
@@ -333,18 +337,18 @@ fun EvidenceCard(
                         )
                     }
                     Spacer(Modifier.width(6.dp))
-                    Text(when {
+                    Text(uiText(when {
                         !isAudio -> if (mediaType.equals("VIDEO", true)) "View video" else "View image"
                         isActive && playback.isPreparing -> "Opening…"
                         isActive && playback.isPlaying -> "Pause"
                         isActive && playback.durationMs > 0L && playback.positionMs >= playback.durationMs -> "Replay"
                         isActive -> "Resume"
                         else -> "Play"
-                    })
+                    }))
                 }
                 if (isAudio && isActive) {
                     IconButton(onClick = onStop) {
-                        Icon(Icons.Filled.Stop, contentDescription = "Stop playback")
+                        Icon(Icons.Filled.Stop, contentDescription = tr("Stop playback"))
                     }
                 }
                 OutlinedButton(
@@ -352,11 +356,11 @@ fun EvidenceCard(
                     shape = RoundedCornerShape(4.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Export chain of custody")
+                    Text(uiText("Export chain of custody"))
                 }
             }
-            if (deletionPending) Text(
-                "Deletion pending — retry to remove the encrypted evidence file.",
+            if (deletionPending) Text(uiText(
+                "Deletion pending — retry to remove the encrypted evidence file."),
                 style = MaterialTheme.typography.bodySmall,
                 color = ShelterDanger
             )
@@ -367,7 +371,7 @@ fun EvidenceCard(
             ) {
                 Icon(Icons.Outlined.DeleteForever, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(6.dp))
-                Text(if (deletionPending) "Retry delete" else "Delete evidence")
+                Text(uiText(if (deletionPending) "Retry delete" else "Delete evidence"))
             }
         }
     }
@@ -392,11 +396,11 @@ fun SafewordRow(safeword: String, onEditClick: () -> Unit, modifier: Modifier = 
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(Modifier.weight(1f)) {
-            Text("SAFEWORD", style = MaterialTheme.typography.labelLarge, color = ShelterTextDim)
+            Text(uiText("SAFEWORD"), style = MaterialTheme.typography.labelLarge, color = ShelterTextDim)
             Text("\"$safeword\"", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
         }
         IconButton(onClick = onEditClick) {
-            Icon(Icons.Filled.Edit, contentDescription = "Change safeword", tint = ShelterBlueSoft)
+            Icon(Icons.Filled.Edit, contentDescription = tr("Change safeword"), tint = ShelterBlueSoft)
         }
     }
 }
@@ -410,13 +414,13 @@ fun SafewordDialog(current: String, onDismiss: () -> Unit, onSave: (String) -> U
         containerColor = ShelterSurface,
         titleContentColor = MaterialTheme.colorScheme.onSurface,
         textContentColor = ShelterTextDim,
-        title = { Text("Set custom safeword") },
+        title = { Text(uiText("Set custom safeword")) },
         text = {
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
                 singleLine = true,
-                placeholder = { Text("e.g. PINEAPPLE") },
+                placeholder = { Text(uiText("e.g. PINEAPPLE")) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -426,10 +430,10 @@ fun SafewordDialog(current: String, onDismiss: () -> Unit, onSave: (String) -> U
             )
         },
         confirmButton = {
-            TextButton(onClick = { if (text.isNotBlank()) onSave(text) }) { Text("Save", color = ShelterBlue) }
+            TextButton(onClick = { if (text.isNotBlank()) onSave(text) }) { Text(uiText("Save"), color = ShelterBlue) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Icon(Icons.Filled.Close, contentDescription = null, tint = ShelterTextDim, modifier = Modifier.size(16.dp)) }
+            TextButton(onClick = onDismiss) { Icon(Icons.Filled.Close, contentDescription = uiText("Cancel"), tint = ShelterTextDim, modifier = Modifier.size(16.dp)) }
         }
     )
 }

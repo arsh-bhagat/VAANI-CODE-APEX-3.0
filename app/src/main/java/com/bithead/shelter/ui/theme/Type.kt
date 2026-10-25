@@ -33,3 +33,16 @@ val ShelterTypography = Typography(
     labelMedium = TextStyle(fontFamily = JetBrainsMono, fontWeight = FontWeight.Medium, fontSize = 11.sp, lineHeight = 16.sp, letterSpacing = 0.66.sp),
     labelSmall = TextStyle(fontFamily = JetBrainsMono, fontWeight = FontWeight.Medium, fontSize = 10.sp, lineHeight = 14.sp, letterSpacing = 0.8.sp),
 )
+
+// System fonts provide Devanagari shaping and glyphs; Latin-only display fonts do not.
+private fun TextStyle.devanagari() = copy(fontFamily = FontFamily.SansSerif, letterSpacing = 0.sp)
+val DevanagariTypography = ShelterTypography.run {
+    copy(displayLarge = displayLarge.devanagari(), displayMedium = displayMedium.devanagari(),
+        displaySmall = displaySmall.devanagari(), headlineLarge = headlineLarge.devanagari(),
+        headlineMedium = headlineMedium.devanagari(), headlineSmall = headlineSmall.devanagari(),
+        titleLarge = titleLarge.devanagari(), titleMedium = titleMedium.devanagari(),
+        titleSmall = titleSmall.devanagari(), bodyLarge = bodyLarge.devanagari(),
+        bodyMedium = bodyMedium.devanagari(), bodySmall = bodySmall.devanagari(),
+        labelLarge = labelLarge.devanagari(), labelMedium = labelMedium.devanagari(),
+        labelSmall = labelSmall.devanagari())
+}
