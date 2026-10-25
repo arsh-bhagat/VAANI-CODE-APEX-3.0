@@ -2,11 +2,11 @@
 
 Branch: feat/google-account-login, based on the published real-time mesh branch (includes Notes and logo fixes).
 
-## Google Cloud configuration required
+## Google Cloud configuration
 
 1. Configure Google Auth Platform consent and test users in your Google Cloud project.
 2. Create an Android OAuth client for package com.bithead.shelter and the installed APK signing certificate SHA-1. Use the retained app/vaani-debug.keystore for this debug build; register production signing certificates separately.
-3. Create a Web OAuth client in the same project. Put its public client ID in app/src/main/res/values/account.xml, google_web_client_id. Never put a client secret in the Android app.
+3. The supplied Web OAuth client ID is configured in app/src/main/res/values/account.xml, google_web_client_id. The Android OAuth client must belong to the same project. Never put a client secret in the Android app.
 4. Rebuild and install. Until configured, the app shows a specific configuration error, not a fake successful login.
 
 ## Behavior and data connection
@@ -23,4 +23,4 @@ With OAuth configured, sign in during setup and verify Community mesh name/email
 
 Reference: https://developer.android.com/identity/sign-in/credential-manager-siwg-implementation
 
-Validation: :app:compileDebugKotlin passed. No full tests, APK build, or live Google login was run for this change. OAuth client configuration is still required.
+Validation: :app:compileDebugKotlin passed. No full tests, APK build, or live Google login was run for this change. The supplied Web client ID is now configured; Android OAuth registration and live phone sign-in remain to be verified.
