@@ -95,7 +95,12 @@ fun VaaniApp(
     var targetReady by remember { mutableStateOf(false) }
     val accountPrefs = LocalContext.current.getSharedPreferences("vaani_account_setup", android.content.Context.MODE_PRIVATE)
     var accountSetupDone by remember { mutableStateOf(accountPrefs.getBoolean("done", false)) }
-    val accountSetupVisible = !accountSetupDone && walkthroughEligible && !isEmergency && !isSealing && !disguised && !blackout
+    // A credential picker pauses this Activity. Keep setup composed so its request is not cancelled.
+    var accountSetupStarted by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(walkthroughEligible) {
+        if (walkthroughEligible) accountSetupStarted = true
+    }
+    val accountSetupVisible = !accountSetupDone && accountSetupStarted && !isEmergency && !isSealing && !disguised && !blackout
     val available = accountSetupDone && walkthroughEligible && !isEmergency && !isSealing && !disguised && !blackout &&
         !showCamera && message == null && !decoyCall && decoyDelay == 0 && mediaPreviewState.evidenceId == null
     val visibleTour = tourIndex >= -1 && available
