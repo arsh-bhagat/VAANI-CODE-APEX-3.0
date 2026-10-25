@@ -14,4 +14,7 @@
     <string name="account_invalid">Google returned an incomplete account profile. Try signing in again.</string>
     <string name="account_failed">Could not sign in. Check your connection and try again. If this continues, check this build’s Google OAuth configuration.</string>
     <string name="account_signout_failed">Signed out locally. Google’s account chooser could not be reset; try again when Google Play services is available.</string>
+    <string name="account_diagnostic">Sign-in diagnostic: %1$s</string>
+    <string name="account_oauth_rejected">Google rejected this app’s OAuth configuration. Check that the Android client matches this APK’s package and signing SHA-1 and belongs to the same project as the Web client.</string>
+    <string name="account_network_failed">Google reported a connection failure. Check internet access and try again.</string>
 </resources>

@@ -25,6 +25,7 @@ internal fun GoogleAccountPanel(onContinue: (() -> Unit)? = null) {
     val scope = rememberCoroutineScope()
     var account by remember { mutableStateOf(source.accountEmail()) }
     var busy by remember { mutableStateOf(false) }
+    var diagnostic by remember { mutableStateOf<String?>(null) }
     var error by remember { mutableStateOf<Int?>(null) }
     DisposableEffect(source) {
         val subscription = source.observeAccountChanges { account = source.accountEmail() }
@@ -35,10 +36,12 @@ internal fun GoogleAccountPanel(onContinue: (() -> Unit)? = null) {
         Caption(stringResource(R.string.account_intro))
         account?.let { Text(it) }
         error?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error) }
+        diagnostic?.let { Text(stringResource(R.string.account_diagnostic, it), style = MaterialTheme.typography.bodySmall) }
         Button(enabled = !busy, onClick = {
             scope.launch {
                 busy = true
                 error = null
+                diagnostic = null
                 try {
                     if (account != null) {
                         // Stop sharing and clear local identity even if the provider is unavailable.
@@ -71,11 +74,27 @@ internal fun GoogleAccountPanel(onContinue: (() -> Unit)? = null) {
                         source.applyAccountProfile(AccountProfileSeed(name, email = email))
                     }
                 } catch (cancelled: CancellationException) { throw cancelled }
-                catch (_: GetCredentialCancellationException) { error = R.string.account_cancelled }
+                catch (failure: GetCredentialCancellationException) {
+                    error = R.string.account_cancelled
+                    diagnostic = accountDiagnostic(failure)
+                }
                 catch (_: NoCredentialException) { error = R.string.account_unavailable }
                 catch (_: GetCredentialProviderConfigurationException) { error = R.string.account_provider_error }
                 catch (_: GoogleIdTokenParsingException) { error = R.string.account_invalid }
-                catch (_: Exception) { error = R.string.account_failed }
+                catch (failure: GetCredentialException) {
+                    // Expose only provider error category and numeric status, never credentials or account data.
+                    diagnostic = accountDiagnostic(failure)
+                    val reason = failure.message.orEmpty().lowercase(java.util.Locale.ROOT)
+                    error = when {
+                        "28444" in reason || "developer console" in reason || "developer_error" in reason -> R.string.account_oauth_rejected
+                        "network" in reason || "connection" in reason -> R.string.account_network_failed
+                        else -> R.string.account_failed
+                    }
+                }
+                catch (failure: Exception) {
+                    diagnostic = failure.javaClass.simpleName
+                    error = R.string.account_failed
+                }
                 finally { busy = false }
             }
         }) {
@@ -87,4 +106,12 @@ internal fun GoogleAccountPanel(onContinue: (() -> Unit)? = null) {
             }
         }
     }
+}
+
+/** Numeric status and exception type only; raw provider text may contain personal data. */
+private fun accountDiagnostic(failure: GetCredentialException): String {
+    val code = Regex("\\[(\\d{1,6})\\]").find(failure.message.orEmpty())?.groupValues?.get(1)
+        ?: Regex("(?:^|: )([0-9]{1,6}):").find(failure.message.orEmpty())?.groupValues?.get(1)
+    val type = failure.type.takeLast(100).filter { it.isLetterOrDigit() || it in "._" }
+    return listOfNotNull(failure.javaClass.simpleName, code, type.takeIf { it.isNotBlank() }).joinToString(" / ")
 }
