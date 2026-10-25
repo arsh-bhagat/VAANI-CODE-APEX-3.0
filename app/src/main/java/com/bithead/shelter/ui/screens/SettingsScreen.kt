@@ -40,6 +40,7 @@ internal fun SettingsScreen(safeword: String, listening: Boolean, onListen: (Boo
     var contactName by rememberSaveable { mutableStateOf("") }
     var contactNumber by rememberSaveable { mutableStateOf("") }
     LazyColumn(state = LocalWalkthrough.current?.lists?.get(4) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item(key = "google_account") { GoogleAccountPanel() }
         item(key = "help") { Panel(Modifier.featureTarget(FeatureHelp.REPLAY)) {
             Heading(stringResource(R.string.tour_help))
             Button(onClick = replay, enabled = tourEnabled) { Text(stringResource(R.string.tour_replay)) }

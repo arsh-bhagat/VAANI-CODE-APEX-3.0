@@ -1,7 +1,7 @@
 <resources>
     <string name="mesh_title">Real-time mesh / nearby users</string>
     <string name="mesh_explanation">Discover consenting VAANI users directly over Bluetooth. Both users must start mesh. This is one-hop discovery, not multi-hop message relay.</string>
-    <string name="mesh_profile_future">Your local profile is ready for future account linking. Google sign-in is not connected yet; it will populate this profile without exposing account credentials.</string>
+    <string name="mesh_profile_future">Sign in with Google in Settings to populate your name and email. Choose which details to share below; account credentials are never shared.</string>
     <string name="mesh_name">Name shown to nearby devices</string>
     <string name="mesh_phone">Phone number (optional)</string>
     <string name="mesh_share_phone">Share my phone number</string>
