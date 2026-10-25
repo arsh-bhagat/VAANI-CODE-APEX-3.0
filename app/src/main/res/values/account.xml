@@ -1,6 +1,6 @@
 <resources>
     <!-- Google OAuth WEB client ID; register an Android client for this package/signing SHA-1 in the same project. -->
-    <string name="google_web_client_id" translatable="false">765543613406-nggh6rv7adls89uu0qt684hesqd3mdqe.apps.googleusercontent.com</string>
+    <string name="google_web_client_id" translatable="false">765543613406-202t5go52p0rmhkos4gtkh3135utojcs.apps.googleusercontent.com</string>
     <string name="account_title">Google account</string>
     <string name="account_sign_in">Sign in with Google</string>
     <string name="account_sign_out">Sign out</string>
