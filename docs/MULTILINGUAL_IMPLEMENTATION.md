@@ -6,7 +6,11 @@ Settings → Interface language offers English, हिन्दी and मरा
 
 Bundled copy covers navigation, safety controls, camera/vault dialogs, Notes sample content, support resources, app-owned status messages and the embedded community map. Walkthrough strings have matching `values-hi` and `values-mr` resources. The map keeps its canonical English filter IDs while translating visible text. Dates follow the selected interface locale. Technical identifiers, hashes, phone numbers, stored safewords and user-written content are preserved. Unrecognized model class names and error details returned by device services retain their original text.
 
-The editable catalogs are `scripts/localization/ui-copy.psv` (English / Hindi / Marathi) and `scripts/localization/walkthrough.psv` (resource key / Hindi / Marathi). Preserve numbered placeholders when editing. Regenerate bundled Kotlin, JavaScript and locale XML with:
+The editable catalogs are `scripts/localization/ui-copy.psv` (English / Hindi / Marathi) and `scripts/localization/walkthrough.psv` (resource key / Hindi / Marathi). Preserve numbered placeholders when editing.
+
+Bluetooth nearby-user screens additionally use `scripts/localization/mesh.psv`, generated into the matching `values-hi/mesh.xml` and `values-mr/mesh.xml` resources. UI language changes do not translate or rewrite the public profile name, phone, email or received peer data.
+
+Regenerate bundled Kotlin, JavaScript and locale XML with:
 
 ```powershell
 python scripts/localization/generate_copy.py

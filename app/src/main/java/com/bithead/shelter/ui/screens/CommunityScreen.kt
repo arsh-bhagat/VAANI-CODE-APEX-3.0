@@ -4,6 +4,13 @@ import com.bithead.shelter.ui.localization.uiText
 import com.bithead.shelter.ui.localization.tr
 import com.bithead.shelter.ui.localization.LocalUiLanguage
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import com.bithead.shelter.R
+import com.bithead.shelter.mesh.MeshLocation
+
 import androidx.compose.material3.Text
 import android.annotation.SuppressLint
 import android.location.Location
@@ -284,6 +291,7 @@ internal fun CommunityScreen(
     refreshLocation: () -> Unit,
     info: (String) -> Unit
 ) {
+    var meshOpen by rememberSaveable { mutableStateOf(false) }
     var filter by rememberSaveable { mutableStateOf("All Signals") }
     var factor by rememberSaveable { mutableStateOf("Dark stretch") }
     var reports by rememberSaveable { mutableIntStateOf(0) }
@@ -293,51 +301,90 @@ internal fun CommunityScreen(
     val nearbyZone = remember(latitude, longitude, zones) { nearbyDangerZone(latitude, longitude, zones) }
     val tour = LocalWalkthrough.current
     LaunchedEffect(tour?.active) { if (tour?.active != true) refreshLocation() }
-    LaunchedEffect(nearbyZone?.title, tour?.active) {
-        if (tour?.active != true) nearbyZone?.let { info("Caution: you are inside the sample ${it.title.lowercase()} zone. Check local conditions and choose a well-lit route.") }
+    LaunchedEffect(nearbyZone?.title, tour?.active, meshOpen) {
+        if (!meshOpen && tour?.active != true) nearbyZone?.let { info("Caution: you are inside the sample ${it.title.lowercase()} zone. Check local conditions and choose a well-lit route.") }
     }
-    LazyColumn(state = LocalWalkthrough.current?.lists?.get(2) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { BrutalPanel(header = "01 / Community safe routes") {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(10.dp).background(SlateMesh))
-                Spacer(Modifier.width(10.dp))
-                Heading("Route intelligence")
+    val touring = tour?.active == true
+    LaunchedEffect(touring) { if (touring) meshOpen = false }
+    BackHandler(meshOpen && !touring) { meshOpen = false }
+    Column(Modifier.fillMaxSize()) {
+        if (!touring) {
+            Column(Modifier.fillMaxWidth().background(SurfaceLowest).padding(16.dp)) {
+                if (meshOpen) {
+                    OutlinedButton(onClick = { meshOpen = false },
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, null)
+                        Spacer(Modifier.width(10.dp))
+                        Text(stringResource(R.string.mesh_back_to_map))
+                    }
+                } else {
+                    BrutalButton(onClick = { meshOpen = true },
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 76.dp)) {
+                        Icon(Icons.Outlined.BluetoothSearching, null, Modifier.size(28.dp))
+                        Spacer(Modifier.width(14.dp))
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(stringResource(R.string.mesh_entry_title),
+                                style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.mesh_entry_subtitle), style = MaterialTheme.typography.bodySmall)
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        Icon(Icons.Outlined.ChevronRight, null, Modifier.size(24.dp))
+                    }
+                }
             }
-            StatusPill("Sample overlays / no live mesh", tone = StatusTone.Mesh)
-            Caption("Current GPS with illustrative community signals. Sample routes do not establish that a street is safe.")
-        } }
-        if (nearbyZone != null) item { Panel(color = ShelterDanger.copy(alpha = 0.18f)) { Heading("Caution near ${nearbyZone.title.lowercase()}"); Caption("Your current location overlaps this sample risk area. Use the map to check a well-lit alternative.") } }
-        item(key = "map") {
-            LeafletMap(
-                filter,
-                latitude,
-                longitude,
-                accuracyMeters,
-                locationTimestamp,
-                zones,
-                recenterRequest,
-                Modifier.fillMaxWidth().height(360.dp).featureTarget(FeatureHelp.MAP).neoShadow().brutalBorder().clip(RoundedCornerShape(4.dp))
-            )
         }
-        item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            OutlinedButton(onClick = refreshLocation, modifier = Modifier.weight(1f)) { Icon(Icons.Outlined.Refresh, null); Spacer(Modifier.width(6.dp)); Text(uiText("Refresh")) }
-            OutlinedButton(onClick = {
-                if (latitude != null && longitude != null) recenterRequest++ else refreshLocation()
-            }, modifier = Modifier.weight(1f)) { Icon(Icons.Outlined.MyLocation, null); Spacer(Modifier.width(6.dp)); Text(uiText("Recenter")) }
-        } }
-        item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All Signals", "Well-Lit Streets", "Patrol Points", "Safe Haven", "Risk Corridor").forEach { label -> FilterChip(filter == label, { filter = label }, shape = RoundedCornerShape(4.dp), label = { Text(uiText(label)) }) } } }
-        item { Panel { Heading("Safe Corridor Preview"); Badge("Adaptive sample data"); Panel(color = ShelterSurfaceRaised) { Heading("Suggested: Nearby Well-Lit Corridor"); Caption("Leaflet route overlay near the current map area • no live safety score"); Action("Open device maps", Icons.Outlined.NearMe, { openLink(context, "geo:0,0?q=nearby+police+station") }) }; Caption("Map tiles require internet access. Route availability and local conditions must still be checked.") } }
-        item { Heading("COMMUNITY OBSERVATIONS") }
-        item { Panel { Heading("Night transit shuttle"); Caption("Sample • Gate 4 station, regular service") } }
-        item { Panel {
-            Heading("Report environmental factor"); Caption("Try a local demo report. Nothing is published or sent.")
-            listOf("Dark stretch", "Isolated alley", "Harassment hotspot", "Stray dogs").chunked(2).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { row.forEach { text -> FilterChip(factor == text, { factor = text }, label = { Text(uiText(text), fontSize = 12.sp) }) } } }
-            Action("Save demo signal", Icons.Outlined.AddLocationAlt, { reports++; info("Demo signal saved for this session: $factor. It has not been shared.") })
-            Caption("$reports local demo signals this session")
-        } }
-        item { PreviewActionPanel("Nearby police stations", "Preview nearby public stations. This does not notify or dispatch police.", Icons.Outlined.LocalPolice) { info("Preview: no alert was sent. Opening nearby police stations in your device map."); openLink(context, "geo:0,0?q=nearby+police+station") } }
-        item { PreviewActionPanel("Nearby NGOs", "Preview local support organizations. No organization is contacted from this panel.", Icons.Outlined.VolunteerActivism) { info("Preview: no alert was sent. Connect an approved recipient integration before using this for dispatch.") } }
-        item { PreviewActionPanel("Peer support", "Preview consenting peer-support options. No peer is contacted from this panel.", Icons.Outlined.Groups) { info("Preview: no alert was sent. Peer support requires an approved, consent-based integration.") } }
-        item { PreviewActionPanel("Nearby shelters", "Preview local shelters and public resources. No shelter is contacted from this panel.", Icons.Outlined.HomeWork) { info("Preview: no alert was sent. Opening this preview does not reserve a place or notify a shelter.") } }
+        if (meshOpen && !touring) {
+            val point = if (latitude != null && longitude != null &&
+                locationTimestamp != null && accuracyMeters != null)
+                MeshLocation(latitude, longitude, locationTimestamp, accuracyMeters) else null
+            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp)) {
+                RealtimeMeshPanel(point, refreshLocation)
+            }
+        } else {
+            LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth(), state = LocalWalkthrough.current?.lists?.get(2) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                item { BrutalPanel(header = "01 / Community safe routes") {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(Modifier.size(10.dp).background(SlateMesh))
+                        Spacer(Modifier.width(10.dp))
+                        Heading("Route intelligence")
+                    }
+                    StatusPill(stringResource(R.string.mesh_map_status), tone = StatusTone.Mesh)
+                    Caption("Current GPS with illustrative community signals. Sample routes do not establish that a street is safe.")
+                } }
+                if (nearbyZone != null) item { Panel(color = ShelterDanger.copy(alpha = 0.18f)) { Heading("Caution near ${nearbyZone.title.lowercase()}"); Caption("Your current location overlaps this sample risk area. Use the map to check a well-lit alternative.") } }
+                item(key = "map") {
+                    LeafletMap(
+                        filter,
+                        latitude,
+                        longitude,
+                        accuracyMeters,
+                        locationTimestamp,
+                        zones,
+                        recenterRequest,
+                        Modifier.fillMaxWidth().height(360.dp).featureTarget(FeatureHelp.MAP).neoShadow().brutalBorder().clip(RoundedCornerShape(4.dp))
+                    )
+                }
+                item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    OutlinedButton(onClick = refreshLocation, modifier = Modifier.weight(1f)) { Icon(Icons.Outlined.Refresh, null); Spacer(Modifier.width(6.dp)); Text(uiText("Refresh")) }
+                    OutlinedButton(onClick = {
+                        if (latitude != null && longitude != null) recenterRequest++ else refreshLocation()
+                    }, modifier = Modifier.weight(1f)) { Icon(Icons.Outlined.MyLocation, null); Spacer(Modifier.width(6.dp)); Text(uiText("Recenter")) }
+                } }
+                item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All Signals", "Well-Lit Streets", "Patrol Points", "Safe Haven", "Risk Corridor").forEach { label -> FilterChip(filter == label, { filter = label }, shape = RoundedCornerShape(4.dp), label = { Text(uiText(label)) }) } } }
+                item { Panel { Heading("Safe Corridor Preview"); Badge("Adaptive sample data"); Panel(color = ShelterSurfaceRaised) { Heading("Suggested: Nearby Well-Lit Corridor"); Caption("Leaflet route overlay near the current map area • no live safety score"); Action("Open device maps", Icons.Outlined.NearMe, { openLink(context, "geo:0,0?q=nearby+police+station") }) }; Caption("Map tiles require internet access. Route availability and local conditions must still be checked.") } }
+                item { Heading("COMMUNITY OBSERVATIONS") }
+                item { Panel { Heading("Night transit shuttle"); Caption("Sample • Gate 4 station, regular service") } }
+                item { Panel {
+                    Heading("Report environmental factor"); Caption("Try a local demo report. Nothing is published or sent.")
+                    listOf("Dark stretch", "Isolated alley", "Harassment hotspot", "Stray dogs").chunked(2).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { row.forEach { text -> FilterChip(factor == text, { factor = text }, label = { Text(uiText(text), fontSize = 12.sp) }) } } }
+                    Action("Save demo signal", Icons.Outlined.AddLocationAlt, { reports++; info("Demo signal saved for this session: $factor. It has not been shared.") })
+                    Caption("$reports local demo signals this session")
+                } }
+                item { PreviewActionPanel("Nearby police stations", "Preview nearby public stations. This does not notify or dispatch police.", Icons.Outlined.LocalPolice) { info("Preview: no alert was sent. Opening nearby police stations in your device map."); openLink(context, "geo:0,0?q=nearby+police+station") } }
+                item { PreviewActionPanel("Nearby NGOs", "Preview local support organizations. No organization is contacted from this panel.", Icons.Outlined.VolunteerActivism) { info("Preview: no alert was sent. Connect an approved recipient integration before using this for dispatch.") } }
+                item { PreviewActionPanel("Peer support", "Preview consenting peer-support options. No peer is contacted from this panel.", Icons.Outlined.Groups) { info("Preview: no alert was sent. Peer support requires an approved, consent-based integration.") } }
+                item { PreviewActionPanel("Nearby shelters", "Preview local shelters and public resources. No shelter is contacted from this panel.", Icons.Outlined.HomeWork) { info("Preview: no alert was sent. Opening this preview does not reserve a place or notify a shelter.") } }
+            }
+        } // Map or nearby-user pane
     }
 }

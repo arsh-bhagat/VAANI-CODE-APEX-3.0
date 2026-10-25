@@ -19,13 +19,16 @@ for english, hindi, marathi in rows:
 assert OUTPUT.read_text(encoding="utf-8") == render(), "Regenerate UiCopy.kt"
 
 base = ROOT / "app/src/main/res"
-original = {s.attrib["name"]: s.text or "" for s in ET.parse(base / "values/walkthrough.xml").getroot()}
-for code in ("hi", "mr"):
-    translated = {s.attrib["name"]: s.text or "" for s in ET.parse(base / f"values-{code}/walkthrough.xml").getroot()}
-    assert original.keys() == translated.keys(), f"Missing walkthrough entries for {code}"
-    for key in original:
-        assert Counter(slots.findall(original[key])) == Counter(slots.findall(translated[key])), key
-        assert re.search(r"[\u0900-\u097f]", translated[key]), key
+resource_count = 0
+for name in ("walkthrough", "mesh"):
+    original = {s.attrib["name"]: s.text or "" for s in ET.parse(base / f"values/{name}.xml").getroot()}
+    resource_count += len(original)
+    for code in ("hi", "mr"):
+        translated = {s.attrib["name"]: s.text or "" for s in ET.parse(base / f"values-{code}/{name}.xml").getroot()}
+        assert original.keys() == translated.keys(), f"Missing {name} entries for {code}"
+        for key in original:
+            assert Counter(slots.findall(original[key])) == Counter(slots.findall(translated[key])), key
+            assert re.search(r"[\u0900-\u097f]", translated[key]), key
 
 # The language preference must not write to recognition settings or trigger/note storage.
 preferences = (ROOT / "app/src/main/java/com/bithead/shelter/ui/localization/UiLanguage.kt").read_text(encoding="utf-8")
@@ -35,4 +38,4 @@ for forbidden in ('putString("speech_language"', 'putString("user_safeword"', 'p
 notes = (ROOT / "app/src/main/java/com/bithead/shelter/ui/screens/NotesScreen.kt").read_text(encoding="utf-8")
 assert 'Text(note)' in notes and 'SafewordMatcher.matchesExactly(value, safeword)' in notes
 assert 'uiText(note)' not in notes, "User notes are content, not interface copy"
-print(f"Copy checks passed: {len(rows)} UI entries, {len(original)} walkthrough resources per locale, placeholders and preference isolation.")
+print(f"Copy checks passed: {len(rows)} UI entries, {resource_count} walkthrough/mesh resources per locale, placeholders and preference isolation.")

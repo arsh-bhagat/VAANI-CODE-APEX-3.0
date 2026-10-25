@@ -28,25 +28,26 @@ def render():
     return "\n".join(lines + [")", ""])
 
 
-def generate_walkthrough():
-    with Path(__file__).with_name("walkthrough.psv").open(encoding="utf-8", newline="") as handle:
+def generate_resources(name):
+    with Path(__file__).with_name(f"{name}.psv").open(encoding="utf-8", newline="") as handle:
         rows = list(csv.reader(handle, delimiter="|"))[1:]
     for index, code in enumerate(("hi", "mr"), 1):
         resources = ET.Element("resources")
         for row in rows:
             if len(row) != 3 or not all(row):
-                raise ValueError("Incomplete walkthrough translation")
+                raise ValueError(f"Incomplete {name} translation")
             element = ET.SubElement(resources, "string", name=row[0])
             element.text = row[index].replace("'", r"\'").replace('"', r'\"')
         ET.indent(resources, space="    ")
-        output = ROOT / f"app/src/main/res/values-{code}/walkthrough.xml"
+        output = ROOT / f"app/src/main/res/values-{code}/{name}.xml"
         output.parent.mkdir(exist_ok=True)
         ET.ElementTree(resources).write(output, encoding="utf-8", xml_declaration=True)
 
 
 if __name__ == "__main__":
     OUTPUT.write_text(render(), encoding="utf-8")
-    generate_walkthrough()
+    for name in ("walkthrough", "mesh"):
+        generate_resources(name)
     web_copy = {row[0].lower(): {"hi": row[1], "mr": row[2]} for row in entries()}
     (ROOT / "app/src/main/assets/ui_copy.js").write_text(
         "// Generated from scripts/localization/ui-copy.psv. Bundled; no translation service.\n"

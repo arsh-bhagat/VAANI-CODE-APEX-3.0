@@ -56,6 +56,15 @@ still built on Android's general-purpose SpeechRecognizer rather than a
 dedicated offline wake-word model — do not describe safeword detection as
 fully offline until that replacement is made.
 
+## Bluetooth nearby users
+
+Community → **Real-time mesh** opens opt-in Bluetooth nearby-user discovery and
+public profile sharing. Both phones must start discovery. Phone, email and
+approximate location are shared only when selected; the session stops when the
+pane closes or the app is no longer visible. The UI supports English, Hindi and
+Marathi. This is direct BLE profile exchange; multi-hop forwarding and SOS relay
+are not implemented. See the [implementation and two-phone test plan](docs/realtime-mesh.md).
+
 ## Voice recognition and motion confirmation
 
 Settings → Interface language offers English, हिन्दी and मराठी with bundled
