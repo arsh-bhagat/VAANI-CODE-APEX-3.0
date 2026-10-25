@@ -1,5 +1,7 @@
 # Google account login
 
+For the complete current implementation, OAuth values, lifecycle fix, troubleshooting history and verification status, see [Google account login implementation](GOOGLE-ACCOUNT-LOGIN-IMPLEMENTATION.md).
+
 Branch: feat/google-account-login, based on the published real-time mesh branch (includes Notes and logo fixes).
 
 ## Google Cloud configuration
@@ -23,4 +25,4 @@ With OAuth configured, sign in during setup and verify Community mesh name/email
 
 Reference: https://developer.android.com/identity/sign-in/credential-manager-siwg-implementation
 
-Validation: :app:compileDebugKotlin passed. No full tests, APK build, or live Google login was run for this change. The supplied Web client ID is now configured; Android OAuth registration and live phone sign-in remain to be verified.
+Validation: focused Kotlin compilation and subsequent debug APK builds passed. Full tests were not rerun. The user reported recreating the Android OAuth client on 25 October 2026; successful phone sign-in afterward remains unconfirmed. See the implementation record for details.
