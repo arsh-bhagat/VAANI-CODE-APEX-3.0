@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="design-reference/shelter-vaani-mark.png" alt="VAANI logo" width="120" />
+<img src="design-reference/vaani-logo.png" alt="VAANI gold waveform logo on black" width="200" />
 
 # VAANI
 
