@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.outlined.*
@@ -17,20 +19,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.bithead.shelter.ui.components.*
 import com.bithead.shelter.ui.theme.*
-import com.bithead.shelter.ai.SafewordMatcher
-import java.util.Locale
 import com.bithead.shelter.ui.localization.LocalUiLanguage
 import com.bithead.shelter.ui.localization.translateUi
-
-private val disguisePasscodes = setOf("##", "vaani", "911")
 
 @Composable
 internal fun NotesScreen(safeword: String, unlock: () -> Unit) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
     val prefs = remember { context.getSharedPreferences("vaani_notes", 0) }
     var query by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf("All Notes") }
@@ -40,13 +43,20 @@ internal fun NotesScreen(safeword: String, unlock: () -> Unit) {
     val checked = remember { mutableStateListOf(*Array(5) { prefs.getBoolean("grocery_$it", it < 2) }) }
     val uiLanguage = LocalUiLanguage.current
     fun matches(title: String, group: String) = (category == "All Notes" || category == group) && (title.contains(query, true) || translateUi(title, uiLanguage).contains(query, true))
+    fun unlockIfMatched(value: String): Boolean {
+        if (!matchesNotesUnlock(value, safeword)) return false
+        query = ""
+        focusManager.clearFocus()
+        keyboard?.hide()
+        unlock()
+        return true
+    }
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { OutlinedTextField(query, { value ->
-            if (SafewordMatcher.matchesExactly(value, safeword) || value.trim().lowercase(Locale.ROOT) in disguisePasscodes) {
-                query = ""
-                unlock()
-            } else query = value
-        }, Modifier.fillMaxWidth(), placeholder = { Text(uiText("Search memos, recipes, lists…")) }, leadingIcon = { Icon(Icons.Outlined.Search, null) }, shape = RoundedCornerShape(4.dp), singleLine = true) }
+            if (!unlockIfMatched(value)) query = value
+        }, Modifier.fillMaxWidth(), placeholder = { Text(uiText("Search memos, recipes, lists…")) }, leadingIcon = { Icon(Icons.Outlined.Search, null) }, shape = RoundedCornerShape(4.dp), singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { unlockIfMatched(query) })) }
         item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All Notes", "Groceries", "Reading", "Work Sync").forEach { label -> FilterChip(category == label, { category = label }, label = { Text(uiText(label)) }) } } }
         if (matches("Weekly Grocery & Market", "Groceries")) item { Panel {
             Heading("Weekly Grocery & Market"); Caption("Items for Saturday brunch prep & weekly staples from the corner market.")

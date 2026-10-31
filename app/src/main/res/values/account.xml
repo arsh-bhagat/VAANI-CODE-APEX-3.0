@@ -1,0 +1,20 @@
+<resources>
+    <!-- Google OAuth WEB client ID; register an Android client for this package/signing SHA-1 in the same project. -->
+    <string name="google_web_client_id" translatable="false">123776690176-5v5tq8g2cbimvkakrq79is1e5p7au6f9.apps.googleusercontent.com</string>
+    <string name="account_title">Google account</string>
+    <string name="account_sign_in">Sign in with Google</string>
+    <string name="account_sign_out">Sign out</string>
+    <string name="account_skip">Continue without an account</string>
+    <string name="account_intro">Use your Google name and email for your Community profile. Phone and location are not imported. Nearby sharing stays off until you choose it.</string>
+    <string name="account_busy">Please wait…</string>
+    <string name="account_config_error">Google sign-in is not configured for this build. Add the Web client ID and register this app’s package and signing certificate in Google Cloud.</string>
+    <string name="account_cancelled">Sign-in cancelled. You can try again or continue without an account.</string>
+    <string name="account_unavailable">No Google account is available. Add an account in phone Settings and check Google Play services, then try again.</string>
+    <string name="account_provider_error">Google sign-in is unavailable on this phone. Update Google Play services and try again.</string>
+    <string name="account_invalid">Google returned an incomplete account profile. Try signing in again.</string>
+    <string name="account_failed">Could not sign in. Check your connection and try again. If this continues, check this build’s Google OAuth configuration.</string>
+    <string name="account_signout_failed">Signed out locally. Google’s account chooser could not be reset; try again when Google Play services is available.</string>
+    <string name="account_diagnostic">Sign-in diagnostic: %1$s</string>
+    <string name="account_oauth_rejected">Google rejected this app’s OAuth configuration. Check that the Android client matches this APK’s package and signing SHA-1 and belongs to the same project as the Web client.</string>
+    <string name="account_network_failed">Google reported a connection failure. Check internet access and try again.</string>
+</resources>

@@ -47,6 +47,7 @@ internal fun SettingsScreen(safeword: String, listening: Boolean, onListen: (Boo
     var contactNumber by rememberSaveable { mutableStateOf("") }
     LazyColumn(modifier = Modifier.testTag("settings_list"), state = LocalWalkthrough.current?.lists?.get(4) ?: rememberLazyListState(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item(key = "ui_language") { UiLanguageSettingsCard(tourEnabled) }
+        item(key = "google_account") { GoogleAccountPanel() }
         item(key = "language") { SpeechSettingsCard(safeword, speechStatus, onUseSuggestedSafeword,
             onRefreshSpeech, onDownloadSpeech, tourEnabled) }
         item(key = "help") { Panel(Modifier.featureTarget(FeatureHelp.REPLAY)) {

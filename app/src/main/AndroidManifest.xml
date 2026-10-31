@@ -29,7 +29,7 @@
 
     <application
         android:theme="@style/Theme.SHELTER"
-        android:label="v6"
+        android:label="Vaani v7"
         android:icon="@drawable/vaani_mark"
         android:allowBackup="false"
         android:supportsRtl="true">
@@ -51,7 +51,7 @@
             android:enabled="true"
             android:exported="true"
             android:icon="@drawable/vaani_mark"
-            android:label="v6"
+            android:label="Vaani v7"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

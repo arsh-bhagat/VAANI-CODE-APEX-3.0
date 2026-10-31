@@ -46,7 +46,7 @@ def generate_resources(name):
 
 if __name__ == "__main__":
     OUTPUT.write_text(render(), encoding="utf-8")
-    for name in ("walkthrough", "mesh"):
+    for name in ("walkthrough", "mesh", "account"):
         generate_resources(name)
     web_copy = {row[0].lower(): {"hi": row[1], "mr": row[2]} for row in entries()}
     (ROOT / "app/src/main/assets/ui_copy.js").write_text(

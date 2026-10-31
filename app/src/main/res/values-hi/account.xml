@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="account_title">Google खाता</string>
+    <string name="account_sign_in">Google से साइन इन करें</string>
+    <string name="account_sign_out">साइन आउट करें</string>
+    <string name="account_skip">बिना खाते के जारी रखें</string>
+    <string name="account_intro">अपनी कम्युनिटी प्रोफ़ाइल के लिए Google का नाम और ईमेल इस्तेमाल करें। फ़ोन और स्थान आयात नहीं किए जाते। आपकी अनुमति तक आस-पास साझा करना बंद रहता है।</string>
+    <string name="account_busy">कृपया प्रतीक्षा करें…</string>
+    <string name="account_config_error">इस बिल्ड में Google साइन इन कॉन्फ़िगर नहीं है। Web क्लाइंट ID जोड़ें और Google Cloud में ऐप का पैकेज और साइनिंग प्रमाणपत्र पंजीकृत करें।</string>
+    <string name="account_cancelled">साइन इन रद्द हुआ। फिर कोशिश करें या बिना खाते के जारी रखें।</string>
+    <string name="account_unavailable">कोई Google खाता उपलब्ध नहीं है। फ़ोन की सेटिंग्स में खाता जोड़ें और Google Play सेवाएँ जाँचकर फिर कोशिश करें।</string>
+    <string name="account_provider_error">इस फ़ोन पर Google साइन इन उपलब्ध नहीं है। Google Play सेवाएँ अपडेट करके फिर कोशिश करें।</string>
+    <string name="account_invalid">Google से अधूरी खाता प्रोफ़ाइल मिली। फिर साइन इन करें।</string>
+    <string name="account_failed">साइन इन नहीं हुआ। कनेक्शन जाँचकर फिर कोशिश करें। समस्या बनी रहे तो इस बिल्ड का Google OAuth कॉन्फ़िगरेशन जाँचें।</string>
+    <string name="account_signout_failed">स्थानीय साइन आउट हो गया। Google का खाता चयन रीसेट नहीं हुआ; Google Play सेवाएँ उपलब्ध होने पर फिर कोशिश करें।</string>
+    <string name="account_diagnostic">साइन इन निदान: %1$s</string>
+    <string name="account_oauth_rejected">Google ने ऐप का OAuth कॉन्फ़िगरेशन अस्वीकार किया। Android क्लाइंट का पैकेज और साइनिंग SHA-1 इस APK से मेल खाना चाहिए और वह Web क्लाइंट वाले प्रोजेक्ट में होना चाहिए।</string>
+    <string name="account_network_failed">Google ने कनेक्शन की समस्या बताई। इंटरनेट जाँचकर फिर कोशिश करें।</string>
+</resources>

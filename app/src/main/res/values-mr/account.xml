@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="account_title">Google खाते</string>
+    <string name="account_sign_in">Google ने साइन इन करा</string>
+    <string name="account_sign_out">साइन आउट करा</string>
+    <string name="account_skip">खात्याशिवाय पुढे जा</string>
+    <string name="account_intro">तुमच्या कम्युनिटी प्रोफाइलसाठी Google वरील नाव आणि ईमेल वापरा. फोन आणि स्थान आयात केले जात नाहीत. तुम्ही निवड करेपर्यंत जवळपास माहिती शेअर करणे बंद राहते.</string>
+    <string name="account_busy">कृपया थांबा…</string>
+    <string name="account_config_error">या बिल्डसाठी Google साइन इन कॉन्फिगर केलेले नाही. Web क्लायंट ID जोडा आणि Google Cloud मध्ये ॲपचे पॅकेज व स्वाक्षरी प्रमाणपत्र नोंदवा.</string>
+    <string name="account_cancelled">साइन इन रद्द झाले. पुन्हा प्रयत्न करा किंवा खात्याशिवाय पुढे जा.</string>
+    <string name="account_unavailable">Google खाते उपलब्ध नाही. फोनच्या सेटिंग्जमध्ये खाते जोडा आणि Google Play सेवा तपासून पुन्हा प्रयत्न करा.</string>
+    <string name="account_provider_error">या फोनवर Google साइन इन उपलब्ध नाही. Google Play सेवा अपडेट करून पुन्हा प्रयत्न करा.</string>
+    <string name="account_invalid">Google कडून अपूर्ण खाते प्रोफाइल मिळाले. पुन्हा साइन इन करा.</string>
+    <string name="account_failed">साइन इन झाले नाही. कनेक्शन तपासून पुन्हा प्रयत्न करा. समस्या कायम राहिल्यास या बिल्डचे Google OAuth कॉन्फिगरेशन तपासा.</string>
+    <string name="account_signout_failed">स्थानिक साइन आउट झाले. Google चा खाते निवडकर्ता रीसेट करता आला नाही; Google Play सेवा उपलब्ध झाल्यावर पुन्हा प्रयत्न करा.</string>
+    <string name="account_diagnostic">साइन इन निदान: %1$s</string>
+    <string name="account_oauth_rejected">Google ने ॲपचे OAuth कॉन्फिगरेशन नाकारले. Android क्लायंटचे पॅकेज आणि स्वाक्षरी SHA-1 या APK शी जुळतात आणि तो Web क्लायंटच्या प्रकल्पात आहे याची खात्री करा.</string>
+    <string name="account_network_failed">Google ने कनेक्शनमध्ये समस्या नोंदवली. इंटरनेट तपासून पुन्हा प्रयत्न करा.</string>
+</resources>

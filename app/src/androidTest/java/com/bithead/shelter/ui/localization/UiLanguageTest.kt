@@ -33,16 +33,19 @@ class UiLanguageTest {
                     UiLanguageSettingsCard(true)
                     Text(stringResource(R.string.tour_start))
                     Text(stringResource(R.string.mesh_entry_title))
+                    Text(stringResource(R.string.account_sign_in))
                 } } }
             }
             compose.onNodeWithText("हिन्दी").performClick()
             compose.onNodeWithText("इंटरफ़ेस की भाषा").assertIsDisplayed()
             compose.onNodeWithText("परिचय शुरू करें").assertExists()
             compose.onNodeWithText("लाइव मेश").assertExists()
+            compose.onNodeWithText("Google से साइन इन करें").assertExists()
             compose.onNodeWithText("मराठी").performClick()
             compose.onNodeWithText("इंटरफेसची भाषा").assertIsDisplayed()
             compose.onNodeWithText("परिचय सुरू करा").assertExists()
             compose.onNodeWithText("थेट मेश").assertExists()
+            compose.onNodeWithText("Google ने साइन इन करा").assertExists()
             compose.runOnIdle {
                 assertEquals("mr", prefs.getString("ui_language", null))
                 UiLanguage.initialize(context)

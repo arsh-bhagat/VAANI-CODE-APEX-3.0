@@ -1,5 +1,6 @@
 package com.bithead.shelter.mesh
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.test.*
@@ -17,6 +18,8 @@ import org.junit.Test
 class MeshNavigationTest {
     @get:Rule val compose = createComposeRule()
 
+    // Lint 8.5.2 misidentifies this constructor result as Unit; Kotlin compiles it as WalkthroughScope.
+    @SuppressLint("RememberReturnType")
     @Test fun localizedMeshPaneReturnsToMapAndYieldsToWalkthroughWithoutStartingRadio() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val prefs = context.getSharedPreferences("shelter_prefs", 0)
@@ -28,7 +31,7 @@ class MeshNavigationTest {
             compose.setContent {
                 ProvideUiLanguage { ShelterTheme {
                     val lists = List(5) { rememberLazyListState() }
-                    val scope = remember { WalkthroughScope(lists) }
+                    val scope = remember<WalkthroughScope> { WalkthroughScope(lists) }
                     SideEffect { tour = scope }
                     CompositionLocalProvider(LocalWalkthrough provides scope) {
                         CommunityScreen(null, null, null, null, {}, {})

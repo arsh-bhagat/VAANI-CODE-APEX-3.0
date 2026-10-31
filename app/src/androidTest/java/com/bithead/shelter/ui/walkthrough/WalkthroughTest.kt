@@ -12,6 +12,7 @@ import com.bithead.shelter.ui.components.EvidenceMediaPreviewState
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.After
 import java.io.File
 
 class WalkthroughTest {
@@ -24,7 +25,22 @@ class WalkthroughTest {
     private var actions = 0
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private fun launchApp() {
+    private var originalSetupDone: Boolean? = null
+    private var setupPreferenceTouched = false
+
+    @After fun restoreAccountSetupPreference() {
+        if (setupPreferenceTouched) {
+            context.getSharedPreferences("vaani_account_setup", 0).edit().apply {
+                originalSetupDone?.let { putBoolean("done", it) } ?: remove("done")
+            }.commit()
+        }
+    }
+
+    private fun launchApp(setupDone: Boolean = true) {
+        val prefs = context.getSharedPreferences("vaani_account_setup", 0)
+        originalSetupDone = if (prefs.contains("done")) prefs.getBoolean("done", false) else null
+        setupPreferenceTouched = true
+        prefs.edit().putBoolean("done", setupDone).commit()
         compose.setContent {
             MaterialTheme {
                 VaaniApp(
@@ -54,6 +70,21 @@ class WalkthroughTest {
                     onMediaCaptured = { actions++ }
                 )
             }
+        }
+    }
+
+    @Test fun accountSetupSurvivesPickerPauseAndCanBeSkippedBeforeTour() {
+        launchApp(setupDone = false)
+        compose.onNodeWithText("Sign in with Google").assertIsDisplayed()
+        compose.onNodeWithText("Start walkthrough").assertDoesNotExist()
+        compose.runOnIdle { eligible = false }
+        compose.onNodeWithText("Continue without an account").assertIsDisplayed()
+        compose.runOnIdle { eligible = true }
+        compose.onNodeWithText("Continue without an account").performClick()
+        compose.onNodeWithText("Start walkthrough").assertIsDisplayed()
+        compose.runOnIdle {
+            assertTrue(context.getSharedPreferences("vaani_account_setup", 0).getBoolean("done", false))
+            assertEquals(0, actions)
         }
     }
 
@@ -117,6 +148,19 @@ class WalkthroughTest {
         compose.onNodeWithText("Step 1 of 11").assertIsDisplayed()
         compose.onNodeWithText("Skip tour").performClick()
         compose.runOnIdle { assertFalse(suppressed); assertEquals(0, actions) }
+    }
+
+    @Test fun typedConfiguredSafewordLeavesNotesWithoutActivatingFeatures() {
+        offered = false
+        disguised = true
+        launchApp()
+        compose.onNode(hasSetTextAction()).performTextInput("  test phrase  ")
+        compose.onNodeWithText("All Notes").assertDoesNotExist()
+        compose.onNodeWithText("ARMED OPERATIONS").assertIsDisplayed()
+        compose.runOnIdle {
+            assertEquals(0, actions)
+            assertTrue(disguised)
+        }
     }
 
     @Test fun deferredOfferInNotesDoesNotActivateSuppression() {

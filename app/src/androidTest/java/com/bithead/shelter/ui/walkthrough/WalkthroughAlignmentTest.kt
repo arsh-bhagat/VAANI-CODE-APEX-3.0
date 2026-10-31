@@ -1,5 +1,6 @@
 package com.bithead.shelter.ui.walkthrough
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -61,8 +62,10 @@ class WalkthroughAlignmentTest {
     }
 
     @Composable
+    // Lint 8.5.2 misidentifies this constructor result as Unit; the return type is explicit.
+    @SuppressLint("RememberReturnType")
     private fun rememberWalkthroughScope(): WalkthroughScope {
         val lists = List(5) { rememberLazyListState() }
-        return remember { WalkthroughScope(lists) }
+        return remember<WalkthroughScope> { WalkthroughScope(lists) }
     }
 }

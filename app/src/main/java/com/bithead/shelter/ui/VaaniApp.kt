@@ -107,7 +107,15 @@ fun VaaniApp(
     var originOffset by rememberSaveable(key = "tour_origin_offset_$walkthroughSessionId") { mutableIntStateOf(0) }
     var showFeatureHelp by rememberSaveable { mutableStateOf(false) }
     var targetReady by remember { mutableStateOf(false) }
-    val available = walkthroughEligible && !isEmergency && !isSealing && !disguised && !blackout &&
+    val accountPrefs = LocalContext.current.getSharedPreferences("vaani_account_setup", android.content.Context.MODE_PRIVATE)
+    var accountSetupDone by remember { mutableStateOf(accountPrefs.getBoolean("done", false)) }
+    // Google's picker pauses the Activity; keep the panel and its coroutine composed.
+    var accountSetupStarted by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(walkthroughEligible) {
+        if (walkthroughEligible) accountSetupStarted = true
+    }
+    val accountSetupVisible = !accountSetupDone && accountSetupStarted && !isEmergency && !isSealing && !disguised && !blackout
+    val available = accountSetupDone && walkthroughEligible && !isEmergency && !isSealing && !disguised && !blackout &&
         !showCamera && message == null && !decoyCall && decoyDelay == 0 && mediaPreviewState.evidenceId == null
     val visibleTour = tourIndex >= -1 && available
     SideEffect { tour.active = tourIndex >= -1 }
@@ -295,6 +303,14 @@ fun VaaniApp(
             tour.viewport = Rect(it.positionInRoot(), it.size.toSize())
         }) {
             if (disguised) NotesScreen(safeword, unlockDisguise)
+            else if (accountSetupVisible) {
+                Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
+                    GoogleAccountPanel {
+                        accountPrefs.edit().putBoolean("done", true).apply()
+                        accountSetupDone = true
+                    }
+                }
+            }
             else when (tab) {
                 0 -> ArmedScreen(isEmergency, isSealing, safeword, evidence.size, listening, listeningActive, gestureWakeMode,
                     gestureWindowOpening, gestureWindowSecondsRemaining, onListeningChange, onEditSafeword, onTrigger,

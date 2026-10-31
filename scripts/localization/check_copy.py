@@ -20,8 +20,9 @@ assert OUTPUT.read_text(encoding="utf-8") == render(), "Regenerate UiCopy.kt"
 
 base = ROOT / "app/src/main/res"
 resource_count = 0
-for name in ("walkthrough", "mesh"):
-    original = {s.attrib["name"]: s.text or "" for s in ET.parse(base / f"values/{name}.xml").getroot()}
+for name in ("walkthrough", "mesh", "account"):
+    original = {s.attrib["name"]: s.text or "" for s in ET.parse(base / f"values/{name}.xml").getroot()
+                if s.attrib.get("translatable") != "false"}
     resource_count += len(original)
     for code in ("hi", "mr"):
         translated = {s.attrib["name"]: s.text or "" for s in ET.parse(base / f"values-{code}/{name}.xml").getroot()}
@@ -36,6 +37,6 @@ assert 'putString("ui_language", code)' in preferences
 for forbidden in ('putString("speech_language"', 'putString("user_safeword"', 'putString("memo"', 'Locale.setDefault', '.recreate('):
     assert forbidden not in preferences, forbidden
 notes = (ROOT / "app/src/main/java/com/bithead/shelter/ui/screens/NotesScreen.kt").read_text(encoding="utf-8")
-assert 'Text(note)' in notes and 'SafewordMatcher.matchesExactly(value, safeword)' in notes
+assert 'Text(note)' in notes and 'matchesNotesUnlock(value, safeword)' in notes
 assert 'uiText(note)' not in notes, "User notes are content, not interface copy"
-print(f"Copy checks passed: {len(rows)} UI entries, {resource_count} walkthrough/mesh resources per locale, placeholders and preference isolation.")
+print(f"Copy checks passed: {len(rows)} UI entries, {resource_count} walkthrough/mesh/account resources per locale, placeholders and preference isolation.")
